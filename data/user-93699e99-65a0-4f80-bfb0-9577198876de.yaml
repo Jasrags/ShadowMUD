@@ -1,0 +1,47 @@
+id: 93699e99-65a0-4f80-bfb0-9577198876de
+name: John Doe
+metatype:
+    name: ""
+    body: []
+    agility: []
+    reaction: []
+    strength: []
+    willpower: []
+    logic: []
+    intuition: []
+    charisma: []
+    edge: []
+    essence: 0
+    racialtraits: []
+ethnicity: ""
+age: 0
+sex: ""
+height: 0
+weight: 0
+streetcred: 0
+notoriety: 0
+publicawareness: 0
+karma: 0
+totalkarma: 0
+body: 7
+agility: 6
+reaction: 5
+strength: 5
+willpower: 3
+logic: 2
+intuition: 3
+charisma: 2
+edge: 1
+edgepoints: 0
+essence: 0.88
+magic: 0
+resonance: 0
+physicallimit: 0
+mentallimit: 0
+sociallimit: 0
+matrixinitiative: 0
+composure: 0
+judgeintentions: 0
+memory: 0
+liftcarry: 0
+movement: 0

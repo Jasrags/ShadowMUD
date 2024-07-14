@@ -1,0 +1,11 @@
+id: 6
+name: Combat Axe
+description: A two-handed tungsten-alloy monster, available single- or double-bladed. A hardened thrusting point can be concealed, spring-loaded, in the handle. While it may seem barbaric or primitive, the physical augmentations of 2075 can make an old-school weapon like a combat axe even deadlier than a firearm in the right hands. So go ahead, go medieval.
+accuracy: 4
+reach: 2
+damage_value: 5
+damage_type: 0
+armor_penatration: -4
+availability: 12R
+cost: 4000
+rule_source: SR5:Core

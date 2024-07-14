@@ -1,94 +1,47 @@
 package metatype
 
-type Metatype struct {
-	Name string
+import (
+	"fmt"
+	"os"
+	"strings"
+	"sync"
 
-	Body      []int
-	Agility   []int
-	Reaction  []int
-	Strength  []int
-	Willpower []int
-	Logic     []int
-	Intuition []int
-	Charisma  []int
-	Edge      []int
-	Essence   float64
+	"shadowrunmud/util"
+
+	"github.com/sirupsen/logrus"
+)
+
+const (
+	MetatypeDataPath       = "data/metatypes"
+	MetatypeFilename       = MetatypeDataPath + "/%s.yaml"
+	MetatypeFileMinVersion = "0.0.1"
+)
+
+type MetatypeAttribute struct {
+	Min int
+	Max int
+}
+
+type Metatype struct {
+	Name      string            `yaml:"name"`
+	Body      MetatypeAttribute `yaml:"body"`
+	Agility   MetatypeAttribute `yaml:"agility"`
+	Reaction  MetatypeAttribute `yaml:"reaction"`
+	Strength  MetatypeAttribute `yaml:"strength"`
+	Willpower MetatypeAttribute `yaml:"willpower"`
+	Logic     MetatypeAttribute `yaml:"logic"`
+	Intuition MetatypeAttribute `yaml:"intuition"`
+	Charisma  MetatypeAttribute `yaml:"charisma"`
+	Edge      MetatypeAttribute `yaml:"edge"`
+	Essence   float64           `yaml:"essence"`
 	// Initiative   int // REA+INT
-	RacialTraits []string
+	RacialTraits []string `yaml:"racial_traits"`
+	RuleSource   string   `yaml:"rule_source"`
+	FileVersion  string   `yaml:"file_version"`
 }
 
 var (
-	Metatypes = map[string]Metatype{
-		"Human": {
-			Name:      "Human",
-			Body:      []int{1, 6},
-			Agility:   []int{1, 6},
-			Reaction:  []int{1, 6},
-			Strength:  []int{1, 6},
-			Willpower: []int{1, 6},
-			Logic:     []int{1, 6},
-			Intuition: []int{1, 6},
-			Charisma:  []int{1, 6},
-			Edge:      []int{2, 7},
-			Essence:   6,
-		},
-		"Elf": {
-			Name:         "Elf",
-			Body:         []int{1, 6},
-			Agility:      []int{2, 7},
-			Reaction:     []int{1, 6},
-			Strength:     []int{1, 6},
-			Willpower:    []int{1, 6},
-			Logic:        []int{1, 6},
-			Intuition:    []int{1, 6},
-			Charisma:     []int{3, 8},
-			Edge:         []int{1, 6},
-			Essence:      6,
-			RacialTraits: []string{RacialTraitLowLightVision},
-		},
-		"Dwarf": {
-			Name:         "Dwarf",
-			Body:         []int{3, 8},
-			Agility:      []int{1, 6},
-			Reaction:     []int{1, 5},
-			Strength:     []int{3, 8},
-			Willpower:    []int{2, 7},
-			Logic:        []int{1, 6},
-			Intuition:    []int{1, 6},
-			Charisma:     []int{1, 6},
-			Edge:         []int{1, 6},
-			Essence:      6,
-			RacialTraits: []string{RacialTraitThermographicVision},
-		},
-		"Ork": {
-			Name:         "Ork",
-			Body:         []int{4, 9},
-			Agility:      []int{1, 6},
-			Reaction:     []int{1, 6},
-			Strength:     []int{3, 8},
-			Willpower:    []int{1, 6},
-			Logic:        []int{1, 5},
-			Intuition:    []int{1, 6},
-			Charisma:     []int{1, 6},
-			Edge:         []int{1, 5},
-			Essence:      6,
-			RacialTraits: []string{RacialTrait2DicForPathogenAndToxinResistance, RacialTrait20PercentIncreasedLifestyleCost},
-		},
-		"Troll": {
-			Name:         "Troll",
-			Body:         []int{5, 10},
-			Agility:      []int{1, 5},
-			Reaction:     []int{1, 6},
-			Strength:     []int{5, 10},
-			Willpower:    []int{1, 6},
-			Logic:        []int{1, 5},
-			Intuition:    []int{1, 5},
-			Charisma:     []int{1, 4},
-			Edge:         []int{1, 6},
-			Essence:      6,
-			RacialTraits: []string{RacialTraitThermographicVision, RacialTrait1Reach, RacialTrait1DermalArmor, RacialTraitDoubleLifestyleCosts},
-		},
-	}
+	Metatypes = map[string]Metatype{}
 )
 
 const (
@@ -100,3 +53,39 @@ const (
 	RacialTrait1DermalArmor                      = "+1 dermal armor"
 	RacialTraitDoubleLifestyleCosts              = "Double Lifestyle costs"
 )
+
+// LoadMetatypes loads metatypes from YAML files in a specified directory.
+// It populates the global `Metatypes` map with the loaded metatypes.
+// The function takes a `sync.WaitGroup` pointer as a parameter to indicate completion.
+// It is expected to be called as a goroutine.
+func LoadMetatypes(wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	logrus.Debug("Started loading metatypes")
+
+	files, errReadDir := os.ReadDir(MetatypeDataPath)
+	if errReadDir != nil {
+		logrus.WithError(errReadDir).Fatal("Could not read metatype directory")
+	}
+
+	// Create a map to store the metatypes
+	metatypes := make(map[string]Metatype, len(files))
+
+	for _, file := range files {
+		if strings.HasSuffix(file.Name(), ".yaml") {
+			filepath := fmt.Sprintf("%s/%s", MetatypeDataPath, file.Name())
+
+			var metatype Metatype
+			if err := util.LoadStructFromYAML(filepath, &metatype); err != nil {
+				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
+			}
+
+			metatypes[metatype.Name] = metatype
+		}
+		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded metatype file")
+	}
+
+	logrus.WithFields(logrus.Fields{"count": len(metatypes)}).Info("Done loading metatypes")
+
+	Metatypes = metatypes
+}

@@ -1,0 +1,11 @@
+id: 3
+name: Pole Arm
+description: This is, at its very essence, a blade on the end of a very long stick. It usually features an axe-head, glaive, spear point, or similar maiming implement. It’s not easy to handle and it’s just about impossible to conceal, but it’s popular both with trolls and with melee combatants looking to safely keep said large trolls at more than arm’s length.
+accuracy: 5
+reach: 3
+damage_value: 3
+damage_type: 0
+armor_penatration: -2
+availability: 6R
+cost: 1000
+rule_source: SR5:Core

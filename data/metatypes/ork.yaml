@@ -1,0 +1,34 @@
+name: Ork
+body:
+    min: 4
+    max: 9
+agility:
+    min: 1
+    max: 6
+reaction:
+    min: 1
+    max: 6
+strength:
+    min: 3
+    max: 8
+willpower:
+    min: 1
+    max: 6
+logic:
+    min: 1
+    max: 5
+intuition:
+    min: 1
+    max: 6
+charisma:
+    min: 1
+    max: 6
+edge:
+    min: 1
+    max: 5
+essence: 6
+racial_traits:
+    - +2 dice for pathogen and toxin resistance
+    - +20% increased Lifestyle cost
+rule_source: SR5:Core
+file_version: 0.0.1

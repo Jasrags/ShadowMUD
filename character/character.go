@@ -1,70 +1,83 @@
 package character
 
 import (
+	"fmt"
 	"math"
-	"shadowrunmud/character/metatype"
 	"time"
 
+	"shadowrunmud/character/item"
+	"shadowrunmud/character/metatype"
+	"shadowrunmud/character/skills"
+	"shadowrunmud/util"
+
+	"github.com/sirupsen/logrus"
 	"golang.org/x/exp/rand"
+)
+
+const (
+	CharacterDataPath       = "data/characters"
+	CharacterFilename       = CharacterDataPath + "/%s.yaml"
+	CharacterFileMinVersion = "0.0.1"
 )
 
 type Character struct {
 	// Personal Data
-	Name            string
-	Metatype        metatype.Metatype
-	Ethnicity       string
-	Age             int
-	Sex             string
-	Height          int
-	Weight          int
-	StreetCred      int
-	Notoriety       int
-	PublicAwareness int
-	Karma           int
-	TotalKarma      int
+	ID              string            `yaml:"id"`
+	Name            string            `yaml:"name"`
+	Metatype        metatype.Metatype `yaml:"metatype"`
+	Ethnicity       string            `yaml:"ethnicity"`
+	Age             int               `yaml:"age"`
+	Sex             string            `yaml:"sex"`
+	Height          int               `yaml:"height"`
+	Weight          int               `yaml:"weight"`
+	StreetCred      int               `yaml:"street_cred"`
+	Notoriety       int               `yaml:"notoriety"`
+	PublicAwareness int               `yaml:"public_awareness"`
+	Karma           int               `yaml:"karma"`
+	TotalKarma      int               `yaml:"total_karma"`
 	// Attributes
-	Body       int
-	Agility    int
-	Reaction   int
-	Strength   int
-	Willpower  int
-	Logic      int
-	Intuition  int
-	Charisma   int
-	Edge       int
-	EdgePoints int
+	Body       int `yaml:"body"`
+	Agility    int `yaml:"agility"`
+	Reaction   int `yaml:"reaction"`
+	Strength   int `yaml:"strength"`
+	Willpower  int `yaml:"willpower"`
+	Logic      int `yaml:"logic"`
+	Intuition  int `yaml:"intuition"`
+	Charisma   int `yaml:"charisma"`
+	Edge       int `yaml:"edge"`
+	EdgePoints int `yaml:"edge_points"`
 	// Derived Attributes
-	Essence       float64
-	Magic         int
-	Resonance     int
-	PhysicalLimit int
-	MentalLimit   int
-	SocialLimit   int
+	Essence       float64 `yaml:"-"`
+	Magic         int     `yaml:"-"`
+	Resonance     int     `yaml:"-"`
+	PhysicalLimit int     `yaml:"-"`
+	MentalLimit   int     `yaml:"-"`
+	SocialLimit   int     `yaml:"-"`
 	// Initiative       int
-	MatrixInitiative int
+	MatrixInitiative int `yaml:"-"`
 	// AstralInitiative int
-	Composure       int
-	JudgeIntentions int
-	Memory          int
-	LiftCarry       int
-	Movement        int
+	Composure       int `yaml:"-"`
+	JudgeIntentions int `yaml:"-"`
+	Memory          int `yaml:"-"`
+	LiftCarry       int `yaml:"-"`
+	Movement        int `yaml:"-"`
 	// Skills
-	// ActiveSkills map[string]skills.ActiveSkill
-	// LanguageSkills  map[string]skills.LanguageSkill
-	// KnowledgeSkills map[string]skills.KnowledgeSkill
-	// Qualities       map[string]string
-	// Contacts        map[string]string
-	// Identities      map[string]string
-	// Lifestyles      map[string]string
-	// Currancy        map[string]int
-	// RangedWeapons map[string]item.WeaponRanged
-	// MeleeWeapons  map[string]item.WeaponMelee
-	// Armor           map[string]string
-	// Cyberdecks    map[string]string
-	// Augmentations map[string]string
-	// Vehicals      map[string]string
-	// Gear          map[string]string
-	// AdeptPowers   map[string]string
+	ActiveSkills    map[string]skills.ActiveSkill    `yaml:"active_skills"`
+	LanguageSkills  map[string]skills.LanguageSkill  `yaml:"language_skills"`
+	KnowledgeSkills map[string]skills.KnowledgeSkill `yaml:"knowledge_skills"`
+	Qualities       map[string]string                `yaml:"qualities"`
+	Contacts        map[string]string                `yaml:"contacts"`
+	Identities      map[string]string                `yaml:"identities"`
+	Lifestyles      map[string]string                `yaml:"lifestyles"`
+	Currancy        map[string]int                   `yaml:"currancy"`
+	RangedWeapons   map[string]item.WeaponRanged     `yaml:"ranged_weapons"`
+	MeleeWeapons    map[string]item.WeaponMelee      `yaml:"melee_weapons"`
+	Armor           map[string]string                `yaml:"armor"`
+	Cyberdecks      map[string]string                `yaml:"cyberdecks"`
+	Augmentations   map[string]string                `yaml:"augmentations"`
+	Vehicals        map[string]string                `yaml:"vehicals"`
+	Gear            map[string]string                `yaml:"gear"`
+	AdeptPowers     map[string]string                `yaml:"adept_powers"`
 }
 
 func (c *Character) GetBody() int {
@@ -176,6 +189,10 @@ func (c *Character) GetMovement() int {
 	return c.Movement
 }
 
+func (c *Character) Save() error {
+	return util.SaveStructToYAML(fmt.Sprintf(CharacterFilename, c.ID), c)
+}
+
 func rollDice(numDice int) (int, []int) {
 	rand.Seed(uint64(time.Now().UnixNano()))
 
@@ -210,6 +227,24 @@ var streetSamurai = Character{
 	Edge:      1,
 	// ActiveSkills: map[string]skills.ActiveSkill{skill.ActiveSkillAutomatics: {Rating: 5},}
 	// },
+}
+
+// LoadMetatypes loads metatypes from YAML files in a specified directory.
+// It populates the global `Metatypes` map with the loaded metatypes.
+// The function takes a `sync.WaitGroup` pointer as a parameter to indicate completion.
+// It is expected to be called as a goroutine.
+func LoadCharacter(id string) Character {
+	logrus.WithFields(logrus.Fields{"id": id}).Debug("Started loading character")
+
+	filepath := fmt.Sprintf(CharacterFilename, id)
+	var character Character
+	if err := util.LoadStructFromYAML(filepath, &character); err != nil {
+		logrus.WithFields(logrus.Fields{"id": id}).WithError(err).Fatal("Could not load character")
+	}
+
+	logrus.WithFields(logrus.Fields{"id": id}).Info("Loaded character file")
+
+	return character
 }
 
 /*

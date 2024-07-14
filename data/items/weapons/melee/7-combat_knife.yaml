@@ -1,0 +1,11 @@
+id: 7
+name: Combat Knife
+description: A long, KA-BAR-style fighting knife with a blacked-out blade and a chisel point for punching through armor.
+accuracy: 6
+reach: 0
+damage_value: 2
+damage_type: 0
+armor_penatration: -3
+availability: "4"
+cost: 300
+rule_source: SR5:Core

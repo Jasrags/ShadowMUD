@@ -108,13 +108,14 @@ const (
 )
 
 type ActiveSkill struct {
-	ID              int
-	Name            string
-	IsDefaultable   bool
-	Description     string
-	RuleSource      RuleSourceIdx
-	LinkedAttribute AttributeIdx
-	Specializations []string
+	ID                     int
+	Name                   string
+	IsDefaultable          bool
+	Description            string
+	RuleSource             RuleSourceIdx
+	LinkedAttribute        AttributeIdx
+	Specializations        []string
+	SelectedSpecialization string
 }
 
 var activeSkills = map[ActiveSkillIdx]ActiveSkill{
@@ -131,6 +132,6 @@ var activeSkills = map[ActiveSkillIdx]ActiveSkill{
 		IsDefaultable:   true,
 		LinkedAttribute: AttributeAgility,
 		RuleSource:      RuleSourceCore,
-		Specializations: []string{"Assault Rifles", "Cyber-Implant", "Machine Pistols", "Submachine Guns"},
+		Specializations: []string{"Bow", "Crossbow", "Non-Standard Ammunition", "Slingshot"},
 	},
 }

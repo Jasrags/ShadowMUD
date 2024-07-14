@@ -11,6 +11,9 @@ require (
 	github.com/charmbracelet/wish v1.4.0
 	github.com/google/uuid v1.6.0
 	github.com/muesli/termenv v0.15.2
+	github.com/sirupsen/logrus v1.9.3
+	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -37,7 +40,6 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	golang.org/x/crypto v0.21.0 // indirect
-	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.14.0 // indirect

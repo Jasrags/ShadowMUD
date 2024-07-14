@@ -1,0 +1,11 @@
+id: 2
+name: Knife
+description: Your basic, all-purpose street cutter. It comes in a bewildering array of styles, colors, and flavors, but the statistics don’t vary from one to the next. Ordinary knives are used by the poor, the desperate, or the cautious as backup weapons.
+accuracy: 5
+reach: 0
+damage_value: 1
+damage_type: 0
+armor_penatration: -1
+availability: "4"
+cost: 10
+rule_source: SR5:Core
