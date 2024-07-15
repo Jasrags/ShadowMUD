@@ -19,112 +19,39 @@ const (
 	CharacterFileMinVersion = "0.0.1"
 )
 
-// type Character interface {
-// 	GetID() string
-// 	SetID(string)
-// 	GetName() string
-// 	SetName(string)
-// 	GetMetatypeName() string
-// 	SetMetatypeName(string)
-// 	GetMetatype() metatype.Metatype
-// 	SetMetatype(metatype.Metatype)
-// 	GetEthnicity() string
-// 	SetEthnicity(string)
-// 	GetAge() int
-// 	SetAge(int)
-// 	GetSex() string
-// 	SetSex(string)
-// 	GetHeight() int
-// 	SetHeight(int)
-// 	GetWeight() int
-// 	SetWeight(int)
-// 	GetStreetCred() int
-// 	SetStreetCred(int)
-// 	GetNotoriety() int
-// 	SetNotoriety(int)
-// 	GetPublicAwareness() int
-// 	SetPublicAwareness(int)
-// 	GetKarma() int
-// 	SetKarma(int)
-// 	GetTotalKarma() int
-// 	SetTotalKarma(int)
-// 	GetBody() int
-// 	SetBody(int)
-// 	GetAgility() int
-// 	SetAgility(int)
-// 	GetReaction() int
-// 	SetReaction(int)
-// 	GetStrength() int
-// 	SetStrength(int)
-// 	GetWillpower() int
-// 	SetWillpower(int)
-// 	GetLogic() int
-// 	SetLogic(int)
-// 	GetIntuition() int
-// 	SetIntuition(int)
-// 	GetCharisma() int
-// 	SetCharisma(int)
-// 	GetEdge() int
-// 	SetEdge(int)
-// 	GetEdgePoints() int
-// 	SetEdgePoints(int)
-// 	GetEssence() float64
-// 	SetEssence(float64)
-// 	GetMagic() int
-// 	SetMagic(int)
-// 	GetResonance() int
-// 	SetResonance(int)
-// 	GetPhysicalLimit() int
-// 	GetMentalLimit() int
-// 	GetSocialLimit() int
-// 	GetInitiative() Initiatives
-// 	RollInitiative() Initiatives
-// 	GetComposure() int
-// 	GetJudgeIntentions() int
-// 	GetMemory() int
-// 	GetLiftCarry() int
-// 	GetMovement() int
-// 	GetActiveSkills() map[string]skill.ActiveSkill
-// 	SetActiveSkills(map[string]skill.ActiveSkill)
-// 	GetLanguageSkills() map[string]skill.LanguageSkill
-// 	SetLanguageSkills(map[string]skill.LanguageSkill)
-// 	GetKnowledgeSkills() map[string]skill.KnowledgeSkill
-// 	SetKnowledgeSkills(map[string]skill.KnowledgeSkill)
-// 	GetQualities() map[string]string
-// 	SetQualities(map[string]string)
-// 	GetContacts() map[string]string
-// 	SetContacts(map[string]string)
-// 	GetIdentities() map[string]string
-// 	SetIdentities(map[string]string)
-// 	GetLifestyles() map[string]string
-// 	SetLifestyles(map[string]string)
-// 	GetCurrancy() map[string]int
-// 	SetCurrancy(map[string]int)
-// 	GetRangeWeapons() map[string]item.WeaponRanged
-// 	SetRangeWeapons(map[string]item.WeaponRanged)
-// 	GetMeleeWeapons() map[string]item.WeaponMelee
-// 	SetMeleeWeapons(map[string]item.WeaponMelee)
-// 	GetArmor() map[string]string
-// 	SetArmor(map[string]string)
-// 	GetCyberdecks() map[string]string
-// 	SetCyberdecks(map[string]string)
-// 	GetAugmentations() map[string]string
-// 	SetAugmentations(map[string]string)
-// 	GetVehicals() map[string]string
-// 	SetVehicals(map[string]string)
-// 	GetGear() map[string]string
-// 	SetGear(map[string]string)
-// 	GetAdeptPowers() map[string]string
-// 	SetAdeptPowers(map[string]string)
-
-// 	Save() error
-// }
-
 func NewCharacter() *Character {
 	uuid := uuid.New().String()
 	return &Character{
 		ID: uuid,
 	}
+}
+
+type Attributes struct {
+	Body      AttributesInfo  `yaml:"body"`
+	Agility   AttributesInfo  `yaml:"agility"`
+	Reaction  AttributesInfo  `yaml:"reaction"`
+	Strength  AttributesInfo  `yaml:"strength"`
+	Willpower AttributesInfo  `yaml:"willpower"`
+	Logic     AttributesInfo  `yaml:"logic"`
+	Intuition AttributesInfo  `yaml:"intuition"`
+	Charisma  AttributesInfo  `yaml:"charisma"`
+	Essence   AttributesInfoF `yaml:"essence"`
+}
+
+type AttributesInfo struct {
+	Value int `yaml:"-"`
+	Base  int `yaml:"base"`
+	Mods  int `yaml:"-"`
+}
+
+func (ai *AttributesInfo) Recalculate() {
+	ai.Value = ai.Base + ai.Mods
+}
+
+type AttributesInfoF struct {
+	Value float64 `yaml:"-"`
+	Base  float64 `yaml:"base"`
+	Mods  float64 `yaml:"-"`
 }
 
 type Character struct {
@@ -144,23 +71,24 @@ type Character struct {
 	Karma           int               `yaml:"karma"`
 	TotalKarma      int               `yaml:"total_karma"`
 	// Attributes
-	Body       int `yaml:"body"`
-	Agility    int `yaml:"agility"`
-	Reaction   int `yaml:"reaction"`
-	Strength   int `yaml:"strength"`
-	Willpower  int `yaml:"willpower"`
-	Logic      int `yaml:"logic"`
-	Intuition  int `yaml:"intuition"`
-	Charisma   int `yaml:"charisma"`
+	Attributes Attributes `yaml:"attributes"`
+	// Body       int `yaml:"body"`
+	// Agility    int `yaml:"agility"`
+	// Reaction   int `yaml:"reaction"`
+	// Strength   int `yaml:"strength"`
+	// Willpower  int `yaml:"willpower"`
+	// Logic      int `yaml:"logic"`
+	// Intuition  int `yaml:"intuition"`
+	// Charisma   int `yaml:"charisma"`
 	Edge       int `yaml:"edge"`
 	EdgePoints int `yaml:"edge_points"`
 	// Derived Attributes
-	Essence       float64 `yaml:"-"`
-	Magic         int     `yaml:"-"`
-	Resonance     int     `yaml:"-"`
-	PhysicalLimit int     `yaml:"-"`
-	MentalLimit   int     `yaml:"-"`
-	SocialLimit   int     `yaml:"-"`
+	// Essence       float64 `yaml:"-"`
+	Magic         int `yaml:"-"`
+	Resonance     int `yaml:"-"`
+	PhysicalLimit int `yaml:"-"`
+	MentalLimit   int `yaml:"-"`
+	SocialLimit   int `yaml:"-"`
 	// Initiative       int
 	MatrixInitiative int `yaml:"-"`
 	// AstralInitiative int
@@ -188,246 +116,26 @@ type Character struct {
 	AdeptPowers     map[string]string               `yaml:"adept_powers"`
 }
 
-// Personal Data
-func (c *char) GetID() string {
-	return c.ID
-}
-
-func (c *char) SetID(id string) {
-	c.ID = id
-}
-
-func (c *char) GetName() string {
-	return c.Name
-}
-
-func (c *char) SetName(name string) {
-	c.Name = name
-}
-
-func (c *char) GetMetatypeName() string {
-	return c.MetatypeName
-}
-
-func (c *char) SetMetatypeName(name string) {
-	c.MetatypeName = name
-}
-
-func (c *char) GetMetatype() metatype.Metatype {
-	return c.Metatype
-}
-
-func (c *char) SetMetatype(m metatype.Metatype) {
-	c.Metatype = m
-}
-
-func (c *char) GetEthnicity() string {
-	return c.Ethnicity
-}
-
-func (c *char) SetEthnicity(e string) {
-	c.Ethnicity = e
-}
-
-func (c *char) GetAge() int {
-	return c.Age
-}
-
-func (c *char) SetAge(a int) {
-	c.Age = a
-}
-
-func (c *char) GetSex() string {
-	return c.Sex
-}
-
-func (c *char) SetSex(s string) {
-	c.Sex = s
-}
-
-func (c *char) GetHeight() int {
-	return c.Height
-}
-
-func (c *char) SetHeight(h int) {
-	c.Height = h
-}
-
-func (c *char) GetWeight() int {
-	return c.Weight
-}
-
-func (c *char) SetWeight(w int) {
-	c.Weight = w
-}
-
-func (c *char) GetStreetCred() int {
-	return c.StreetCred
-}
-
-func (c *char) SetStreetCred(sc int) {
-	c.StreetCred = sc
-}
-
-func (c *char) GetNotoriety() int {
-	return c.Notoriety
-}
-
-func (c *char) SetNotoriety(n int) {
-	c.Notoriety = n
-}
-
-func (c *char) GetPublicAwareness() int {
-	return c.PublicAwareness
-}
-
-func (c *char) SetPublicAwareness(pa int) {
-	c.PublicAwareness = pa
-}
-
-func (c *char) GetKarma() int {
-	return c.Karma
-}
-
-func (c *char) SetKarma(k int) {
-	c.Karma = k
-}
-
-func (c *char) GetTotalKarma() int {
-	return c.TotalKarma
-}
-
-func (c *char) SetTotalKarma(tk int) {
-	c.TotalKarma = tk
-}
-
-// Attributes
-func (c *char) GetBody() int {
-	return c.Body
-}
-
-func (c *char) SetBody(b int) {
-	c.Body = b
-}
-
-func (c *char) GetAgility() int {
-	return c.Agility
-}
-
-func (c *char) SetAgility(a int) {
-	c.Agility = a
-}
-
-func (c *char) GetReaction() int {
-	return c.Reaction
-}
-
-func (c *char) SetReaction(r int) {
-	c.Reaction = r
-}
-
-func (c *char) GetStrength() int {
-	return c.Strength
-}
-
-func (c *char) SetStrength(s int) {
-	c.Strength = s
-}
-
-func (c *char) GetWillpower() int {
-	return c.Willpower
-}
-
-func (c *char) SetWillpower(w int) {
-	c.Willpower = w
-}
-
-func (c *char) GetLogic() int {
-	return c.Logic
-}
-
-func (c *char) SetLogic(l int) {
-	c.Logic = l
-}
-
-func (c *char) GetIntuition() int {
-	return c.Intuition
-}
-
-func (c *char) SetIntuition(i int) {
-	c.Intuition = i
-}
-
-func (c *char) GetCharisma() int {
-	return c.Charisma
-}
-
-func (c *char) SetCharisma(ch int) {
-	c.Charisma = ch
-}
-
-func (c *char) GetEdge() int {
-	return c.Edge
-}
-
-func (c *char) SetEdge(e int) {
-	c.Edge = e
-}
-
-func (c *char) GetEdgePoints() int {
-	return c.EdgePoints
-}
-
-func (c *char) SetEdgePoints(ep int) {
-	c.EdgePoints = ep
-}
-
-// Derived Attributes
-
-func (c *char) GetEssence() float64 {
-	return c.Essence
-}
-
-func (c *char) SetEssence(e float64) {
-	c.Essence = e
-}
-
-func (c *char) GetMagic() int {
-	return c.Magic
-}
-
-func (c *char) SetMagic(m int) {
-	c.Magic = m
-}
-
-func (c *char) GetResonance() int {
-	return c.Resonance
-}
-
-func (c *char) SetResonance(r int) {
-	c.Resonance = r
-}
-
-func (c *char) GetPhysicalLimit() int {
-	s := float64(c.Strength)
-	b := float64(c.Body)
-	r := float64(c.Reaction)
+func (c *Character) GetPhysicalLimit() int {
+	s := float64(c.Attributes.Strength.Value)
+	b := float64(c.Attributes.Body.Value)
+	r := float64(c.Attributes.Reaction.Value)
 
 	return int(math.Ceil((s*2 + b + r) / 3))
 }
 
-func (c *char) GetMentalLimit() int {
-	l := float64(c.Logic)
-	i := float64(c.Intuition)
-	w := float64(c.Willpower)
+func (c *Character) GetMentalLimit() int {
+	l := float64(c.Attributes.Logic.Value)
+	i := float64(c.Attributes.Intuition.Value)
+	w := float64(c.Attributes.Willpower.Value)
 
 	return int(math.Ceil((l*2 + i + w) / 3))
 }
 
-func (c *char) GetSocialLimit() int {
-	ch := float64(c.Charisma)
-	w := float64(c.Willpower)
-	e := c.Essence
+func (c *Character) GetSocialLimit() int {
+	ch := float64(c.Attributes.Charisma.Value)
+	w := float64(c.Attributes.Willpower.Value)
+	e := c.Attributes.Essence.Value
 
 	return int(math.Ceil((ch*2 + w + e) / 3))
 }
@@ -441,19 +149,19 @@ type Initiatives struct {
 }
 
 // Return base initiative values
-func (c *char) GetInitiative() Initiatives {
+func (c *Character) GetInitiative() Initiatives {
 	// TODO: Add DataProcessing
 	return Initiatives{
-		Initiative:         (c.Reaction + c.Intuition),
-		AstralInitiative:   (c.Intuition * 2),
-		MatrixARInitiative: (c.Reaction + c.Intuition),
+		Initiative:         (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value),
+		AstralInitiative:   (c.Attributes.Intuition.Value * 2),
+		MatrixARInitiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value),
 		// MatrixVRHotSimInitiative:  (c.DataProcessing + c.Intuition),
 		// MatrixVRColdSimInitiative: (c.DataProcessing + c.Intuition),
 	}
 }
 
 // Use base initiative values to roll initiative
-func (c *char) RollInitiative() Initiatives {
+func (c *Character) RollInitiative() Initiatives {
 	// TODO: Add DataProcessing
 	total1, _ := util.RollDice(1)
 	total2, _ := util.RollDice(2)
@@ -461,9 +169,9 @@ func (c *char) RollInitiative() Initiatives {
 	// total4, _ := util.RollDice(4)
 	// total5, _ := util.RollDice(3)
 	return Initiatives{
-		Initiative:         (c.Reaction + c.Intuition) + total1,
-		AstralInitiative:   (c.Intuition * 2) + total2,
-		MatrixARInitiative: (c.Reaction + c.Intuition) + total3,
+		Initiative:         (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total1,
+		AstralInitiative:   (c.Attributes.Intuition.Value * 2) + total2,
+		MatrixARInitiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total3,
 		// MatrixVRHotSimInitiative:  (c.DataProcessing + c.Intuition)+total4,
 		// MatrixVRColdSimInitiative: (c.DataProcessing + c.Intuition)+total5,
 	}
@@ -474,16 +182,16 @@ Composure (WIL + CHA)
 There are many common occurrences in a shadowrunner’s life—vicious violence, death, metahuman misery, scary monsters and magic—that would make average citizens crumple into whimpering, traumatized rag-dolls. Whenever a character encounters a situation that she has not been hardened to, the gamemaster can call for a composure test to see whether she faces the situation with cool resolve, temporarily freezes with shock, or trembles and pisses herself.
 Composure is a Willpower + Charisma Test, with a threshold based on the severity of the situation (keeping in mind how often the character has faced similar things in the past). Certain situations are bound to become routine to shadowrunners (getting shot at, attacked by a angry spirit, or seeing the remains of a ghoul’s meal); in these cases, gamemasters should no longer ask for composure tests.
 */
-func (c *char) GetComposure() int {
-	return (c.Willpower + c.Charisma)
+func (c *Character) GetComposure() int {
+	return (c.Attributes.Willpower.Value + c.Attributes.Charisma.Value)
 }
 
 /*
 Judge Intentions (INT + CHA)
 A character who wants to use her natural empathy to gauge another character’s emotional state, intentions, or honesty can make an Opposed Intuition + Charisma Test against the target’s Willpower + Charisma. Note that this sort of “psychological” evaluation is never a certainty—it’s just a way for a player to judge what her character “feels” about someone else. It should never serve as a lie detector or detailed psychological analysis. The gamemaster should simply use it as a way to convey gut feelings the character gets when dealing with another.
 */
-func (c *char) GetJudgeIntentions() int {
-	return (c.Intuition + c.Charisma)
+func (c *Character) GetJudgeIntentions() int {
+	return (c.Attributes.Intuition.Value + c.Attributes.Charisma.Value)
 }
 
 /*
@@ -492,8 +200,8 @@ If a character needs to remember an important fact or detail, the gamemaster can
 A character may also attempt to memorize something in advance. In this case, make a similar Logic + Willpower Test to determine how well the character retains the information. Memorizing long or drawn-out information may have a higher threshold. Each net hit from this test adds an extra die to any memory tests made to recall this information later on.
 A character who glitches on a memory test forgets some details or gets some parts of it wrong. A critical glitch means that the character has deluded himself into believing something entirely different.
 */
-func (c *char) GetMemory() int {
-	return (c.Logic + c.Willpower)
+func (c *Character) GetMemory() int {
+	return (c.Attributes.Logic.Value + c.Attributes.Willpower.Value)
 }
 
 /*
@@ -502,145 +210,34 @@ A character can lift off the ground 15 kilograms per point Strength without maki
 A character can lift 5 kilograms per point Strength over her head without making a test. If the character wishes to lift more than that over her head, she may make a Strength + Body Test. Each net hit increases the weight she can lift by 5 kilograms more.
 Characters can lift and carry their Strength x 10 kilograms in weight without any sort of test. Lifting and carrying more than that calls for a Strength + Body Test. Each hit increases the weight she can lift by 10 kilograms more.
 */
-func (c *char) GetLiftCarry() int {
-	return (c.Strength + c.Body)
+func (c *Character) GetLiftCarry() int {
+	return (c.Attributes.Strength.Value + c.Attributes.Body.Value)
 }
 
 // TODO: Make movement work
-func (c *char) GetMovement() int {
+func (c *Character) GetMovement() int {
 	return 0
 }
 
-// Skills
-func (c *char) GetActiveSkills() map[string]skill.ActiveSkill {
-	return c.ActiveSkills
+func (c *Character) Validate() error {
+	c.RecalculateStats()
+
+	return nil
 }
 
-func (c *char) SetActiveSkills(skills map[string]skill.ActiveSkill) {
-	c.ActiveSkills = skills
+func (c *Character) RecalculateStats() {
+	c.Attributes.Body.Recalculate()
+	c.Attributes.Agility.Recalculate()
+	c.Attributes.Reaction.Recalculate()
+	c.Attributes.Strength.Recalculate()
+	c.Attributes.Willpower.Recalculate()
+	c.Attributes.Logic.Recalculate()
+	c.Attributes.Intuition.Recalculate()
+	c.Attributes.Charisma.Recalculate()
+
 }
 
-func (c *char) GetLanguageSkills() map[string]skill.LanguageSkill {
-	return c.LanguageSkills
-}
-
-func (c *char) SetLanguageSkills(skills map[string]skill.LanguageSkill) {
-	c.LanguageSkills = skills
-}
-
-func (c *char) GetKnowledgeSkills() map[string]skill.KnowledgeSkill {
-	return c.KnowledgeSkills
-}
-
-func (c *char) SetKnowledgeSkills(skills map[string]skill.KnowledgeSkill) {
-	c.KnowledgeSkills = skills
-}
-
-func (c *char) GetQualities() map[string]string {
-	return c.Qualities
-}
-
-func (c *char) SetQualities(qualities map[string]string) {
-	c.Qualities = qualities
-}
-
-func (c *char) GetContacts() map[string]string {
-	return c.Contacts
-}
-
-func (c *char) SetContacts(contacts map[string]string) {
-	c.Contacts = contacts
-}
-
-func (c *char) GetIdentities() map[string]string {
-	return c.Identities
-}
-
-func (c *char) SetIdentities(identities map[string]string) {
-	c.Identities = identities
-}
-
-func (c *char) GetLifestyles() map[string]string {
-	return c.Lifestyles
-}
-
-func (c *char) SetLifestyles(lifestyles map[string]string) {
-	c.Lifestyles = lifestyles
-}
-
-func (c *char) GetCurrancy() map[string]int {
-	return c.Currancy
-}
-
-func (c *char) SetCurrancy(currancy map[string]int) {
-	c.Currancy = currancy
-}
-
-func (c *char) GetRangeWeapons() map[string]item.WeaponRanged {
-	return c.RangedWeapons
-}
-
-func (c *char) SetRangeWeapons(weapons map[string]item.WeaponRanged) {
-	c.RangedWeapons = weapons
-}
-
-func (c *char) GetMeleeWeapons() map[string]item.WeaponMelee {
-	return c.MeleeWeapons
-}
-
-func (c *char) SetMeleeWeapons(weapons map[string]item.WeaponMelee) {
-	c.MeleeWeapons = weapons
-}
-
-func (c *char) GetArmor() map[string]string {
-	return c.Armor
-}
-
-func (c *char) SetArmor(armor map[string]string) {
-	c.Armor = armor
-}
-
-func (c *char) GetCyberdecks() map[string]string {
-	return c.Cyberdecks
-}
-
-func (c *char) SetCyberdecks(cyberdecks map[string]string) {
-	c.Cyberdecks = cyberdecks
-}
-
-func (c *char) GetAugmentations() map[string]string {
-	return c.Augmentations
-}
-
-func (c *char) SetAugmentations(augmentations map[string]string) {
-	c.Augmentations = augmentations
-}
-
-func (c *char) GetVehicals() map[string]string {
-	return c.Vehicals
-}
-
-func (c *char) SetVehicals(vehicals map[string]string) {
-	c.Vehicals = vehicals
-}
-
-func (c *char) GetGear() map[string]string {
-	return c.Gear
-}
-
-func (c *char) SetGear(gear map[string]string) {
-	c.Gear = gear
-}
-
-func (c *char) GetAdeptPowers() map[string]string {
-	return c.AdeptPowers
-}
-
-func (c *char) SetAdeptPowers(adeptPowers map[string]string) {
-	c.AdeptPowers = adeptPowers
-}
-
-func (c *char) Save() error {
+func (c *Character) Save() error {
 	return util.SaveStructToYAML(fmt.Sprintf(CharacterFilename, c.ID), c)
 }
 

@@ -25,19 +25,7 @@ var (
 	KnowledgeSkills = map[string]KnowledgeSkill{}
 )
 
-type KnowledgeSkill interface {
-	GetID() string
-	SetID(string)
-	GetName() string
-	GetDescription() string
-	GetIsCommon() bool
-	GetRank() int
-	SetRank(int)
-	GetRuleSource() string
-	GetFileVersion() string
-}
-
-type knowledgeSkill struct {
+type KnowledgeSkill struct {
 	ID          string `yaml:"id,omitempty"`
 	Name        string `yaml:"name"`
 	Description string `yaml:"description"`
@@ -45,42 +33,6 @@ type knowledgeSkill struct {
 	Rank        int    `yaml:"rank,omitempty"`
 	RuleSource  string `yaml:"rule_source"`
 	FileVersion string `yaml:"file_version"`
-}
-
-func (s knowledgeSkill) GetID() string {
-	return s.ID
-}
-
-func (s *knowledgeSkill) SetID(id string) {
-	s.ID = id
-}
-
-func (s knowledgeSkill) GetName() string {
-	return s.Name
-}
-
-func (s knowledgeSkill) GetDescription() string {
-	return s.Description
-}
-
-func (s knowledgeSkill) GetIsCommon() bool {
-	return s.IsCommon
-}
-
-func (s knowledgeSkill) GetRank() int {
-	return s.Rank
-}
-
-func (s *knowledgeSkill) SetRank(rank int) {
-	s.Rank = rank
-}
-
-func (s knowledgeSkill) GetRuleSource() string {
-	return s.RuleSource
-}
-
-func (s knowledgeSkill) GetFileVersion() string {
-	return s.FileVersion
 }
 
 func LoadKnowledgeSkills(wg *sync.WaitGroup) {
@@ -105,7 +57,7 @@ func LoadKnowledgeSkills(wg *sync.WaitGroup) {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load knowledge skills")
 			}
 
-			knowledgeSkills[knowledgeSkill.GetName()] = knowledgeSkill
+			knowledgeSkills[knowledgeSkill.Name] = knowledgeSkill
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded knowledge skills file")
 	}
@@ -113,4 +65,13 @@ func LoadKnowledgeSkills(wg *sync.WaitGroup) {
 	logrus.WithFields(logrus.Fields{"count": len(knowledgeSkills)}).Info("Done loading knowledge skills")
 
 	KnowledgeSkills = knowledgeSkills
+}
+
+func LoadKnowledgeSkill(name string) (*KnowledgeSkill, error) {
+	var v KnowledgeSkill
+	if err := util.LoadStructFromYAML(fmt.Sprintf(KnowledgeSkillFilename, name), &v); err != nil {
+		return nil, err
+	}
+
+	return &v, nil
 }

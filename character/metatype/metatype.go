@@ -35,34 +35,15 @@ type MetatypeAttribute struct {
 	Max int
 }
 
-type Metatype interface {
-	GetID() string
-	SetID(string)
-	GetName() string
-	GetBody() MetatypeAttribute
-	GetAgility() MetatypeAttribute
-	GetReaction() MetatypeAttribute
-	GetStrength() MetatypeAttribute
-	GetWillpower() MetatypeAttribute
-	GetLogic() MetatypeAttribute
-	GetIntuition() MetatypeAttribute
-	GetCharisma() MetatypeAttribute
-	GetEdge() MetatypeAttribute
-	GetEssence() float64
-	GetRacialTraits() []string
-	GetRuleSource() string
-	GetFileVersion() string
-}
-
-func NewMetatype() Metatype {
+func NewMetatype() *Metatype {
 	uuid := uuid.New().String()
-	return &metatype{
+	return &Metatype{
 		ID: uuid,
 	}
 }
 
-type metatype struct {
-	ID           string            `yaml:"id,omitempty"`
+type Metatype struct {
+	ID           string            `yaml:"id"`
 	Name         string            `yaml:"name"`
 	Body         MetatypeAttribute `yaml:"body"`
 	Agility      MetatypeAttribute `yaml:"agility"`
@@ -77,70 +58,6 @@ type metatype struct {
 	RacialTraits []string          `yaml:"racial_traits"`
 	RuleSource   string            `yaml:"rule_source"`
 	FileVersion  string            `yaml:"file_version"`
-}
-
-func (m *metatype) GetID() string {
-	return m.ID
-}
-
-func (m *metatype) SetID(id string) {
-	m.ID = id
-}
-
-func (m *metatype) GetName() string {
-	return m.Name
-}
-
-func (m *metatype) GetBody() MetatypeAttribute {
-	return m.Body
-}
-
-func (m *metatype) GetAgility() MetatypeAttribute {
-	return m.Agility
-}
-
-func (m *metatype) GetReaction() MetatypeAttribute {
-	return m.Reaction
-}
-
-func (m *metatype) GetStrength() MetatypeAttribute {
-	return m.Strength
-}
-
-func (m *metatype) GetWillpower() MetatypeAttribute {
-	return m.Willpower
-}
-
-func (m *metatype) GetLogic() MetatypeAttribute {
-	return m.Logic
-}
-
-func (m *metatype) GetIntuition() MetatypeAttribute {
-	return m.Intuition
-}
-
-func (m *metatype) GetCharisma() MetatypeAttribute {
-	return m.Charisma
-}
-
-func (m *metatype) GetEdge() MetatypeAttribute {
-	return m.Edge
-}
-
-func (m *metatype) GetEssence() float64 {
-	return m.Essence
-}
-
-func (m *metatype) GetRacialTraits() []string {
-	return m.RacialTraits
-}
-
-func (m *metatype) GetRuleSource() string {
-	return m.RuleSource
-}
-
-func (m *metatype) GetFileVersion() string {
-	return m.FileVersion
 }
 
 // LoadMetatypes loads metatypes from YAML files in a specified directory.
@@ -169,7 +86,7 @@ func LoadMetatypes(wg *sync.WaitGroup) {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
 			}
 
-			metatypes[metatype.GetName()] = metatype
+			metatypes[metatype.Name] = metatype
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded metatype file")
 	}
@@ -179,11 +96,11 @@ func LoadMetatypes(wg *sync.WaitGroup) {
 	Metatypes = metatypes
 }
 
-func LoadMetatype(name string) (Metatype, error) {
-	var m Metatype
-	if err := util.LoadStructFromYAML(fmt.Sprintf(MetatypeFilename, name), &m); err != nil {
+func LoadMetatype(name string) (*Metatype, error) {
+	var v Metatype
+	if err := util.LoadStructFromYAML(fmt.Sprintf(MetatypeFilename, name), &v); err != nil {
 		return nil, err
 	}
 
-	return m, nil
+	return &v, nil
 }

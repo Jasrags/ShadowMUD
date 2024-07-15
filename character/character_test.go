@@ -4,25 +4,24 @@ import (
 	"testing"
 
 	"shadowrunmud/character"
-	"shadowrunmud/character/metatype"
 )
 
-func NewStreetSamurai() character.Character {
-	m, _ := metatype.LoadMetatype("ork")
+func NewStreetSamurai() *character.Character {
+	// m, _ := metatype.LoadMetatype("ork")
 
 	c := character.NewCharacter()
-	c.SetName("Street Samurai")
-	c.SetMetatype(m)
-	c.SetBody(7)
-	c.SetAgility(6)
-	c.SetReaction(5)
-	c.SetStrength(5)
-	c.SetWillpower(3)
-	c.SetLogic(2)
-	c.SetIntuition(3)
-	c.SetCharisma(2)
-	c.SetEssence(6)
-	c.SetEdge(1)
+	// c.SetName("Street Samurai")
+	// c.SetMetatype(m)
+	// c.SetBody(7)
+	// c.SetAgility(6)
+	// c.SetReaction(5)
+	// c.SetStrength(5)
+	// c.SetWillpower(3)
+	// c.SetLogic(2)
+	// c.SetIntuition(3)
+	// c.SetCharisma(2)
+	// c.SetEssence(6)
+	// c.SetEdge(1)
 
 	return c
 }
@@ -179,10 +178,16 @@ func TestGetPhysicalLimit(t *testing.T) {
 	}
 
 	for _, tt := range dt {
-		c := character.NewCharacter()
-		c.SetStrength(tt.Strength)
-		c.SetBody(tt.Body)
-		c.SetReaction(tt.Reaction)
+		c := character.Character{
+			Attributes: character.Attributes{
+				Strength: character.AttributesInfo{Base: tt.Strength},
+				Body:     character.AttributesInfo{Base: tt.Body},
+				Reaction: character.AttributesInfo{Base: tt.Reaction},
+			},
+			// Strength: tt.Strength,
+			// Body:     tt.Body,
+			// Reaction: tt.Reaction,
+		}
 
 		got := c.GetPhysicalLimit()
 
@@ -204,10 +209,16 @@ func TestGetMentalLimit(t *testing.T) {
 	}
 
 	for _, tt := range dt {
-		c := character.NewCharacter()
-		c.SetLogic(tt.Logic)
-		c.SetIntuition(tt.Intuition)
-		c.SetWillpower(tt.Willpower)
+		c := character.Character{
+			Attributes: character.Attributes{
+				Logic:     character.AttributesInfo{Base: tt.Logic},
+				Intuition: character.AttributesInfo{Base: tt.Intuition},
+				Willpower: character.AttributesInfo{Base: tt.Willpower},
+			},
+			// Logic:     tt.Logic,
+			// Intuition: tt.Intuition,
+			// Willpower: tt.Willpower,
+		}
 
 		got := c.GetMentalLimit()
 
@@ -229,10 +240,16 @@ func TestGetSocialLimit(t *testing.T) {
 	}
 
 	for _, tt := range dt {
-		c := character.NewCharacter()
-		c.SetCharisma(tt.Charisma)
-		c.SetWillpower(tt.Willpower)
-		c.SetEssence(tt.Essence)
+		c := character.Character{
+			Attributes: character.Attributes{
+				Charisma:  character.AttributesInfo{Base: tt.Charisma},
+				Willpower: character.AttributesInfo{Base: tt.Willpower},
+				Essence:   character.AttributesInfoF{Base: tt.Essence},
+			},
+			// Charisma:  tt.Charisma,
+			// Willpower: tt.Willpower,
+			// Essence: tt.Essence,
+		}
 
 		got := c.GetSocialLimit()
 

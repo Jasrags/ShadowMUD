@@ -20,24 +20,7 @@ var (
 	ActiveSkills = map[string]ActiveSkill{}
 )
 
-type ActiveSkill interface {
-	GetID() string
-	SetID(string)
-	GetName() string
-	GetIsDefaultable() bool
-	GetDescription() string
-	GetLinkedAttribute() AttributeIdx
-	GetSkillGroup() string
-	GetSpecializations() []string
-	GetSelectedSpecialization() string
-	SetSelectedSpecialization(string)
-	GetRank() int
-	SetRank(int)
-	GetRuleSource() string
-	GetFileVersion() string
-}
-
-type activeSkill struct {
+type ActiveSkill struct {
 	ID                     string       `yaml:"id,omitempty"`
 	Name                   string       `yaml:"name"`
 	IsDefaultable          bool         `yaml:"is_defaultable"`
@@ -51,64 +34,8 @@ type activeSkill struct {
 	FileVersion            string       `yaml:"file_version"`
 }
 
-func (s activeSkill) GetID() string {
-	return s.ID
-}
-
-func (s *activeSkill) SetID(id string) {
-	s.ID = id
-}
-
-func (s activeSkill) GetName() string {
-	return s.Name
-}
-
-func (s activeSkill) GetIsDefaultable() bool {
-	return s.IsDefaultable
-}
-
-func (s activeSkill) GetDescription() string {
-	return s.Description
-}
-
-func (s activeSkill) GetLinkedAttribute() AttributeIdx {
-	return s.LinkedAttribute
-}
-
-func (s activeSkill) GetSkillGroup() string {
-	return s.SkillGroup
-}
-
-func (s activeSkill) GetSpecializations() []string {
-	return s.Specializations
-}
-
-func (s activeSkill) GetSelectedSpecialization() string {
-	return s.SelectedSpecialization
-}
-
-func (s *activeSkill) SetSelectedSpecialization(spec string) {
-	s.SelectedSpecialization = spec
-}
-
-func (s activeSkill) GetRank() int {
-	return s.Rank
-}
-
-func (s *activeSkill) SetRank(rank int) {
-	s.Rank = rank
-}
-
-func (s activeSkill) GetRuleSource() string {
-	return s.RuleSource
-}
-
-func (s activeSkill) GetFileVersion() string {
-	return s.FileVersion
-}
-
 var (
-	DefaultActiveSkills = map[string]activeSkill{
+	DefaultActiveSkills = map[string]ActiveSkill{
 		"automatics": {
 			Name:            "Automatics",
 			IsDefaultable:   true,
@@ -253,7 +180,7 @@ func LoadActiveSkills(wg *sync.WaitGroup) {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load active skills")
 			}
 
-			activeSkills[activeSkill.GetName()] = activeSkill
+			activeSkills[activeSkill.Name] = activeSkill
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded active skills file")
 	}
@@ -261,4 +188,13 @@ func LoadActiveSkills(wg *sync.WaitGroup) {
 	logrus.WithFields(logrus.Fields{"count": len(activeSkills)}).Info("Done loading active skills")
 
 	ActiveSkills = activeSkills
+}
+
+func LoadActiveSkill(name string) (*ActiveSkill, error) {
+	var v ActiveSkill
+	if err := util.LoadStructFromYAML(fmt.Sprintf(ActiveSkillFilename, name), &v); err != nil {
+		return nil, err
+	}
+
+	return &v, nil
 }

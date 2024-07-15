@@ -17,11 +17,9 @@ const (
 	LanguageSkillFileMinVersion = "0.0.1"
 )
 
-type ()
-
 var (
 	LanguageSkills        = map[string]LanguageSkill{}
-	DefaultLanguageSkills = map[string]languageSkill{
+	DefaultLanguageSkills = map[string]LanguageSkill{
 		"English":    {Name: "English", IsCommon: true, RuleSource: "SR5:Core", FileVersion: "0.0.1"},
 		"Spanish":    {Name: "Spanish", IsCommon: true, RuleSource: "SR5:Core", FileVersion: "0.0.1"},
 		"Lakota":     {Name: "Lakota", IsCommon: true, RuleSource: "SR5:Core", FileVersion: "0.0.1"},
@@ -39,20 +37,7 @@ var (
 	}
 )
 
-type LanguageSkill interface {
-	GetID() string
-	SetID(string)
-	GetName() string
-	GetIsCommon() bool
-	GetIsNative() bool
-	SetIsNative(bool)
-	GetRank() int
-	SetRank(int)
-	GetRuleSource() string
-	GetFileVersion() string
-}
-
-type languageSkill struct {
+type LanguageSkill struct {
 	ID          string `yaml:"id,omitempty"`
 	Name        string `yaml:"name"`
 	IsCommon    bool   `yaml:"is_common"`
@@ -60,46 +45,6 @@ type languageSkill struct {
 	Rank        int    `yaml:"rank,omitempty"`
 	RuleSource  string `yaml:"rule_source"`
 	FileVersion string `yaml:"file_version"`
-}
-
-func (ls *languageSkill) GetID() string {
-	return ls.ID
-}
-
-func (ls *languageSkill) SetID(id string) {
-	ls.ID = id
-}
-
-func (ls *languageSkill) GetName() string {
-	return ls.Name
-}
-
-func (ls *languageSkill) GetIsCommon() bool {
-	return ls.IsCommon
-}
-
-func (ls *languageSkill) GetIsNative() bool {
-	return ls.IsNative
-}
-
-func (ls *languageSkill) SetIsNative(isNative bool) {
-	ls.IsNative = isNative
-}
-
-func (ls *languageSkill) GetRank() int {
-	return ls.Rank
-}
-
-func (ls *languageSkill) SetRank(rank int) {
-	ls.Rank = rank
-}
-
-func (ls *languageSkill) GetRuleSource() string {
-	return ls.RuleSource
-}
-
-func (ls *languageSkill) GetFileVersion() string {
-	return ls.FileVersion
 }
 
 func LoadLanguageSkills(wg *sync.WaitGroup) {
@@ -124,7 +69,7 @@ func LoadLanguageSkills(wg *sync.WaitGroup) {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load language skills")
 			}
 
-			languageSklls[languageSkll.GetName()] = languageSkll
+			languageSklls[languageSkll.Name] = languageSkll
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded language skills file")
 	}
@@ -132,4 +77,13 @@ func LoadLanguageSkills(wg *sync.WaitGroup) {
 	logrus.WithFields(logrus.Fields{"count": len(languageSklls)}).Info("Done loading language skills")
 
 	LanguageSkills = languageSklls
+}
+
+func LoadLanguageSkill(name string) (*LanguageSkill, error) {
+	var v LanguageSkill
+	if err := util.LoadStructFromYAML(fmt.Sprintf(LanguageSkillFilename, name), &v); err != nil {
+		return nil, err
+	}
+
+	return &v, nil
 }

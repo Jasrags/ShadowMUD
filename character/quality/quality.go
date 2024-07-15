@@ -26,22 +26,11 @@ var (
 	Qualities = map[string]Quality{}
 )
 
-type Quality interface {
-	GetID() string
-	SetID(string)
-	GetName() string
-	GetDescription() string
-	GetPrerequisites() string
-	GetCost() int
-	GetRating() int
-	GetRuleSource() string
+func NewQuality() *Quality {
+	return &Quality{}
 }
 
-func NewQuality() Quality {
-	return &qual{}
-}
-
-type qual struct {
+type Quality struct {
 	ID            string `yaml:"id,omitempty"`
 	Name          string `yaml:"name"`
 	Description   string `yaml:"description"`
@@ -50,38 +39,6 @@ type qual struct {
 	Rating        int    `yaml:"rating,omitempty"`
 	RuleSource    string `yaml:"rule_source"`
 	FileVersion   string `yaml:"file_version"`
-}
-
-func (q *qual) GetID() string {
-	return q.ID
-}
-
-func (q *qual) SetID(id string) {
-	q.ID = id
-}
-
-func (q *qual) GetName() string {
-	return q.Name
-}
-
-func (q *qual) GetDescription() string {
-	return q.Description
-}
-
-func (q *qual) GetPrerequisites() string {
-	return q.Prerequisites
-}
-
-func (q *qual) GetCost() int {
-	return q.Cost
-}
-
-func (q *qual) GetRating() int {
-	return q.Rating
-}
-
-func (q *qual) GetRuleSource() string {
-	return q.RuleSource
 }
 
 func LoadQualities(wg *sync.WaitGroup) {
@@ -95,7 +52,7 @@ func LoadQualities(wg *sync.WaitGroup) {
 	}
 
 	// Create a map to store the metatypes
-	qualities := make(map[string]qual, len(files))
+	qualities := make(map[string]Quality, len(files))
 
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".yaml") {
@@ -106,7 +63,7 @@ func LoadQualities(wg *sync.WaitGroup) {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
 			}
 
-			qualities[quality.GetName()] = quality
+			qualities[quality.Name] = quality
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded metatype file")
 	}
@@ -116,11 +73,11 @@ func LoadQualities(wg *sync.WaitGroup) {
 	Qualities = qualities
 }
 
-func LoadQuality(name string) (Quality, error) {
-	var m Quality
-	if err := util.LoadStructFromYAML(fmt.Sprintf(QualityFilename, name), &m); err != nil {
+func LoadQuality(name string) (*Quality, error) {
+	var v Quality
+	if err := util.LoadStructFromYAML(fmt.Sprintf(QualityFilename, name), &v); err != nil {
 		return nil, err
 	}
 
-	return m, nil
+	return &v, nil
 }
