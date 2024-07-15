@@ -6,13 +6,15 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"shadowrunmud/character/item"
-	"shadowrunmud/character/metatype"
-	"shadowrunmud/util"
 	"strings"
 	"sync"
 	"syscall"
 	"time"
+
+	"shadowrunmud/character/metatype"
+	"shadowrunmud/character/quality"
+	"shadowrunmud/character/skill"
+	"shadowrunmud/util"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/log"
@@ -39,16 +41,21 @@ func main() {
 	wg.Add(1)
 	go metatype.LoadMetatypes(&wg)
 	wg.Add(1)
-	go item.LoadMeleeWeapons(&wg)
-
+	go skill.LoadLanguageSkills(&wg)
+	wg.Add(1)
+	go skill.LoadActiveSkills(&wg)
+	wg.Add(1)
+	go skill.LoadKnowledgeSkills(&wg)
+	wg.Add(1)
+	go quality.LoadQualities(&wg)
 	wg.Wait()
 
-	for k, m := range metatype.Metatypes {
-		fmt.Println(k, m)
-	}
-	for k, m := range item.WeaponsMelee {
-		fmt.Println(k, m)
-	}
+	// for k, m := range metatype.Metatypes {
+	// 	fmt.Println(k, m)
+	// }
+	// for k, m := range item.WeaponsMelee {
+	// 	fmt.Println(k, m)
+	// }
 
 	// app := newApp()
 	// app.Start()
@@ -115,16 +122,13 @@ func main() {
 
 }
 
-func reloadWeapons() {
-	i := 1
-	for k, m := range item.WeaponsMelee {
-		m.ID = i
+func reloadData() {
+	for k, m := range skill.LanguageSkills {
 		r := strings.NewReplacer(" ", "_", "-", "_")
 		id := r.Replace((strings.ToLower(k)))
-		if err := util.SaveStructToYAML(fmt.Sprintf("data/items/weapons/melee/%d-%s.yaml", i, id), &m); err != nil {
+		if err := util.SaveStructToYAML(fmt.Sprintf("data/skills/languages/%v.yaml", id), &m); err != nil {
 			logrus.WithError(err).Fatal("Could not save file")
 		}
-		i++
 	}
 }
 

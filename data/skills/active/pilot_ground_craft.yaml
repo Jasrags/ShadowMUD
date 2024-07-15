@@ -1,0 +1,7 @@
+name: Pilot (Ground Craft)
+description: Need to get where you’re not supposed to be? This skill allows you to remain inconspicuous in various situations. 
+linked_attribute: Reaction
+is_defaultable: true
+specializations: [Bike, Hovercraft, Remote Operation, Tracked, Wheeled]
+rule_source: SR5:Core
+file_version: 0.0.1

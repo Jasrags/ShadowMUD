@@ -1,0 +1,8 @@
+name: Pistols
+description: This skill category includes all types of handheld pistols, including tasers, single-shots, semi-automatics, and revolvers.
+linked_attribute: Agility
+is_defaultable: true
+skill_group: Firearms
+specializations: [Holdouts, Revolvers, Semi-Automatics, Tasers]
+rule_source: SR5:Core
+file_version: 0.0.1

@@ -1,0 +1,8 @@
+name: Unarmed Combat
+description: Unarmed Combat covers the various self-defense and attack moves that employ the body as a primary weapon. This includes a wide array of martial arts along with the use of cybernetic implant weaponry and the fighting styles that sprung up around those implants. 
+linked_attribute: Agility
+is_defaultable: true
+skill_group: Close Combat
+specializations: [Blocking, Cyber Implants, Subduing Combat, or by specific Martial Art]
+rule_source: SR5:Core
+file_version: 0.0.1

@@ -17,14 +17,14 @@ DEFAULT 	NAME 	CORE    SPECIALIZATIONS
 * 	Longarms 	Core    Extended-Range Shots, Long-Range Shots, Shotguns, Sniper Rifles 
 * 	Pistols 	Core    
 * 	Palming 	Core    Legerdemain, Pickpocket, Pilfering 
-* 	Sneaking 	Core    Location type (Jungle, Urban, Desert, etc.) 
+* 	Sneaking Core  Location type (Jungle, Urban, Desert, etc.) 
 * 	Throwing Weapon 	Core    Aerodynamic, Blades, NonAerodynamic 
 * 	Unarmed Combat 	Core    Blocking, Cyber Implants, Subduing Combat, or by specific Martial Art 
 * 	Exotic Melee Weapon (Specific) 	Core
 * 	Exotic Ranged Weapon (Specific) 	Core 
 
 REACTION 
-DEFAULT 	NAME 	CORE    SPECIALIZATIONS
+DEFAULT 	NAME 	CORE    SPECIA  IZATIONS
 * 	Pilot Aerospace 	Core    Deep Space, Launch Craft, Remote Operation, Semiballistic, Suborbital 
 * 	Pilot Walker 	Core    Biped, Multiped, Quadruped, Remote 
 * 	Pilot Aircraft 	Core    Fixed-Wing, Lighter-Than-Air, Remote Operation, Rotary Wing, Tilt Wing, Vectored Thrust 

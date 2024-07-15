@@ -1,0 +1,8 @@
+name: Sneaking
+description: Need to get where you’re not supposed to be? This skill allows you to remain inconspicuous in various situations. 
+linked_attribute: Agility
+is_defaultable: true
+skill_group: Stealth
+specializations: [Jungle, Urban, Desert]
+rule_source: SR5:Core
+file_version: 0.0.1
