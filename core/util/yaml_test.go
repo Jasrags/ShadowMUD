@@ -3,7 +3,7 @@ package util_test
 import (
 	"testing"
 
-	"shadowrunmud/core/util"
+	"github.com/Jasrags/ShadowMUD/core/util"
 
 	"github.com/stretchr/testify/assert"
 )

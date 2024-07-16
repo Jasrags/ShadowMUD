@@ -1,7 +1,7 @@
 package core_test
 
 import (
-	"shadowrunmud/core"
+	"github.com/Jasrags/ShadowMUD/core"
 
 	"testing"
 )

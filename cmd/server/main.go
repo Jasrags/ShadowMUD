@@ -8,10 +8,10 @@ import (
 	"syscall"
 	"time"
 
-	"shadowrunmud/config"
-	"shadowrunmud/core"
-	"shadowrunmud/core/util"
-	"shadowrunmud/model"
+	"github.com/Jasrags/ShadowMUD/config"
+	"github.com/Jasrags/ShadowMUD/core"
+	"github.com/Jasrags/ShadowMUD/core/util"
+	"github.com/Jasrags/ShadowMUD/model"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/ssh"

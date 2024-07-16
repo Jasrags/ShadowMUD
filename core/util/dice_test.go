@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"shadowrunmud/core/util"
+	"github.com/Jasrags/ShadowMUD/core/util"
 )
 
 func TestRollDice(t *testing.T) {

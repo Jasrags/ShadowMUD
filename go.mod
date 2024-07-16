@@ -1,4 +1,4 @@
-module shadowrunmud
+module github.com/Jasrags/ShadowMUD
 
 go 1.22.3
 

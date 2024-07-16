@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"shadowrunmud/core"
-	"shadowrunmud/core/util"
+
+	"github.com/Jasrags/ShadowMUD/core"
+	"github.com/Jasrags/ShadowMUD/core/util"
 
 	"github.com/sirupsen/logrus"
 )

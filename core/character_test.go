@@ -3,7 +3,7 @@ package core_test
 import (
 	"testing"
 
-	"shadowrunmud/core"
+	"github.com/Jasrags/ShadowMUD/core"
 )
 
 func NewStreetSamurai() *core.Character {

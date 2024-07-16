@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"shadowrunmud/core/util"
+	"github.com/Jasrags/ShadowMUD/core/util"
 
 	"github.com/sirupsen/logrus"
 )
