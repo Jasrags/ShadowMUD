@@ -1,11 +1,11 @@
 package character
 
 type (
-	ActionIdx string
+	ActionType string
 )
 
 const (
-	ActionFree    ActionIdx = "Free"
-	ActionSimple  ActionIdx = "Simple"
-	ActionComplex ActionIdx = "Complex"
+	ActionFree    ActionType = "Free"
+	ActionSimple  ActionType = "Simple"
+	ActionComplex ActionType = "Complex"
 )

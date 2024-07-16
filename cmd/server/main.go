@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"shadowrunmud/character/item"
 	"shadowrunmud/character/metatype"
 	"shadowrunmud/character/quality"
 	"shadowrunmud/character/skill"
@@ -44,6 +45,7 @@ func main() {
 	skill.LoadActiveSkills()
 	skill.LoadKnowledgeSkills()
 	quality.LoadQualities()
+	item.LoadCyberware()
 	logrus.Info("Data files loaded")
 
 	done := make(chan os.Signal, 1)
@@ -53,6 +55,7 @@ func main() {
 		wish.WithAddress(net.JoinHostPort(serverConfig.Host, serverConfig.Port)),
 		wish.WithHostKeyPath(".ssh/id_ed25519"),
 		wish.WithMiddleware(
+			// bubbletea.MiddlewareWithProgramHandler(a.ProgramHandler, termenv.ANSI256),
 			bubbletea.Middleware(func(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 				return model.NewInitialModel(s), []tea.ProgramOption{tea.WithAltScreen()}
 			}),

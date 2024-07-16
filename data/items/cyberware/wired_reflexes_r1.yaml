@@ -1,0 +1,16 @@
+name: Wired Reflexes R1
+description: This highly invasive, painful, life-changing operation adds a multitude of neural boosters and adrenaline stimulators in strategic locations throughout your body work to catapult you into a whole new world where everything around you seems to move in slow motion. The system includes both manual and wireless triggers to turn the wired reflexes on and off; activating or deactivating the trigger manually requires a Complex Action, doing so wirelessly is a Simple Action. When activated, each rating point of wired reflexes gives you +1 Reaction (and accompanying bonus to Initiative) and +1D6 Initiative Die. Wired reflexes are incompatible with augmentations that affect Reaction or Initiative. 
+essence_cost: 2
+rating: 1
+toggle_action: Complex
+cost: 3900
+availability: 8
+modifiers:
+  - type: Attribute
+    effect: Reaction
+    value: 1
+  - type: Attribute
+    effect: InitiativeDice
+    value: 1
+legality: Restricted
+rule_source: SR5:Core

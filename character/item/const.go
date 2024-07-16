@@ -3,6 +3,7 @@ package item
 type LegalityType string
 
 const (
+	LegalityTypeLegal      LegalityType = "Legal"
 	LegalityTypeRestricted LegalityType = "Restricted"
 	LegalityTypeForbidden  LegalityType = "Forbidden"
 )
