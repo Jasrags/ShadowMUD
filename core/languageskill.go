@@ -60,12 +60,12 @@ func LoadLanguageSkills() map[string]LanguageSkill {
 		if strings.HasSuffix(file.Name(), ".yaml") {
 			filepath := fmt.Sprintf("%s/%s", LanguageSkillDataPath, file.Name())
 
-			var languageSkill LanguageSkill
-			if err := util.LoadStructFromYAML(filepath, &languageSkill); err != nil {
+			var v LanguageSkill
+			if err := util.LoadStructFromYAML(filepath, &v); err != nil {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load language skills")
 			}
 
-			languageSklls[languageSkill.ID] = languageSkill
+			languageSklls[v.ID] = v
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded language skills file")
 	}

@@ -58,7 +58,7 @@ type Metatype struct {
 	FileVersion  string            `yaml:"file_version"`
 }
 
-func LoadMetatypes() {
+func LoadMetatypes() map[string]Metatype {
 	logrus.Info("Started loading metatypes")
 
 	files, errReadDir := os.ReadDir(MetatypeDataPath)
@@ -73,19 +73,19 @@ func LoadMetatypes() {
 		if strings.HasSuffix(file.Name(), ".yaml") {
 			filepath := fmt.Sprintf("%s/%s", MetatypeDataPath, file.Name())
 
-			var metatype Metatype
-			if err := util.LoadStructFromYAML(filepath, &metatype); err != nil {
+			var v Metatype
+			if err := util.LoadStructFromYAML(filepath, &v); err != nil {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
 			}
 
-			metatypes[metatype.Name] = metatype
+			metatypes[v.ID] = v
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded metatype file")
 	}
 
 	logrus.WithFields(logrus.Fields{"count": len(metatypes)}).Info("Done loading metatypes")
 
-	Metatypes = metatypes
+	return metatypes
 }
 
 func LoadMetatype(name string) (*Metatype, error) {

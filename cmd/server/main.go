@@ -38,7 +38,7 @@ func main() {
 
 	// Load all the data
 	logrus.Info("Loading data files")
-	core.LoadMetatypes()
+	core.Metatypes = core.LoadMetatypes()
 	core.LanguageSkills = core.LoadLanguageSkills()
 	core.LoadActiveSkills()
 	core.LoadKnowledgeSkills()
