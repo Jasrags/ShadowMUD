@@ -11,14 +11,9 @@ import (
 )
 
 const (
-	KnowledgeSkillDataPath                             = "data/skills/knowledge"
-	KnowledgeSkillFilename                             = KnowledgeSkillDataPath + "/%s.yaml"
-	KnowledgeSkillFileMinVersion                       = "0.0.1"
-	KnowledgeSkillSeattleStreetGangs KnowledgeSkillIdx = iota
-)
-
-type (
-	KnowledgeSkillIdx int
+	KnowledgeSkillDataPath       = "data/skills/knowledge"
+	KnowledgeSkillFilename       = KnowledgeSkillDataPath + "/%s.yaml"
+	KnowledgeSkillFileMinVersion = "0.0.1"
 )
 
 var (

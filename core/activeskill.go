@@ -21,17 +21,17 @@ var (
 )
 
 type ActiveSkill struct {
-	ID                     string       `yaml:"id,omitempty"`
-	Name                   string       `yaml:"name"`
-	IsDefaultable          bool         `yaml:"is_defaultable"`
-	Description            string       `yaml:"description"`
-	LinkedAttribute        AttributeIdx `yaml:"linked_attribute"`
-	SkillGroup             string       `yaml:"skill_group,omitempty"`
-	Specializations        []string     `yaml:"specializations"`
-	SelectedSpecialization string       `yaml:"selected_specialization,omitempty"`
-	Rank                   int          `yaml:"rank,omitempty"`
-	RuleSource             string       `yaml:"rule_source"`
-	FileVersion            string       `yaml:"file_version"`
+	ID                     string    `yaml:"id,omitempty"`
+	Name                   string    `yaml:"name"`
+	IsDefaultable          bool      `yaml:"is_defaultable"`
+	Description            string    `yaml:"description"`
+	LinkedAttribute        Attribute `yaml:"linked_attribute"`
+	SkillGroup             string    `yaml:"skill_group,omitempty"`
+	Specializations        []string  `yaml:"specializations"`
+	SelectedSpecialization string    `yaml:"selected_specialization,omitempty"`
+	Rank                   int       `yaml:"rank,omitempty"`
+	RuleSource             string    `yaml:"rule_source"`
+	FileVersion            string    `yaml:"file_version"`
 }
 
 var (
@@ -55,108 +55,92 @@ var (
 	}
 )
 
-type (
-	AttributeIdx   string
-	ActiveSkillIdx int
-	RuleSourceIdx  int
-)
+// type (
+// 	ActiveSkillIdx int
+// )
 
-const (
-	AttributeBody      AttributeIdx = "Body"
-	AttributeAgility   AttributeIdx = "Agility"
-	AttributeReaction  AttributeIdx = "Reaction"
-	AttributeStrength  AttributeIdx = "Strength"
-	AttributeWillpower AttributeIdx = "Willpower"
-	AttributeCharisma  AttributeIdx = "Charisma"
-	AttributeLogic     AttributeIdx = "Logic"
-	AttributeIntuition AttributeIdx = "Intuition"
-	AttributeMagic     AttributeIdx = "Magic"
-	AttributeResonance AttributeIdx = "Resonance"
-	AttributeEssence   AttributeIdx = "Essence"
-)
-
-const (
-	ActiveSkillDriving ActiveSkillIdx = iota
-	ActiveSkillFreeFall
-	ActiveSkillArchery
-	ActiveSkillAutomatics
-	ActiveSkillBlades
-	ActiveSkillClubs
-	ActiveSkillEscapeArtist
-	ActiveSkillGunnery
-	ActiveSkillHeavyWeapons
-	ActiveSkillGymnastics
-	ActiveSkillLocksmith
-	ActiveSkillLongarms
-	ActiveSkillPistols
-	ActiveSkillPalming
-	ActiveSkillSneaking
-	ActiveSkillThrowingWeapon
-	ActiveSkillUnarmedCombat
-	ActiveSkillExoticMeleeWeapon
-	ActiveSkillExoticRangedWeapon
-	ActiveSkillPilotAerospace
-	ActiveSkillPilotWalker
-	ActiveSkillPilotAircraft
-	ActiveSkillPilotExoticVehicle
-	ActiveSkillPilotGroundCraft
-	ActiveSkillPilotWatercraft
-	ActiveSkillRunning
-	ActiveSkillSwimming
-	ActiveSkillAstralCombat
-	ActiveSkillSurvival
-	ActiveSkillCon
-	ActiveSkillInstruction
-	ActiveSkillLeadership
-	ActiveSkillPerformance
-	ActiveSkillAnimalHandling
-	ActiveSkillEtiquette
-	ActiveSkillIntimidation
-	ActiveSkillNegotiation
-	ActiveSkillImpersonation
-	ActiveSkillAcademicKnowledge
-	ActiveSkillArcana
-	ActiveSkillAutomotiveMechanic
-	ActiveSkillChemistry
-	ActiveSkillCybertechnology
-	ActiveSkillDemolitions
-	ActiveSkillFirstAid
-	ActiveSkillHacking
-	ActiveSkillMedicine
-	ActiveSkillProfessionalKnowledge
-	ActiveSkillForgery
-	ActiveSkillAeronauticsMechanics
-	ActiveSkillArmorer
-	ActiveSkillBiotechnology
-	ActiveSkillComputer
-	ActiveSkillCybercombat
-	ActiveSkillElectronicWarfare
-	ActiveSkillIndustrialMechanics
-	ActiveSkillHardware
-	ActiveSkillNauticalMechanics
-	ActiveSkillSoftware
-	ActiveSkillArtisan
-	ActiveSkillDisguise
-	ActiveSkillLanguage
-	ActiveSkillPerception
-	ActiveSkillTracking
-	ActiveSkillAssensing
-	ActiveSkillNavigation
-	ActiveSkillInterestsKnowledge
-	ActiveSkillStreetKnowledge
-	ActiveSkillAlchemy
-	ActiveSkillBinding
-	ActiveSkillRitualSpellcasting
-	ActiveSkillSummoning
-	ActiveSkillDisenchanting
-	ActiveSkillBanishing
-	ActiveSkillCounterspelling
-	ActiveSkillSpellcasting
-	ActiveSkillEnchanting
-	ActiveSkillCompiling
-	ActiveSkillRegistering
-	ActiveSkillDecompiling
-)
+// const (
+// 	ActiveSkillDriving ActiveSkillIdx = iota
+// 	ActiveSkillFreeFall
+// 	ActiveSkillArchery
+// 	ActiveSkillAutomatics
+// 	ActiveSkillBlades
+// 	ActiveSkillClubs
+// 	ActiveSkillEscapeArtist
+// 	ActiveSkillGunnery
+// 	ActiveSkillHeavyWeapons
+// 	ActiveSkillGymnastics
+// 	ActiveSkillLocksmith
+// 	ActiveSkillLongarms
+// 	ActiveSkillPistols
+// 	ActiveSkillPalming
+// 	ActiveSkillSneaking
+// 	ActiveSkillThrowingWeapon
+// 	ActiveSkillUnarmedCombat
+// 	ActiveSkillExoticMeleeWeapon
+// 	ActiveSkillExoticRangedWeapon
+// 	ActiveSkillPilotAerospace
+// 	ActiveSkillPilotWalker
+// 	ActiveSkillPilotAircraft
+// 	ActiveSkillPilotExoticVehicle
+// 	ActiveSkillPilotGroundCraft
+// 	ActiveSkillPilotWatercraft
+// 	ActiveSkillRunning
+// 	ActiveSkillSwimming
+// 	ActiveSkillAstralCombat
+// 	ActiveSkillSurvival
+// 	ActiveSkillCon
+// 	ActiveSkillInstruction
+// 	ActiveSkillLeadership
+// 	ActiveSkillPerformance
+// 	ActiveSkillAnimalHandling
+// 	ActiveSkillEtiquette
+// 	ActiveSkillIntimidation
+// 	ActiveSkillNegotiation
+// 	ActiveSkillImpersonation
+// 	ActiveSkillAcademicKnowledge
+// 	ActiveSkillArcana
+// 	ActiveSkillAutomotiveMechanic
+// 	ActiveSkillChemistry
+// 	ActiveSkillCybertechnology
+// 	ActiveSkillDemolitions
+// 	ActiveSkillFirstAid
+// 	ActiveSkillHacking
+// 	ActiveSkillMedicine
+// 	ActiveSkillProfessionalKnowledge
+// 	ActiveSkillForgery
+// 	ActiveSkillAeronauticsMechanics
+// 	ActiveSkillArmorer
+// 	ActiveSkillBiotechnology
+// 	ActiveSkillComputer
+// 	ActiveSkillCybercombat
+// 	ActiveSkillElectronicWarfare
+// 	ActiveSkillIndustrialMechanics
+// 	ActiveSkillHardware
+// 	ActiveSkillNauticalMechanics
+// 	ActiveSkillSoftware
+// 	ActiveSkillArtisan
+// 	ActiveSkillDisguise
+// 	ActiveSkillLanguage
+// 	ActiveSkillPerception
+// 	ActiveSkillTracking
+// 	ActiveSkillAssensing
+// 	ActiveSkillNavigation
+// 	ActiveSkillInterestsKnowledge
+// 	ActiveSkillStreetKnowledge
+// 	ActiveSkillAlchemy
+// 	ActiveSkillBinding
+// 	ActiveSkillRitualSpellcasting
+// 	ActiveSkillSummoning
+// 	ActiveSkillDisenchanting
+// 	ActiveSkillBanishing
+// 	ActiveSkillCounterspelling
+// 	ActiveSkillSpellcasting
+// 	ActiveSkillEnchanting
+// 	ActiveSkillCompiling
+// 	ActiveSkillRegistering
+// 	ActiveSkillDecompiling
+// )
 
 func LoadActiveSkills() {
 	logrus.Info("Started loading active skills")

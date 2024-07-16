@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"sync"
 
 	"shadowrunmud/core/util"
 
@@ -41,13 +40,12 @@ type LanguageSkill struct {
 	ID          string `yaml:"id,omitempty"`
 	Name        string `yaml:"name"`
 	IsCommon    bool   `yaml:"is_common"`
-	IsNative    bool   `yaml:"is_native,omitempty"`
 	Rank        int    `yaml:"rank,omitempty"`
 	RuleSource  string `yaml:"rule_source"`
 	FileVersion string `yaml:"file_version"`
 }
 
-func LoadLanguageSkills() {
+func LoadLanguageSkills() map[string]LanguageSkill {
 	logrus.Info("Started loading language skills")
 
 	files, errReadDir := os.ReadDir(LanguageSkillDataPath)
@@ -62,52 +60,19 @@ func LoadLanguageSkills() {
 		if strings.HasSuffix(file.Name(), ".yaml") {
 			filepath := fmt.Sprintf("%s/%s", LanguageSkillDataPath, file.Name())
 
-			var languageSkll LanguageSkill
-			if err := util.LoadStructFromYAML(filepath, &languageSkll); err != nil {
+			var languageSkill LanguageSkill
+			if err := util.LoadStructFromYAML(filepath, &languageSkill); err != nil {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load language skills")
 			}
 
-			languageSklls[languageSkll.Name] = languageSkll
+			languageSklls[languageSkill.ID] = languageSkill
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded language skills file")
 	}
 
 	logrus.WithFields(logrus.Fields{"count": len(languageSklls)}).Info("Done loading language skills")
 
-	LanguageSkills = languageSklls
-}
-
-func LoadStructsFromYAMLDirectory(directory string, wg *sync.WaitGroup, result interface{}) {
-	defer wg.Done()
-
-	logrus.Debugf("Started loading structs from YAML files in directory: %s", directory)
-
-	files, err := os.ReadDir(directory)
-	if err != nil {
-		logrus.WithError(err).Fatalf("Could not read directory: %s", directory)
-	}
-
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), ".yaml") {
-			filepath := fmt.Sprintf("%s/%s", directory, file.Name())
-
-			var v interface{}
-			if err := util.LoadStructFromYAML(filepath, &v); err != nil {
-				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatalf("Could not load struct from YAML file: %s", filepath)
-			}
-
-			resultSlice, ok := result.(*[]interface{})
-			if !ok {
-				logrus.Fatalf("Invalid result type. Expected a slice of interfaces.")
-			}
-
-			*resultSlice = append(*resultSlice, v)
-
-			logrus.WithFields(logrus.Fields{"filename": file.Name()}).Infof("Loaded struct from YAML file: %s", filepath)
-		}
-	}
-
-	logrus.WithFields(logrus.Fields{"count": len(*result.(*[]interface{}))}).Infof("Done loading structs from YAML files in directory: %s", directory)
+	return languageSklls
 }
 
 func LoadLanguageSkill(name string) (*LanguageSkill, error) {

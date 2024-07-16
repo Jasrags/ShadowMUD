@@ -17,7 +17,8 @@ const (
 )
 
 var (
-	CyberwareList = map[string]Cyberware{}
+	CyberwareList            = map[string]Cyberware{}
+	ErrUnknownCyberwareGrade = fmt.Errorf("unknown cyberware grade")
 )
 
 type CyberwareGrade string
@@ -29,8 +30,6 @@ const (
 	CyberwareGradeDeltaware CyberwareGrade = "Deltaware"
 	CyberwareGradeUsed      CyberwareGrade = "Used"
 )
-
-var ErrUnknownCyberwareGrade = fmt.Errorf("unknown cyberware grade")
 
 func GetCyberwareGradeModifiers(grade CyberwareGrade) (float64, int, float64, error) {
 	var essenceCostMultiplier float64

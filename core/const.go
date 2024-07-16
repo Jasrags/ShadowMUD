@@ -1,11 +1,43 @@
 package core
 
+type RuleSource string
+
+const (
+	RuleSourceSR5Core RuleSource = "SR5:Core"
+	RuleSourceSR5CF   RuleSource = "SR5:ChromeFlesh"
+	RuleSourceSR5RG   RuleSource = "SR5:RunAndGun"
+	RuleSourceSR5SG   RuleSource = "SR5:StreetGrimoire"
+	RuleSourceSR5HT   RuleSource = "SR5:HardTargets"
+	RuleSourceSR5R5   RuleSource = "SR5:Rigger5"
+	RuleSourceSR5DT   RuleSource = "SR5:DataTrails"
+	RuleSourceSR5CA   RuleSource = "SR5:CuttingAces"
+	RuleSourceSR5SASS RuleSource = "SR5:SailAwaySweetSister"
+	RuleSourceSR5GH3  RuleSource = "SR5:GunH(e)aven3"
+	RuleSourceSR5BB   RuleSource = "SR5:BulletsAndBandages"
+)
+
 type ActionType string
 
 const (
 	ActionFree    ActionType = "Free"
 	ActionSimple  ActionType = "Simple"
 	ActionComplex ActionType = "Complex"
+)
+
+type Attribute string
+
+const (
+	AttributeBody      Attribute = "Body"
+	AttributeAgility   Attribute = "Agility"
+	AttributeReaction  Attribute = "Reaction"
+	AttributeStrength  Attribute = "Strength"
+	AttributeWillpower Attribute = "Willpower"
+	AttributeCharisma  Attribute = "Charisma"
+	AttributeLogic     Attribute = "Logic"
+	AttributeIntuition Attribute = "Intuition"
+	AttributeMagic     Attribute = "Magic"
+	AttributeResonance Attribute = "Resonance"
+	AttributeEssence   Attribute = "Essence"
 )
 
 type LegalityType string
@@ -60,7 +92,7 @@ const (
 	EnvironmenModifierExtremeRange  EnvironmenModifier = "ExtremeRange"
 )
 
-func GetEnvironmenModifier(modifier EnvironmenModifier) int {
+func GetEnvironmenModifierValue(modifier EnvironmenModifier) int {
 	var modifierValue int
 
 	switch modifier {

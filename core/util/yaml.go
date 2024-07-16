@@ -2,9 +2,15 @@ package util
 
 import (
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
+
+func FormatFilename(filename string) string {
+	r := strings.NewReplacer(" ", "_", "/", "_", "\\", "_", ":", "_", "*", "_", "?", "_", "\"", "_", "<", "_", ">", "_", "|", "_")
+	return strings.ToLower(r.Replace(filename))
+}
 
 func SaveStructToYAML(filename string, data interface{}) error {
 	file, err := os.Create(filename)
