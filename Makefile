@@ -39,6 +39,11 @@ audit:
 	go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 	go test -race -buildvcs -vet=off ./...
 
+## run: run the  application
+.PHONY: validate
+validate:
+	go run cmd/validate/main.go
+
 # ==================================================================================== #
 # DEVELOPMENT
 # ==================================================================================== #

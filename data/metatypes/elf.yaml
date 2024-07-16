@@ -1,20 +1,20 @@
-id: 3
-name: Dwarf
+id: elf
+name: Elf
 body:
-    min: 3
-    max: 8
-agility:
     min: 1
     max: 6
-reaction:
-    min: 1
-    max: 5
-strength:
-    min: 3
-    max: 8
-willpower:
+agility:
     min: 2
     max: 7
+reaction:
+    min: 1
+    max: 6
+strength:
+    min: 1
+    max: 6
+willpower:
+    min: 1
+    max: 6
 logic:
     min: 1
     max: 6
@@ -22,12 +22,12 @@ intuition:
     min: 1
     max: 6
 charisma:
-    min: 1
-    max: 6
+    min: 3
+    max: 8
 edge:
     min: 1
     max: 6
 racial_traits:
-    - Thermographic Vision
+    - Low-Light Vision
 rule_source: SR5:Core
 file_version: 0.0.1

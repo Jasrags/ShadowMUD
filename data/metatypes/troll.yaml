@@ -1,17 +1,17 @@
-id: 4
-name: Ork
+id: troll
+name: Troll
 body:
-    min: 4
-    max: 9
+    min: 5
+    max: 10
 agility:
     min: 1
-    max: 6
+    max: 5
 reaction:
     min: 1
     max: 6
 strength:
-    min: 3
-    max: 8
+    min: 5
+    max: 10
 willpower:
     min: 1
     max: 6
@@ -20,15 +20,17 @@ logic:
     max: 5
 intuition:
     min: 1
-    max: 6
+    max: 5
 charisma:
     min: 1
-    max: 6
+    max: 4
 edge:
     min: 1
-    max: 5
+    max: 6
 racial_traits:
-    - +2 dice for pathogen and toxin resistance
-    - +20% increased Lifestyle cost
+    - Thermographic Vision
+    - +1 Reach
+    - +1 dermal armor
+    - Double Lifestyle costs
 rule_source: SR5:Core
 file_version: 0.0.1

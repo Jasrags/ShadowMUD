@@ -38,7 +38,7 @@ func NewMetatype() *Metatype {
 }
 
 type Metatype struct {
-	ID           string            `yaml:"id"`
+	ID           string            `yaml:"id,omitempty"`
 	Name         string            `yaml:"name"`
 	Body         MetatypeAttribute `yaml:"body"`
 	Agility      MetatypeAttribute `yaml:"agility"`
