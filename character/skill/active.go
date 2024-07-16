@@ -5,7 +5,6 @@ import (
 	"os"
 	"shadowrunmud/util"
 	"strings"
-	"sync"
 
 	"github.com/sirupsen/logrus"
 )
@@ -158,10 +157,8 @@ const (
 	ActiveSkillDecompiling
 )
 
-func LoadActiveSkills(wg *sync.WaitGroup) {
-	defer wg.Done()
-
-	logrus.Debug("Started loading active skills")
+func LoadActiveSkills() {
+	logrus.Info("Started loading active skills")
 
 	files, errReadDir := os.ReadDir(ActiveSkillDataPath)
 	if errReadDir != nil {
@@ -182,7 +179,7 @@ func LoadActiveSkills(wg *sync.WaitGroup) {
 
 			activeSkills[activeSkill.Name] = activeSkill
 		}
-		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded active skills file")
+		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded active skills file")
 	}
 
 	logrus.WithFields(logrus.Fields{"count": len(activeSkills)}).Info("Done loading active skills")

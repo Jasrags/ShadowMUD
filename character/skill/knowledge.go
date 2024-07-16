@@ -5,7 +5,6 @@ import (
 	"os"
 	"shadowrunmud/util"
 	"strings"
-	"sync"
 
 	"github.com/sirupsen/logrus"
 )
@@ -35,10 +34,8 @@ type KnowledgeSkill struct {
 	FileVersion string `yaml:"file_version"`
 }
 
-func LoadKnowledgeSkills(wg *sync.WaitGroup) {
-	defer wg.Done()
-
-	logrus.Debug("Started loading knowledge skills")
+func LoadKnowledgeSkills() {
+	logrus.Info("Started loading knowledge skills")
 
 	files, errReadDir := os.ReadDir(KnowledgeSkillDataPath)
 	if errReadDir != nil {
@@ -59,7 +56,7 @@ func LoadKnowledgeSkills(wg *sync.WaitGroup) {
 
 			knowledgeSkills[knowledgeSkill.Name] = knowledgeSkill
 		}
-		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded knowledge skills file")
+		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded knowledge skills file")
 	}
 
 	logrus.WithFields(logrus.Fields{"count": len(knowledgeSkills)}).Info("Done loading knowledge skills")

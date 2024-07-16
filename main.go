@@ -37,18 +37,11 @@ func main() {
 
 	logrus.SetLevel(logrus.DebugLevel)
 
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go metatype.LoadMetatypes(&wg)
-	wg.Add(1)
-	go skill.LoadLanguageSkills(&wg)
-	wg.Add(1)
-	go skill.LoadActiveSkills(&wg)
-	wg.Add(1)
-	go skill.LoadKnowledgeSkills(&wg)
-	wg.Add(1)
-	go quality.LoadQualities(&wg)
-	wg.Wait()
+	go metatype.LoadMetatypes()
+	go skill.LoadLanguageSkills()
+	go skill.LoadActiveSkills()
+	go skill.LoadKnowledgeSkills()
+	go quality.LoadQualities()
 
 	// for k, m := range metatype.Metatypes {
 	// 	fmt.Println(k, m)

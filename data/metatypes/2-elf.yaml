@@ -1,10 +1,11 @@
-name: Human
+id: 2
+name: Elf
 body:
     min: 1
     max: 6
 agility:
-    min: 1
-    max: 6
+    min: 2
+    max: 7
 reaction:
     min: 1
     max: 6
@@ -21,12 +22,12 @@ intuition:
     min: 1
     max: 6
 charisma:
+    min: 3
+    max: 8
+edge:
     min: 1
     max: 6
-edge:
-    min: 2
-    max: 7
-essence: 6
-racial_traits: []
+racial_traits:
+    - Low-Light Vision
 rule_source: SR5:Core
 file_version: 0.0.1

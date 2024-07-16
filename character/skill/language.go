@@ -47,10 +47,8 @@ type LanguageSkill struct {
 	FileVersion string `yaml:"file_version"`
 }
 
-func LoadLanguageSkills(wg *sync.WaitGroup) {
-	defer wg.Done()
-
-	logrus.Debug("Started loading language skills")
+func LoadLanguageSkills() {
+	logrus.Info("Started loading language skills")
 
 	files, errReadDir := os.ReadDir(LanguageSkillDataPath)
 	if errReadDir != nil {
@@ -71,7 +69,7 @@ func LoadLanguageSkills(wg *sync.WaitGroup) {
 
 			languageSklls[languageSkll.Name] = languageSkll
 		}
-		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded language skills file")
+		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded language skills file")
 	}
 
 	logrus.WithFields(logrus.Fields{"count": len(languageSklls)}).Info("Done loading language skills")

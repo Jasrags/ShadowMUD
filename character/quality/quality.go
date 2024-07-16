@@ -5,7 +5,6 @@ import (
 	"os"
 	"shadowrunmud/util"
 	"strings"
-	"sync"
 
 	"github.com/sirupsen/logrus"
 )
@@ -31,24 +30,22 @@ func NewQuality() *Quality {
 }
 
 type Quality struct {
-	ID            string `yaml:"id,omitempty"`
-	Name          string `yaml:"name"`
-	Description   string `yaml:"description"`
-	Prerequisites string `yaml:"prerequisites,omitempty"`
-	Cost          int    `yaml:"cost"`
-	Rating        int    `yaml:"rating,omitempty"`
-	RuleSource    string `yaml:"rule_source"`
-	FileVersion   string `yaml:"file_version"`
+	ID            string   `yaml:"id,omitempty"`
+	Name          string   `yaml:"name"`
+	Description   string   `yaml:"description"`
+	Prerequisites []string `yaml:"prerequisites,omitempty"`
+	Cost          int      `yaml:"cost"`
+	Rating        int      `yaml:"rating,omitempty"`
+	RuleSource    string   `yaml:"rule_source"`
+	FileVersion   string   `yaml:"file_version"`
 }
 
-func LoadQualities(wg *sync.WaitGroup) {
-	defer wg.Done()
-
-	logrus.Debug("Started loading qualities")
+func LoadQualities() {
+	logrus.Info("Started loading qualities")
 
 	files, errReadDir := os.ReadDir(QualityDataPath)
 	if errReadDir != nil {
-		logrus.WithError(errReadDir).Fatal("Could not read metatype directory")
+		logrus.WithError(errReadDir).Fatal("Could not read qualities directory")
 	}
 
 	// Create a map to store the metatypes
@@ -60,15 +57,15 @@ func LoadQualities(wg *sync.WaitGroup) {
 
 			var quality Quality
 			if err := util.LoadStructFromYAML(filepath, &quality); err != nil {
-				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
+				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load qualities")
 			}
 
 			qualities[quality.Name] = quality
 		}
-		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded metatype file")
+		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded qualities file")
 	}
 
-	logrus.WithFields(logrus.Fields{"count": len(qualities)}).Info("Done loading metatypes")
+	logrus.WithFields(logrus.Fields{"count": len(qualities)}).Info("Done loading qualities")
 
 	Qualities = qualities
 }

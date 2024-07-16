@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"sync"
 
 	"shadowrunmud/util"
 
@@ -54,20 +53,13 @@ type Metatype struct {
 	Intuition    MetatypeAttribute `yaml:"intuition"`
 	Charisma     MetatypeAttribute `yaml:"charisma"`
 	Edge         MetatypeAttribute `yaml:"edge"`
-	Essence      float64           `yaml:"essence"`
 	RacialTraits []string          `yaml:"racial_traits"`
 	RuleSource   string            `yaml:"rule_source"`
 	FileVersion  string            `yaml:"file_version"`
 }
 
-// LoadMetatypes loads metatypes from YAML files in a specified directory.
-// It populates the global `Metatypes` map with the loaded metatypes.
-// The function takes a `sync.WaitGroup` pointer as a parameter to indicate completion.
-// It is expected to be called as a goroutine.
-func LoadMetatypes(wg *sync.WaitGroup) {
-	defer wg.Done()
-
-	logrus.Debug("Started loading metatypes")
+func LoadMetatypes() {
+	logrus.Info("Started loading metatypes")
 
 	files, errReadDir := os.ReadDir(MetatypeDataPath)
 	if errReadDir != nil {
@@ -88,7 +80,7 @@ func LoadMetatypes(wg *sync.WaitGroup) {
 
 			metatypes[metatype.Name] = metatype
 		}
-		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded metatype file")
+		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded metatype file")
 	}
 
 	logrus.WithFields(logrus.Fields{"count": len(metatypes)}).Info("Done loading metatypes")

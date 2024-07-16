@@ -349,7 +349,6 @@ func (c *Character) RecalculateAttributes() {
 	c.Attributes.Logic.Recalculate()
 	c.Attributes.Intuition.Recalculate()
 	c.Attributes.Charisma.Recalculate()
-
 }
 
 func (c *Character) Save() error {

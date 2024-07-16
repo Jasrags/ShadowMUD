@@ -1,33 +1,36 @@
-name: Elf
+id: 5
+name: Troll
 body:
-    min: 1
-    max: 6
+    min: 5
+    max: 10
 agility:
-    min: 2
-    max: 7
+    min: 1
+    max: 5
 reaction:
     min: 1
     max: 6
 strength:
-    min: 1
-    max: 6
+    min: 5
+    max: 10
 willpower:
     min: 1
     max: 6
 logic:
     min: 1
-    max: 6
+    max: 5
 intuition:
     min: 1
-    max: 6
+    max: 5
 charisma:
-    min: 3
-    max: 8
+    min: 1
+    max: 4
 edge:
     min: 1
     max: 6
-essence: 6
 racial_traits:
-    - Low-Light Vision
+    - Thermographic Vision
+    - +1 Reach
+    - +1 dermal armor
+    - Double Lifestyle costs
 rule_source: SR5:Core
 file_version: 0.0.1
