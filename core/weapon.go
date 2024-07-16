@@ -53,39 +53,39 @@ func (w *Weapon) GetDamageValue() error {
 	return nil
 }
 
-var testWeapons = []Weapon{
-	{
-		Name:             "Combat Axe",
-		Type:             WeaponTypeMelee,
-		Category:         WeaponCategoryBlades,
-		Accuracy:         4,
-		Reach:            2,
-		DamageValue:      5, //(STR+5)P
-		DamageType:       DamageTypePhysical,
-		ArmorPenatration: -4,
-		Availability:     12,
-		Legality:         LegalityTypeRestricted,
-		Cost:             4000,
-		RuleSource:       "SR5:Core",
-		Tags:             []WeaponTag{WeaponTagMelee, WeaponTagBlades, WeaponTagTwoHanded},
-	},
-	{
-		Name:             "Shiawase Arms Blazer",
-		Accuracy:         6,
-		DamageValue:      7,
-		DamageType:       DamageTypePhysical,
-		ArmorPenatration: 0,
-		// Modes:            []WeaponFiringMode{WeaponFiringModeSemiAutomatic},
-		// Recoil:           0,
-		// AmmoType:         "Regular",
-		// AmmoCapacity:     11,
-		Availability: 4,
-		Legality:     LegalityTypeRestricted,
-		Cost:         320,
-		RuleSource:   "SR5:Core",
-		Tags:         []WeaponTag{WeaponTagRanged, WeaponTagFirearm, WeaponTagFlamethrower},
-	},
-}
+// var testWeapons = []Weapon{
+// 	{
+// 		Name:             "Combat Axe",
+// 		Type:             WeaponTypeMelee,
+// 		Category:         WeaponCategoryBlades,
+// 		Accuracy:         4,
+// 		Reach:            2,
+// 		DamageValue:      5, //(STR+5)P
+// 		DamageType:       DamageTypePhysical,
+// 		ArmorPenatration: -4,
+// 		Availability:     12,
+// 		Legality:         LegalityTypeRestricted,
+// 		Cost:             4000,
+// 		RuleSource:       "SR5:Core",
+// 		Tags:             []WeaponTag{WeaponTagMelee, WeaponTagBlades, WeaponTagTwoHanded},
+// 	},
+// 	{
+// 		Name:             "Shiawase Arms Blazer",
+// 		Accuracy:         6,
+// 		DamageValue:      7,
+// 		DamageType:       DamageTypePhysical,
+// 		ArmorPenatration: 0,
+// 		// Modes:            []WeaponFiringMode{WeaponFiringModeSemiAutomatic},
+// 		// Recoil:           0,
+// 		// AmmoType:         "Regular",
+// 		// AmmoCapacity:     11,
+// 		Availability: 4,
+// 		Legality:     LegalityTypeRestricted,
+// 		Cost:         320,
+// 		RuleSource:   "SR5:Core",
+// 		Tags:         []WeaponTag{WeaponTagRanged, WeaponTagFirearm, WeaponTagFlamethrower},
+// 	},
+// }
 
 type WeaponMelee struct {
 	ID               int        `yaml:"id"`

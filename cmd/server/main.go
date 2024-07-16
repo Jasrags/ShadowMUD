@@ -37,14 +37,9 @@ func main() {
 	logrus.Info("Starting the server")
 
 	// Load all the data
-	logrus.Info("Loading data files")
-	core.Metatypes = core.LoadMetatypes()
-	core.LanguageSkills = core.LoadLanguageSkills()
-	core.LoadActiveSkills()
-	core.LoadKnowledgeSkills()
-	core.LoadQualities()
-	core.LoadCyberware()
-	logrus.Info("Data files loaded")
+	logrus.Info("Loading core data")
+	core.LoadCoreData()
+	logrus.Info("Core data loaded")
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)

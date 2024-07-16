@@ -16,10 +16,6 @@ const (
 	KnowledgeSkillFileMinVersion = "0.0.1"
 )
 
-var (
-	KnowledgeSkills = map[string]KnowledgeSkill{}
-)
-
 type KnowledgeSkill struct {
 	ID          string `yaml:"id,omitempty"`
 	Name        string `yaml:"name"`
@@ -30,7 +26,7 @@ type KnowledgeSkill struct {
 	FileVersion string `yaml:"file_version"`
 }
 
-func LoadKnowledgeSkills() {
+func LoadKnowledgeSkills() map[string]KnowledgeSkill {
 	logrus.Info("Started loading knowledge skills")
 
 	files, errReadDir := os.ReadDir(KnowledgeSkillDataPath)
@@ -39,25 +35,25 @@ func LoadKnowledgeSkills() {
 	}
 
 	// Create a map to store the metatypes
-	knowledgeSkills := make(map[string]KnowledgeSkill, len(files))
+	list := make(map[string]KnowledgeSkill, len(files))
 
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".yaml") {
 			filepath := fmt.Sprintf("%s/%s", KnowledgeSkillDataPath, file.Name())
 
-			var knowledgeSkill KnowledgeSkill
-			if err := util.LoadStructFromYAML(filepath, &knowledgeSkill); err != nil {
+			var v KnowledgeSkill
+			if err := util.LoadStructFromYAML(filepath, &v); err != nil {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load knowledge skills")
 			}
 
-			knowledgeSkills[knowledgeSkill.Name] = knowledgeSkill
+			list[v.ID] = v
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded knowledge skills file")
 	}
 
-	logrus.WithFields(logrus.Fields{"count": len(knowledgeSkills)}).Info("Done loading knowledge skills")
+	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading knowledge skills")
 
-	KnowledgeSkills = knowledgeSkills
+	return list
 }
 
 func LoadKnowledgeSkill(name string) (*KnowledgeSkill, error) {

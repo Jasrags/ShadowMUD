@@ -16,10 +16,6 @@ const (
 	ActiveSkillFileMinVersion = "0.0.1"
 )
 
-var (
-	ActiveSkills = map[string]ActiveSkill{}
-)
-
 type ActiveSkill struct {
 	ID                     string    `yaml:"id,omitempty"`
 	Name                   string    `yaml:"name"`
@@ -142,7 +138,7 @@ var (
 // 	ActiveSkillDecompiling
 // )
 
-func LoadActiveSkills() {
+func LoadActiveSkills() map[string]ActiveSkill {
 	logrus.Info("Started loading active skills")
 
 	files, errReadDir := os.ReadDir(ActiveSkillDataPath)
@@ -151,25 +147,25 @@ func LoadActiveSkills() {
 	}
 
 	// Create a map to store the metatypes
-	activeSkills := make(map[string]ActiveSkill, len(files))
+	list := make(map[string]ActiveSkill, len(files))
 
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".yaml") {
 			filepath := fmt.Sprintf("%s/%s", ActiveSkillDataPath, file.Name())
 
-			var activeSkill ActiveSkill
-			if err := util.LoadStructFromYAML(filepath, &activeSkill); err != nil {
+			var v ActiveSkill
+			if err := util.LoadStructFromYAML(filepath, &v); err != nil {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load active skills")
 			}
 
-			activeSkills[activeSkill.Name] = activeSkill
+			list[v.ID] = v
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded active skills file")
 	}
 
-	logrus.WithFields(logrus.Fields{"count": len(activeSkills)}).Info("Done loading active skills")
+	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading active skills")
 
-	ActiveSkills = activeSkills
+	return list
 }
 
 func LoadActiveSkill(name string) (*ActiveSkill, error) {

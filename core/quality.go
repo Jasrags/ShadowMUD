@@ -22,10 +22,6 @@ type (
 	QualityType string
 )
 
-var (
-	Qualities = map[string]Quality{}
-)
-
 func NewQuality() *Quality {
 	return &Quality{}
 }
@@ -41,7 +37,7 @@ type Quality struct {
 	FileVersion   string   `yaml:"file_version"`
 }
 
-func LoadQualities() {
+func LoadQualities() map[string]Quality {
 	logrus.Info("Started loading qualities")
 
 	files, errReadDir := os.ReadDir(QualityDataPath)
@@ -50,25 +46,25 @@ func LoadQualities() {
 	}
 
 	// Create a map to store the metatypes
-	qualities := make(map[string]Quality, len(files))
+	list := make(map[string]Quality, len(files))
 
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".yaml") {
 			filepath := fmt.Sprintf("%s/%s", QualityDataPath, file.Name())
 
-			var quality Quality
-			if err := util.LoadStructFromYAML(filepath, &quality); err != nil {
+			var v Quality
+			if err := util.LoadStructFromYAML(filepath, &v); err != nil {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load qualities")
 			}
 
-			qualities[quality.Name] = quality
+			list[v.ID] = v
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded qualities file")
 	}
 
-	logrus.WithFields(logrus.Fields{"count": len(qualities)}).Info("Done loading qualities")
+	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading qualities")
 
-	Qualities = qualities
+	return list
 }
 
 func LoadQuality(name string) (*Quality, error) {

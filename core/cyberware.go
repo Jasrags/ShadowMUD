@@ -17,7 +17,6 @@ const (
 )
 
 var (
-	CyberwareList            = map[string]Cyberware{}
 	ErrUnknownCyberwareGrade = fmt.Errorf("unknown cyberware grade")
 )
 
@@ -129,7 +128,7 @@ func (c *Cyberware) ModifyInitiativeDice() int {
 // Body 	Wired Reflexes R2 	3 	- 	12R 	149,000¥ 	Core
 // Body 	Wired Reflexes R3 	5 	- 	20R 	217,000¥ 	Core
 
-func LoadCyberware() {
+func LoadCyberware() map[string]Cyberware {
 	logrus.Info("Started loading cyberware")
 
 	files, errReadDir := os.ReadDir(CyberwareDataPath)
@@ -155,7 +154,7 @@ func LoadCyberware() {
 
 	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading metatypes")
 
-	CyberwareList = list
+	return list
 }
 
 func LoadCyberwareFile(name string) (*Cyberware, error) {

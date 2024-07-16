@@ -25,10 +25,6 @@ const (
 	RacialTraitDoubleLifestyleCosts              = "Double Lifestyle costs"
 )
 
-var (
-	Metatypes = map[string]Metatype{}
-)
-
 type MetatypeAttribute struct {
 	Min int
 	Max int
@@ -67,7 +63,7 @@ func LoadMetatypes() map[string]Metatype {
 	}
 
 	// Create a map to store the metatypes
-	metatypes := make(map[string]Metatype, len(files))
+	list := make(map[string]Metatype, len(files))
 
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".yaml") {
@@ -78,14 +74,14 @@ func LoadMetatypes() map[string]Metatype {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
 			}
 
-			metatypes[v.ID] = v
+			list[v.ID] = v
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded metatype file")
 	}
 
-	logrus.WithFields(logrus.Fields{"count": len(metatypes)}).Info("Done loading metatypes")
+	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading metatypes")
 
-	return metatypes
+	return list
 }
 
 func LoadMetatype(name string) (*Metatype, error) {

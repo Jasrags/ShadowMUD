@@ -9,16 +9,16 @@ const (
 var (
 	ArmorItems = map[string]Armor{}
 
-	tam1 = ArmorMod{
-		Name:         "Chemical Seal",
-		Rating:       2,
-		Capacity:     6,
-		Cost:         3000,
-		Availability: 12,
-		Legality:     LegalityTypeRestricted,
-		RuleSource:   "SR5:Core",
-		FileVersion:  "0.0.1",
-	}
+	// tam1 = ArmorMod{
+	// 	Name:         "Chemical Seal",
+	// 	Rating:       2,
+	// 	Capacity:     6,
+	// 	Cost:         3000,
+	// 	Availability: 12,
+	// 	Legality:     LegalityTypeRestricted,
+	// 	RuleSource:   "SR5:Core",
+	// 	FileVersion:  "0.0.1",
+	// }
 	// Activate Seal
 	//  Complex Action
 	// Air Supply
@@ -26,28 +26,28 @@ var (
 	// Wireless
 	//  Activating the chemical seal is a Free Action.
 
-	tam2 = ArmorMod{
-		Name:         "Radiation Shielding",
-		Rating:       2,
-		Capacity:     6,    // Rating
-		Cost:         3000, // Rating x 200
-		Availability: 12,   // Rating x 2
-		RuleSource:   "SR5:R&G",
-		FileVersion:  "0.0.1",
-	}
+	// tam2 = ArmorMod{
+	// 	Name:         "Radiation Shielding",
+	// 	Rating:       2,
+	// 	Capacity:     6,    // Rating
+	// 	Cost:         3000, // Rating x 200
+	// 	Availability: 12,   // Rating x 2
+	// 	RuleSource:   "SR5:R&G",
+	// 	FileVersion:  "0.0.1",
+	// }
 	// Special Rules
 	//  Each point of Radiation shielding provides 1 extra die for resisting Radiation damage (see p. 152).
 
-	ta = Armor{
-		Name:         "Armante Dress",
-		ArmorRating:  8,
-		Capacity:     4,
-		Availability: 10,
-		Cost:         2500,
-		Mods:         []ArmorMod{},
-		RuleSource:   "SR5:R&G ",
-		FileVersion:  "0.0.1",
-	}
+	// ta = Armor{
+	// 	Name:         "Armante Dress",
+	// 	ArmorRating:  8,
+	// 	Capacity:     4,
+	// 	Availability: 10,
+	// 	Cost:         2500,
+	// 	Mods:         []ArmorMod{},
+	// 	RuleSource:   "SR5:R&G ",
+	// 	FileVersion:  "0.0.1",
+	// }
 	// Features
 	//  Increase Social Limit by 2
 	// Wireless Bonus

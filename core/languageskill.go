@@ -17,7 +17,6 @@ const (
 )
 
 var (
-	LanguageSkills        = map[string]LanguageSkill{}
 	DefaultLanguageSkills = map[string]LanguageSkill{
 		"English":    {Name: "English", IsCommon: true, RuleSource: "SR5:Core", FileVersion: "0.0.1"},
 		"Spanish":    {Name: "Spanish", IsCommon: true, RuleSource: "SR5:Core", FileVersion: "0.0.1"},
@@ -54,7 +53,7 @@ func LoadLanguageSkills() map[string]LanguageSkill {
 	}
 
 	// Create a map to store the metatypes
-	languageSklls := make(map[string]LanguageSkill, len(files))
+	list := make(map[string]LanguageSkill, len(files))
 
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".yaml") {
@@ -65,14 +64,14 @@ func LoadLanguageSkills() map[string]LanguageSkill {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load language skills")
 			}
 
-			languageSklls[v.ID] = v
+			list[v.ID] = v
 		}
 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded language skills file")
 	}
 
-	logrus.WithFields(logrus.Fields{"count": len(languageSklls)}).Info("Done loading language skills")
+	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading language skills")
 
-	return languageSklls
+	return list
 }
 
 func LoadLanguageSkill(name string) (*LanguageSkill, error) {
