@@ -10,110 +10,60 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type (
-	DamageTypeIdx int
-)
-
 const (
 	MeleeWeaponDataPath      = "data/items/weapons/melee"
 	MeleeWeaponFilename      = MeleeWeaponDataPath + "/%s.yaml"
 	MeleeWeaponileMinVersion = "0.0.1"
 )
 
-const (
-	DamageTypePhysical DamageTypeIdx = iota
-	DamageTypeStun
-)
-
-const (
-	WeaponTypeImprovised = "Improvised"
-	WeaponTypeClubs      = "Clubs"
-	WeaponTypeBlades     = "Blades"
-	WeaponTypeExotic     = "Exotic"
-	WeaponTypeMisc       = "Misc"
-)
-
-const (
-	WeaponCategoryMelee  = "Melee"
-	WeaponCategoryRanged = "Ranged"
-)
-
-type (
-	WeaponTag        string
-	WeaponFiringMode string
-)
-
-const (
-	WeaponTagMelee            WeaponTag = "Melee"
-	WeaponTagImprovised       WeaponTag = "Improvised"
-	WeaponTagClubs            WeaponTag = "Clubs"
-	WeaponTagBlades           WeaponTag = "Blades"
-	WeaponTagExotic           WeaponTag = "Exotic"
-	WeaponTagMisc             WeaponTag = "Misc"
-	WeaponTagThrowing         WeaponTag = "Throwing"
-	WeaponTagBallistic        WeaponTag = "Ballistic"
-	WeaponTagFlamethrower     WeaponTag = "Flamethrower"
-	WeaponTagTaser            WeaponTag = "Taser"
-	WeaponTagRanged           WeaponTag = "Ranged"
-	WeaponTagFirearm          WeaponTag = "Firearm"
-	WeaponTagPistol           WeaponTag = "Pistol"
-	WeaponTagHoldOutPistol    WeaponTag = "Hold-Out Pistol"
-	WeaponTagLightPistol      WeaponTag = "Light Pistol"
-	WeaponTagHeavyPistol      WeaponTag = "Heavy Pistol"
-	WeaponTagMachinePistol    WeaponTag = "Machine Pistol"
-	WeaponTagSubmachineGun    WeaponTag = "Submachine Gun"
-	WeaponTagRifle            WeaponTag = "Rifle"
-	WeaponTagAssaultRifle     WeaponTag = "Assault Rifle"
-	WeaponTagSniperRifle      WeaponTag = "Sniper Rifle"
-	WeaponTagSportingRifle    WeaponTag = "Sporting Rifle"
-	WeaponTagShotgun          WeaponTag = "Shotgun"
-	WeaponTagMachineGun       WeaponTag = "Machine Gun"
-	WeaponTagLightMachineGun  WeaponTag = "Light Machine Gun"
-	WeaponTagMediumMachineGun WeaponTag = "Medium Machine Gun"
-	WeaponTagHeavyMachineGun  WeaponTag = "Heavy Machine Gun"
-	WeaponTagExoticFirearm    WeaponTag = "Exotic Firearm"
-	WeaponTagLaser            WeaponTag = "Laser"
-	WeaponTagLargeCaliber     WeaponTag = "Large-Caliber"
-	WeaponTagAssaultCannon    WeaponTag = "Assault Cannon"
-	WeaponTagGrenadeLauncher  WeaponTag = "Grenade Launcher"
-	WeaponTagMissileLauncher  WeaponTag = "Missile Launcher"
-	WeaponTagImplant          WeaponTag = "Implant"
-	WeaponTagImplantMelee     WeaponTag = "Implant Melee"
-	WeaponTagImplantFirearm   WeaponTag = "Implant Firearm"
-	WeaponTagTwoHanded        WeaponTag = "Two-Handed"
-)
-
-const (
-	WeaponFiringModeSingleShot    WeaponFiringMode = "Single-Shot"
-	WeaponFiringModeSemiAutomatic WeaponFiringMode = "Semi-Automatic"
-	WeaponFiringModeBurstFire     WeaponFiringMode = "Burst Fire"
-	WeaponFiringModeLongBurst     WeaponFiringMode = "Long Burst"
-	WeaponFiringModeFullAuto      WeaponFiringMode = "Full Auto"
-)
-
 type Weapon struct {
+	ID               string
 	Name             string
 	Description      string
+	Type             WeaponType
+	Category         WeaponCategory
+	SubCategory      WeaponSubCategory
+	Tags             []WeaponTag
 	Accuracy         int
 	Reach            int
 	DamageValue      int
-	DamageType       DamageTypeIdx
+	DamageType       DamageType
 	ArmorPenatration int
-	Availability     string
+	Availability     int
+	Legality         LegalityType
 	Cost             int
 	RuleSource       string
-	Tags             []WeaponTag
+	FileVersion      string
+}
+
+func (w *Weapon) GetDamageValue() error {
+	/*
+	   (STR)P
+	   (STR+3)P
+	   9S(e)
+	   6P(fire)
+	   6S(e)
+	   8P(f)
+	   (STR+3)S / 12P
+	   (STR+1 / 3)P
+	   12P
+	   (Rating+2)P
+	*/
+	return nil
 }
 
 var testWeapons = []Weapon{
 	{
 		Name:             "Combat Axe",
+		Type:             WeaponTypeMelee,
+		Category:         WeaponCategoryBlades,
 		Accuracy:         4,
 		Reach:            2,
 		DamageValue:      5, //(STR+5)P
 		DamageType:       DamageTypePhysical,
 		ArmorPenatration: -4,
-		Availability:     "12R",
+		Availability:     12,
+		Legality:         LegalityTypeRestricted,
 		Cost:             4000,
 		RuleSource:       "SR5:Core",
 		Tags:             []WeaponTag{WeaponTagMelee, WeaponTagBlades, WeaponTagTwoHanded},
@@ -128,7 +78,8 @@ var testWeapons = []Weapon{
 		// Recoil:           0,
 		// AmmoType:         "Regular",
 		// AmmoCapacity:     11,
-		Availability: "4R",
+		Availability: 4,
+		Legality:     LegalityTypeRestricted,
 		Cost:         320,
 		RuleSource:   "SR5:Core",
 		Tags:         []WeaponTag{WeaponTagRanged, WeaponTagFirearm, WeaponTagFlamethrower},
@@ -136,17 +87,17 @@ var testWeapons = []Weapon{
 }
 
 type WeaponMelee struct {
-	ID               int           `yaml:"id"`
-	Name             string        `yaml:"name"`
-	Description      string        `yaml:"description"`
-	Accuracy         int           `yaml:"accuracy"`
-	Reach            int           `yaml:"reach"`
-	DamageValue      int           `yaml:"damage_value"`
-	DamageType       DamageTypeIdx `yaml:"damage_type"`
-	ArmorPenatration int           `yaml:"armor_penatration"`
-	Availability     string        `yaml:"availability"`
-	Cost             int           `yaml:"cost"`
-	RuleSource       string        `yaml:"rule_source"`
+	ID               int        `yaml:"id"`
+	Name             string     `yaml:"name"`
+	Description      string     `yaml:"description"`
+	Accuracy         int        `yaml:"accuracy"`
+	Reach            int        `yaml:"reach"`
+	DamageValue      int        `yaml:"damage_value"`
+	DamageType       DamageType `yaml:"damage_type"`
+	ArmorPenatration int        `yaml:"armor_penatration"`
+	Availability     string     `yaml:"availability"`
+	Cost             int        `yaml:"cost"`
+	RuleSource       string     `yaml:"rule_source"`
 }
 
 type WeaponRanged struct {
@@ -155,7 +106,7 @@ type WeaponRanged struct {
 	Description      string
 	Accuracy         int
 	DamageValue      int
-	DamageType       DamageTypeIdx
+	DamageType       DamageType
 	ArmorPenatration int
 	Modes            []WeaponFiringMode
 	Recoil           int
@@ -215,34 +166,12 @@ func LoadMeleeWeapons(wg *sync.WaitGroup) {
 }
 
 // type (
-// 	WeaponCategoryIdx    int
-// 	WeaponSubcategoryIdx int
+// WeaponMeleeIdx int
 // )
-
-const (
-// WeaponMelee WeaponCategoryIdx = iota
-// WeaponRanged
-// WeaponFirearm
-// WeaponLargeCaliber
-// WeaponMisc
-)
 
 // const (
-// 	WeaponMeleeBlades WeaponSubcategoryIdx = iota
-// 	WeaponMeleeClubs
-// 	WeaponMeleeExotic
-// 	WeaponMeleeImplant
-// 	WeaponMeleeImprovised
-// 	WeaponMeleeMisc
+// WeaponMeleeCombatAxe WeaponMeleeIdx = iota
 // )
-
-type (
-	WeaponMeleeIdx int
-)
-
-const (
-	WeaponMeleeCombatAxe WeaponMeleeIdx = iota
-)
 
 // var WeaponsMelee = map[string]WeaponMelee{
 // 	"Combat Axe": {

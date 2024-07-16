@@ -79,6 +79,39 @@ func LoadLanguageSkills(wg *sync.WaitGroup) {
 	LanguageSkills = languageSklls
 }
 
+func LoadStructsFromYAMLDirectory(directory string, wg *sync.WaitGroup, result interface{}) {
+	defer wg.Done()
+
+	logrus.Debugf("Started loading structs from YAML files in directory: %s", directory)
+
+	files, err := os.ReadDir(directory)
+	if err != nil {
+		logrus.WithError(err).Fatalf("Could not read directory: %s", directory)
+	}
+
+	for _, file := range files {
+		if strings.HasSuffix(file.Name(), ".yaml") {
+			filepath := fmt.Sprintf("%s/%s", directory, file.Name())
+
+			var v interface{}
+			if err := util.LoadStructFromYAML(filepath, &v); err != nil {
+				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatalf("Could not load struct from YAML file: %s", filepath)
+			}
+
+			resultSlice, ok := result.(*[]interface{})
+			if !ok {
+				logrus.Fatalf("Invalid result type. Expected a slice of interfaces.")
+			}
+
+			*resultSlice = append(*resultSlice, v)
+
+			logrus.WithFields(logrus.Fields{"filename": file.Name()}).Infof("Loaded struct from YAML file: %s", filepath)
+		}
+	}
+
+	logrus.WithFields(logrus.Fields{"count": len(*result.(*[]interface{}))}).Infof("Done loading structs from YAML files in directory: %s", directory)
+}
+
 func LoadLanguageSkill(name string) (*LanguageSkill, error) {
 	var v LanguageSkill
 	if err := util.LoadStructFromYAML(fmt.Sprintf(LanguageSkillFilename, name), &v); err != nil {

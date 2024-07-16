@@ -40,25 +40,6 @@ var CyberwareGrades = map[string]CyberwareGrade{
 	},
 }
 
-type CyberwareType interface {
-	GetName() string
-	GetDescription() string
-	GetEssenceCost() float64
-	GetCapacity() int
-	GetRating() int
-	GetGrade() CyberwareGrade
-	GetToggleAction() string
-	IsActive() bool
-	GetCost() int
-	GetAvailability() string
-	GetNotes() string
-	GetRuleSource() string
-
-	ToggleActivation()
-	ModifyReaction() int
-	ModifyInitiativeDice() int
-}
-
 type Cyberware struct {
 	Name         string
 	Description  string

@@ -215,10 +215,8 @@ func TestGetMentalLimit(t *testing.T) {
 				Intuition: character.AttributesInfo{Base: tt.Intuition},
 				Willpower: character.AttributesInfo{Base: tt.Willpower},
 			},
-			// Logic:     tt.Logic,
-			// Intuition: tt.Intuition,
-			// Willpower: tt.Willpower,
 		}
+		c.RecalculateAttributes()
 
 		got := c.GetMentalLimit()
 
@@ -246,15 +244,115 @@ func TestGetSocialLimit(t *testing.T) {
 				Willpower: character.AttributesInfo{Base: tt.Willpower},
 				Essence:   character.AttributesInfoF{Base: tt.Essence},
 			},
-			// Charisma:  tt.Charisma,
-			// Willpower: tt.Willpower,
-			// Essence: tt.Essence,
 		}
+		c.RecalculateAttributes()
 
 		got := c.GetSocialLimit()
 
 		if got != tt.want {
 			t.Errorf("GetSocialLimit() = %d, want %d", got, tt.want)
 		}
+	}
+}
+func TestRecalculate(t *testing.T) {
+	tsk := character.TestSkill{
+		Name:      "Automatics",
+		Attribute: "Agility",
+		Rank:      4,
+	}
+
+	tc := character.TestChar{
+		Body:      character.TestAttribute{Base: 5},
+		Agility:   character.TestAttribute{Base: 7},
+		Reaction:  character.TestAttribute{Base: 6},
+		Strength:  character.TestAttribute{Base: 8},
+		Willpower: character.TestAttribute{Base: 5},
+		Logic:     character.TestAttribute{Base: 7},
+		Intuition: character.TestAttribute{Base: 6},
+		Charisma:  character.TestAttribute{Base: 8},
+		Essence:   6.0,
+		Skills:    []character.TestSkill{tsk},
+	}
+	tc.Recalculate()
+
+	// Check the recalculated values
+	if tc.Body.Value != 5 {
+		t.Errorf("Recalculate() failed for Body. Expected 5, got %d", tc.Body.Value)
+	}
+	if tc.Body.Base != 5 {
+		t.Errorf("Recalculate() failed for Body. Expected base 5, got %d", tc.Body.Base)
+	}
+	if tc.Body.Mods != 0 {
+		t.Errorf("Recalculate() failed for Body. Expected mod 0, got %d", tc.Body.Mods)
+	}
+
+	if tc.Agility.Value != 11 {
+		t.Errorf("Recalculate() failed for Agility. Expected 11, got %d", tc.Agility.Value)
+	}
+	if tc.Agility.Base != 7 {
+		t.Errorf("Recalculate() failed for Agility. Expected base 7, got %d", tc.Agility.Base)
+	}
+	if tc.Agility.Mods != 4 {
+		t.Errorf("Recalculate() failed for Agility. Expected mod 4, got %d", tc.Agility.Mods)
+	}
+
+	if tc.Reaction.Value != 6 {
+		t.Errorf("Recalculate() failed for Reaction. Expected 6, got %d", tc.Reaction.Value)
+	}
+	if tc.Reaction.Base != 6 {
+		t.Errorf("Recalculate() failed for Reaction. Expected base 6, got %d", tc.Reaction.Base)
+	}
+	if tc.Reaction.Mods != 0 {
+		t.Errorf("Recalculate() failed for Reaction. Expected mod 0, got %d", tc.Reaction.Mods)
+	}
+
+	if tc.Strength.Value != 8 {
+		t.Errorf("Recalculate() failed for Strength. Expected 8, got %d", tc.Strength.Value)
+	}
+	if tc.Strength.Base != 8 {
+		t.Errorf("Recalculate() failed for Strength. Expected base 8, got %d", tc.Strength.Base)
+	}
+	if tc.Strength.Mods != 0 {
+		t.Errorf("Recalculate() failed for Strength. Expected mod 0, got %d", tc.Strength.Mods)
+	}
+
+	if tc.Willpower.Value != 5 {
+		t.Errorf("Recalculate() failed for Willpower. Expected 5, got %d", tc.Willpower.Value)
+	}
+	if tc.Willpower.Base != 5 {
+		t.Errorf("Recalculate() failed for Willpower. Expected base 5, got %d", tc.Willpower.Base)
+	}
+	if tc.Willpower.Mods != 0 {
+		t.Errorf("Recalculate() failed for Willpower. Expected mod 0, got %d", tc.Willpower.Mods)
+	}
+
+	if tc.Logic.Value != 7 {
+		t.Errorf("Recalculate() failed for Logic. Expected 7, got %d", tc.Logic.Value)
+	}
+	if tc.Logic.Base != 7 {
+		t.Errorf("Recalculate() failed for Logic. Expected base 7, got %d", tc.Logic.Base)
+	}
+	if tc.Logic.Mods != 0 {
+		t.Errorf("Recalculate() failed for Logic. Expected mod 0, got %d", tc.Logic.Mods)
+	}
+
+	if tc.Intuition.Value != 6 {
+		t.Errorf("Recalculate() failed for Intuition. Expected 6, got %d", tc.Intuition.Value)
+	}
+	if tc.Intuition.Base != 6 {
+		t.Errorf("Recalculate() failed for Intuition. Expected base 6, got %d", tc.Intuition.Base)
+	}
+	if tc.Intuition.Mods != 0 {
+		t.Errorf("Recalculate() failed for Intuition. Expected mod 0, got %d", tc.Intuition.Mods)
+	}
+
+	if tc.Charisma.Value != 8 {
+		t.Errorf("Recalculate() failed for Charisma. Expected 8, got %d", tc.Charisma.Value)
+	}
+	if tc.Charisma.Base != 8 {
+		t.Errorf("Recalculate() failed for Charisma. Expected base 8, got %d", tc.Charisma.Base)
+	}
+	if tc.Charisma.Mods != 0 {
+		t.Errorf("Recalculate() failed for Charisma. Expected mod 0, got %d", tc.Charisma.Mods)
 	}
 }

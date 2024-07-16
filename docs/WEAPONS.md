@@ -480,19 +480,19 @@ Rockets & Missiles
 
 Firearm Accessories
 ===================
-Accessory 	Barrel 	Under-barrel 	Side 	Top 	Stock 	Internal 	Avail 	Cost 	Source
-Advanced Safety System 	– 	– 	– 	– 	– 	– 	4 	600¥ 	SR5:R&G
-Advanced Safety System, Electro Shocker 	– 	– 	– 	– 	– 	– 	6R 	350¥ 	SR5:R&G
-Advanced Safety System, Explosive Self Destruct 	– 	– 	– 	– 	– 	– 	11F 	400¥ 	SR5:R&G
-Advanced Safety System, Immobilization 	– 	– 	– 	– 	– 	– 	6 	100¥ 	SR5:R&G
-Advanced Safety System, Self Destruct 	– 	– 	– 	– 	– 	– 	6 	200¥ 	SR5:R&G
-Airburst Link 	– 	– 	– 	– 	– 	– 	6R 	600¥ 	Core
-Ammo Skip System 	– 	✔ 	– 	– 	– 	– 	8R 	250¥ 	SR5:HT
-Bayonet 	– 	✔ 	– 	✔ 	– 	– 	4R 	50¥ 	SR5:R&G
-Bipod 	– 	✔ 	– 	– 	– 	– 	2 	200¥ 	Core
-Bola Launcher 	– 	✔ 	– 	– 	– 	– 	8R 	350¥ 	SR5:R&G
-Ceramic/Plasteel Components 	– 	– 	– 	– 	– 	– 	(Rating+12)F 	Spec. 	SR5:HT
-Chainsaw 	– 	✔ 	– 	– 	– 	– 	10R 	Chainsaw+500¥ 	SR5:R&G
+Accessory 	                                    Barrel 	Under-barrel 	Side 	Top 	Stock 	Internal 	Avail 	Cost 	Source
+Advanced Safety System 	                        – 	    – 	            –       – 	    – 	    – 	        4 	    600¥ 	SR5:R&G
+Advanced Safety System, Electro Shocker 	    – 	– 	– 	– 	– 	– 	6R 	350¥ 	SR5:R&G
+Advanced Safety System, Explosive Self Destruct – 	– 	– 	– 	– 	– 	11F 	400¥ 	SR5:R&G
+Advanced Safety System, Immobilization 	        – 	– 	– 	– 	– 	– 	6 	100¥ 	SR5:R&G
+Advanced Safety System, Self Destruct 	        – 	– 	– 	– 	– 	– 	6 	200¥ 	SR5:R&G
+Airburst Link 	                                – 	– 	– 	– 	– 	– 	6R 	600¥ 	Core
+Ammo Skip System 	                            – 	✔ 	– 	– 	– 	– 	8R 	250¥ 	SR5:HT
+Bayonet 	                                    – 	✔ 	– 	✔ 	– 	– 	4R 	50¥ 	SR5:R&G
+Bipod 	                                        – 	✔ 	– 	– 	– 	– 	2 	200¥ 	Core
+Bola Launcher 	                                – 	✔ 	– 	– 	– 	– 	8R 	350¥ 	SR5:R&G
+Ceramic/Plasteel Components 	                – 	– 	– 	– 	– 	– 	(Rating+12)F 	Spec. 	SR5:HT
+Chainsaw 	                                    – 	✔ 	– 	– 	– 	– 	10R 	Chainsaw+500¥ 	SR5:R&G
 Chameleon Coating 	– 	– 	✔ 	– 	– 	– 	10R 	1,000¥ 	SR5:HT
 Concealable Holster 	– 	– 	– 	– 	– 	– 	2 	150¥ 	Core
 Concealed Quick-Draw Holster 	– 	– 	– 	– 	– 	– 	6 	275¥ 	SR5:R&G

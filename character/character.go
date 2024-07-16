@@ -54,6 +54,111 @@ type AttributesInfoF struct {
 	Mods  float64 `yaml:"-"`
 }
 
+type TestAttribute struct {
+	Base  int
+	Mods  int
+	Value int
+}
+
+func (ta *TestAttribute) Reset() {
+	ta.Value = 0
+	ta.Mods = 0
+}
+func (ta *TestAttribute) Recalculate() {
+	ta.Value = ta.Base + ta.Mods
+}
+
+type TestChar struct {
+	Body      TestAttribute
+	Agility   TestAttribute
+	Reaction  TestAttribute
+	Strength  TestAttribute
+	Willpower TestAttribute
+	Logic     TestAttribute
+	Intuition TestAttribute
+	Charisma  TestAttribute
+	Essence   float32
+	Skills    []TestSkill
+}
+
+func (tc *TestChar) Recalculate() {
+	tc.Body.Reset()
+	tc.Agility.Reset()
+	tc.Reaction.Reset()
+	tc.Strength.Reset()
+	tc.Willpower.Reset()
+	tc.Logic.Reset()
+	tc.Intuition.Reset()
+	tc.Charisma.Reset()
+
+	for _, skill := range tc.Skills {
+		switch skill.Attribute {
+		case "Agility":
+			tc.Agility.Mods += skill.Rank
+		}
+	}
+
+	tc.Body.Recalculate()
+	tc.Agility.Recalculate()
+	tc.Reaction.Recalculate()
+	tc.Strength.Recalculate()
+	tc.Willpower.Recalculate()
+	tc.Logic.Recalculate()
+	tc.Intuition.Recalculate()
+	tc.Charisma.Recalculate()
+
+}
+
+type TestSkill struct {
+	Name      string
+	Attribute string
+	Rank      int
+}
+
+// var (
+// 	tsk = TestSkill{
+// 		Name:      "Automatics",
+// 		Attribute: "Agility",
+// 		Rank:      4,
+// 	}
+
+// 	tc = TestChar{
+// 		Body:      TestAttribute{Base: 5},
+// 		Agility:   TestAttribute{Base: 7},
+// 		Reaction:  TestAttribute{Base: 6},
+// 		Strength:  TestAttribute{Base: 8},
+// 		Willpower: TestAttribute{Base: 5},
+// 		Logic:     TestAttribute{Base: 7},
+// 		Intuition: TestAttribute{Base: 6},
+// 		Charisma:  TestAttribute{Base: 8},
+// 		Essence:   6.0,
+// 		Skills:    []TestSkill{tsk},
+// 	}
+// )
+
+type Equipment struct {
+	// Weapons   map[string]item.Weapon    `yaml:"weapons"`
+	// Armor     map[string]item.Armor     `yaml:"armor"`
+	// Cyberware map[string]item.Cyberware `yaml:"cyberware"`
+	// Gear      map[string]item.Gear      `yaml:"gear"`
+}
+
+/*
+If the damage is Stun, it carries over into the Physical damage track.
+For every two full boxes of excess Stun damage, carry over 1 box to
+the Physical damage track
+• If a character takes more Physical damage than he has boxes in the
+Physical damage track, the character is in trouble. Overflowing the
+Physical damage track means he’s near death. Instant death occurs only
+if damage overflows the Physical damage track by more than the character’s
+Body attribute. One point over that limit and his memory will be toasted
+at their favorite shadowrunner bar.
+*/
+type ConditionDamage struct {
+	Physical int `yaml:"physical"`
+	Stun     int `yaml:"stun"`
+}
+
 type Character struct {
 	// Personal Data
 	ID              string            `yaml:"id"`
@@ -70,6 +175,7 @@ type Character struct {
 	PublicAwareness int               `yaml:"public_awareness"`
 	Karma           int               `yaml:"karma"`
 	TotalKarma      int               `yaml:"total_karma"`
+	ConditionDamage ConditionDamage   `yaml:"condition_damage"`
 	// Attributes
 	Attributes Attributes `yaml:"attributes"`
 	// Body       int `yaml:"body"`
@@ -116,6 +222,15 @@ type Character struct {
 	AdeptPowers     map[string]string               `yaml:"adept_powers"`
 }
 
+func (c *Character) GetConditionPhysical() int {
+	return (c.Attributes.Body.Value / 2) + 8
+}
+
+func (c *Character) GetConditionStun() int {
+	return (c.Attributes.Willpower.Value / 2) + 8
+}
+
+// TODO: Indomitable quality can modify these limits
 func (c *Character) GetPhysicalLimit() int {
 	s := float64(c.Attributes.Strength.Value)
 	b := float64(c.Attributes.Body.Value)
@@ -220,12 +335,12 @@ func (c *Character) GetMovement() int {
 }
 
 func (c *Character) Validate() error {
-	c.RecalculateStats()
+	c.RecalculateAttributes()
 
 	return nil
 }
 
-func (c *Character) RecalculateStats() {
+func (c *Character) RecalculateAttributes() {
 	c.Attributes.Body.Recalculate()
 	c.Attributes.Agility.Recalculate()
 	c.Attributes.Reaction.Recalculate()
