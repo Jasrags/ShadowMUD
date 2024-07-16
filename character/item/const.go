@@ -17,6 +17,69 @@ const (
 	EnvironmentTypeSpace   EnvironmentType = "Space"
 )
 
+type (
+	EnvironmenModifier string
+)
+
+const (
+	EnvironmenModifierClear         EnvironmenModifier = "Clear"
+	EnvironmenModifierLightRain     EnvironmenModifier = "LightRain"
+	EnvironmenModifierMediumRain    EnvironmenModifier = "MediumRain"
+	EnvironmenModifierHeavyRain     EnvironmenModifier = "HeavyRain"
+	EnvironmenModifierLightFog      EnvironmenModifier = "LightFog"
+	EnvironmenModifierMediumFog     EnvironmenModifier = "MediumFog"
+	EnvironmenModifierHeavyFog      EnvironmenModifier = "HeavyFog"
+	EnvironmenModifierLightSmoke    EnvironmenModifier = "LightSmoke"
+	EnvironmenModifierMediumSmoke   EnvironmenModifier = "MediumSmoke"
+	EnvironmenModifierHeavySmoke    EnvironmenModifier = "HeavySmoke"
+	EnvironmenModifierFullLight     EnvironmenModifier = "FullLight"
+	EnvironmenModifierPartialLight  EnvironmenModifier = "PartialLight"
+	EnvironmenModifierDimLight      EnvironmenModifier = "DimLight"
+	EnvironmenModifierTotalDarkness EnvironmenModifier = "TotalDarkness"
+	EnvironmenModifierNoGlare       EnvironmenModifier = "NoGlare"
+	EnvironmenModifierWeakGlare     EnvironmenModifier = "WeakGlare"
+	EnvironmenModifierModerateGlare EnvironmenModifier = "ModerateGlare"
+	EnvironmenModifierBlidingGlare  EnvironmenModifier = "BlindingGlare"
+	EnvironmenModifierNoWind        EnvironmenModifier = "NoWind"
+	EnvironmenModifierLightBreeze   EnvironmenModifier = "LightBreeze"
+	EnvironmenModifierLightWind     EnvironmenModifier = "LightWind"
+	EnvironmenModifierModerateWind  EnvironmenModifier = "ModerateWind"
+	EnvironmenModifierStrongWind    EnvironmenModifier = "StrongWind"
+	EnvironmenModifierShortRange    EnvironmenModifier = "ShortRange"
+	EnvironmenModifierMediumRange   EnvironmenModifier = "MediumRange"
+	EnvironmenModifierLongRange     EnvironmenModifier = "LongRange"
+	EnvironmenModifierExtremeRange  EnvironmenModifier = "ExtremeRange"
+)
+
+func GetEnvironmenModifier(modifier EnvironmenModifier) int {
+	var modifierValue int
+
+	switch modifier {
+	case EnvironmenModifierClear, EnvironmenModifierFullLight,
+		EnvironmenModifierNoGlare, EnvironmenModifierNoWind,
+		EnvironmenModifierLightBreeze, EnvironmenModifierShortRange:
+		modifierValue = 0
+	case EnvironmenModifierLightRain, EnvironmenModifierLightFog,
+		EnvironmenModifierLightSmoke, EnvironmenModifierPartialLight,
+		EnvironmenModifierWeakGlare, EnvironmenModifierLightWind,
+		EnvironmenModifierMediumRange:
+		modifierValue = -1
+	case EnvironmenModifierMediumRain, EnvironmenModifierMediumFog,
+		EnvironmenModifierMediumSmoke, EnvironmenModifierDimLight,
+		EnvironmenModifierModerateGlare, EnvironmenModifierModerateWind,
+		EnvironmenModifierLongRange:
+		modifierValue = -2
+	case EnvironmenModifierHeavyRain, EnvironmenModifierHeavyFog,
+		EnvironmenModifierHeavySmoke, EnvironmenModifierTotalDarkness,
+		EnvironmenModifierBlidingGlare, EnvironmenModifierStrongWind,
+		EnvironmenModifierExtremeRange:
+		modifierValue = -6
+		// TODO: Combination of two or more conditions at the –6 level row -10
+	}
+
+	return modifierValue
+}
+
 type DamageType string
 
 const (

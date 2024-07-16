@@ -9,12 +9,16 @@ import (
 	"shadowrunmud/character/quality"
 	"shadowrunmud/character/skill"
 	"shadowrunmud/config"
+	"shadowrunmud/model"
 	"shadowrunmud/util"
 	"syscall"
 	"time"
 
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/ssh"
 	"github.com/charmbracelet/wish"
 	"github.com/charmbracelet/wish/activeterm"
+	"github.com/charmbracelet/wish/bubbletea"
 	"github.com/charmbracelet/wish/logging"
 	"github.com/sirupsen/logrus"
 )
@@ -49,7 +53,9 @@ func main() {
 		wish.WithAddress(net.JoinHostPort(serverConfig.Host, serverConfig.Port)),
 		wish.WithHostKeyPath(".ssh/id_ed25519"),
 		wish.WithMiddleware(
-			// bubbletea.MiddlewareWithProgramHandler(s.ProgramHandler, termenv.ANSI256),
+			bubbletea.Middleware(func(s ssh.Session) (tea.Model, []tea.ProgramOption) {
+				return model.NewInitialModel(s), []tea.ProgramOption{tea.WithAltScreen()}
+			}),
 			activeterm.Middleware(),
 			logging.Middleware(),
 		),

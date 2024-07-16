@@ -54,88 +54,6 @@ type AttributesInfoF struct {
 	Mods  float64 `yaml:"-"`
 }
 
-type TestAttribute struct {
-	Base  int
-	Mods  int
-	Value int
-}
-
-func (ta *TestAttribute) Reset() {
-	ta.Value = 0
-	ta.Mods = 0
-}
-func (ta *TestAttribute) Recalculate() {
-	ta.Value = ta.Base + ta.Mods
-}
-
-type TestChar struct {
-	Body      TestAttribute
-	Agility   TestAttribute
-	Reaction  TestAttribute
-	Strength  TestAttribute
-	Willpower TestAttribute
-	Logic     TestAttribute
-	Intuition TestAttribute
-	Charisma  TestAttribute
-	Essence   float32
-	Skills    []TestSkill
-}
-
-func (tc *TestChar) Recalculate() {
-	tc.Body.Reset()
-	tc.Agility.Reset()
-	tc.Reaction.Reset()
-	tc.Strength.Reset()
-	tc.Willpower.Reset()
-	tc.Logic.Reset()
-	tc.Intuition.Reset()
-	tc.Charisma.Reset()
-
-	for _, skill := range tc.Skills {
-		switch skill.Attribute {
-		case "Agility":
-			tc.Agility.Mods += skill.Rank
-		}
-	}
-
-	tc.Body.Recalculate()
-	tc.Agility.Recalculate()
-	tc.Reaction.Recalculate()
-	tc.Strength.Recalculate()
-	tc.Willpower.Recalculate()
-	tc.Logic.Recalculate()
-	tc.Intuition.Recalculate()
-	tc.Charisma.Recalculate()
-
-}
-
-type TestSkill struct {
-	Name      string
-	Attribute string
-	Rank      int
-}
-
-// var (
-// 	tsk = TestSkill{
-// 		Name:      "Automatics",
-// 		Attribute: "Agility",
-// 		Rank:      4,
-// 	}
-
-// 	tc = TestChar{
-// 		Body:      TestAttribute{Base: 5},
-// 		Agility:   TestAttribute{Base: 7},
-// 		Reaction:  TestAttribute{Base: 6},
-// 		Strength:  TestAttribute{Base: 8},
-// 		Willpower: TestAttribute{Base: 5},
-// 		Logic:     TestAttribute{Base: 7},
-// 		Intuition: TestAttribute{Base: 6},
-// 		Charisma:  TestAttribute{Base: 8},
-// 		Essence:   6.0,
-// 		Skills:    []TestSkill{tsk},
-// 	}
-// )
-
 type Equipment struct {
 	// Weapons   map[string]item.Weapon    `yaml:"weapons"`
 	// Armor     map[string]item.Armor     `yaml:"armor"`
@@ -164,6 +82,7 @@ type Character struct {
 	ID              string            `yaml:"id"`
 	Name            string            `yaml:"name"`
 	MetatypeName    string            `yaml:"metatype_name"`
+	MetatypeID      string            `yaml:"metatype_id"`
 	Metatype        metatype.Metatype `yaml:"-"`
 	Ethnicity       string            `yaml:"ethnicity"`
 	Age             int               `yaml:"age"`
@@ -178,16 +97,8 @@ type Character struct {
 	ConditionDamage ConditionDamage   `yaml:"condition_damage"`
 	// Attributes
 	Attributes Attributes `yaml:"attributes"`
-	// Body       int `yaml:"body"`
-	// Agility    int `yaml:"agility"`
-	// Reaction   int `yaml:"reaction"`
-	// Strength   int `yaml:"strength"`
-	// Willpower  int `yaml:"willpower"`
-	// Logic      int `yaml:"logic"`
-	// Intuition  int `yaml:"intuition"`
-	// Charisma   int `yaml:"charisma"`
-	Edge       int `yaml:"edge"`
-	EdgePoints int `yaml:"edge_points"`
+	Edge       int        `yaml:"edge"`
+	EdgePoints int        `yaml:"edge_points"`
 	// Derived Attributes
 	// Essence       float64 `yaml:"-"`
 	Magic         int `yaml:"-"`
