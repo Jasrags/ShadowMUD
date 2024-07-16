@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"shadowrunmud/util"
+	"shadowrunmud/core/util"
 )
 
 func TestRollDice(t *testing.T) {

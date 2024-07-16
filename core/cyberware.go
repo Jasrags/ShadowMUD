@@ -1,10 +1,11 @@
-package item
+package core
 
 import (
 	"fmt"
 	"os"
-	"shadowrunmud/util"
 	"strings"
+
+	"shadowrunmud/core/util"
 
 	"github.com/sirupsen/logrus"
 )
@@ -158,7 +159,7 @@ func LoadCyberware() {
 	CyberwareList = list
 }
 
-func LoadMetatype(name string) (*Cyberware, error) {
+func LoadCyberwareFile(name string) (*Cyberware, error) {
 	var v Cyberware
 	if err := util.LoadStructFromYAML(fmt.Sprintf(CyberwareFilename, name), &v); err != nil {
 		return nil, err

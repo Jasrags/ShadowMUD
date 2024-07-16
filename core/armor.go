@@ -1,4 +1,4 @@
-package item
+package core
 
 const (
 	ArmorDataPath        = "data/items/armor"

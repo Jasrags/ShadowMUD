@@ -1,4 +1,4 @@
-package skill
+package core
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"shadowrunmud/util"
+	"shadowrunmud/core/util"
 
 	"github.com/sirupsen/logrus"
 )

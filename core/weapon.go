@@ -1,11 +1,12 @@
-package item
+package core
 
 import (
 	"fmt"
 	"os"
-	"shadowrunmud/util"
 	"strings"
 	"sync"
+
+	"shadowrunmud/core/util"
 
 	"github.com/sirupsen/logrus"
 )

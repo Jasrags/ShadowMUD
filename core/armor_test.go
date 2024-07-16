@@ -1,12 +1,13 @@
-package item_test
+package core_test
 
 import (
-	"shadowrunmud/character/item"
+	"shadowrunmud/core"
+
 	"testing"
 )
 
 func TestReloadData(t *testing.T) {
-	am := item.ArmorMod{
+	am := core.ArmorMod{
 		// Name:         "Radiation Shielding",
 		Rating:   2,
 		Capacity: 6, // Rating
@@ -17,7 +18,7 @@ func TestReloadData(t *testing.T) {
 	}
 	want := 2
 
-	got := am.GetCapacity(func(am *item.ArmorMod) int {
+	got := am.GetCapacity(func(am *core.ArmorMod) int {
 		return am.Rating
 	})
 

@@ -5,15 +5,13 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"shadowrunmud/character/item"
-	"shadowrunmud/character/metatype"
-	"shadowrunmud/character/quality"
-	"shadowrunmud/character/skill"
-	"shadowrunmud/config"
-	"shadowrunmud/model"
-	"shadowrunmud/util"
 	"syscall"
 	"time"
+
+	"shadowrunmud/config"
+	"shadowrunmud/core"
+	"shadowrunmud/core/util"
+	"shadowrunmud/model"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/ssh"
@@ -40,12 +38,12 @@ func main() {
 
 	// Load all the data
 	logrus.Info("Loading data files")
-	metatype.LoadMetatypes()
-	skill.LoadLanguageSkills()
-	skill.LoadActiveSkills()
-	skill.LoadKnowledgeSkills()
-	quality.LoadQualities()
-	item.LoadCyberware()
+	core.LoadMetatypes()
+	core.LoadLanguageSkills()
+	core.LoadActiveSkills()
+	core.LoadKnowledgeSkills()
+	core.LoadQualities()
+	core.LoadCyberware()
 	logrus.Info("Data files loaded")
 
 	done := make(chan os.Signal, 1)

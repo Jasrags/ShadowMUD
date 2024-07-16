@@ -1,4 +1,4 @@
-package character
+package core
 
 type TestAttribute struct {
 	Base  int

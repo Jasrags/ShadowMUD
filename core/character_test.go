@@ -1,15 +1,15 @@
-package character_test
+package core_test
 
 import (
 	"testing"
 
-	"shadowrunmud/character"
+	"shadowrunmud/core"
 )
 
-func NewStreetSamurai() *character.Character {
+func NewStreetSamurai() *core.Character {
 	// m, _ := metatype.LoadMetatype("ork")
 
-	c := character.NewCharacter()
+	c := core.NewCharacter()
 	// c.SetName("Street Samurai")
 	// c.SetMetatype(m)
 	// c.SetBody(7)
@@ -178,11 +178,11 @@ func TestGetPhysicalLimit(t *testing.T) {
 	}
 
 	for _, tt := range dt {
-		c := character.Character{
-			Attributes: character.Attributes{
-				Strength: character.AttributesInfo{Base: tt.Strength},
-				Body:     character.AttributesInfo{Base: tt.Body},
-				Reaction: character.AttributesInfo{Base: tt.Reaction},
+		c := core.Character{
+			Attributes: core.Attributes{
+				Strength: core.AttributesInfo{Base: tt.Strength},
+				Body:     core.AttributesInfo{Base: tt.Body},
+				Reaction: core.AttributesInfo{Base: tt.Reaction},
 			},
 			// Strength: tt.Strength,
 			// Body:     tt.Body,
@@ -209,11 +209,11 @@ func TestGetMentalLimit(t *testing.T) {
 	}
 
 	for _, tt := range dt {
-		c := character.Character{
-			Attributes: character.Attributes{
-				Logic:     character.AttributesInfo{Base: tt.Logic},
-				Intuition: character.AttributesInfo{Base: tt.Intuition},
-				Willpower: character.AttributesInfo{Base: tt.Willpower},
+		c := core.Character{
+			Attributes: core.Attributes{
+				Logic:     core.AttributesInfo{Base: tt.Logic},
+				Intuition: core.AttributesInfo{Base: tt.Intuition},
+				Willpower: core.AttributesInfo{Base: tt.Willpower},
 			},
 		}
 		c.RecalculateAttributes()
@@ -238,11 +238,11 @@ func TestGetSocialLimit(t *testing.T) {
 	}
 
 	for _, tt := range dt {
-		c := character.Character{
-			Attributes: character.Attributes{
-				Charisma:  character.AttributesInfo{Base: tt.Charisma},
-				Willpower: character.AttributesInfo{Base: tt.Willpower},
-				Essence:   character.AttributesInfoF{Base: tt.Essence},
+		c := core.Character{
+			Attributes: core.Attributes{
+				Charisma:  core.AttributesInfo{Base: tt.Charisma},
+				Willpower: core.AttributesInfo{Base: tt.Willpower},
+				Essence:   core.AttributesInfoF{Base: tt.Essence},
 			},
 		}
 		c.RecalculateAttributes()
@@ -255,23 +255,23 @@ func TestGetSocialLimit(t *testing.T) {
 	}
 }
 func TestRecalculate(t *testing.T) {
-	tsk := character.TestSkill{
+	tsk := core.TestSkill{
 		Name:      "Automatics",
 		Attribute: "Agility",
 		Rank:      4,
 	}
 
-	tc := character.TestChar{
-		Body:      character.TestAttribute{Base: 5},
-		Agility:   character.TestAttribute{Base: 7},
-		Reaction:  character.TestAttribute{Base: 6},
-		Strength:  character.TestAttribute{Base: 8},
-		Willpower: character.TestAttribute{Base: 5},
-		Logic:     character.TestAttribute{Base: 7},
-		Intuition: character.TestAttribute{Base: 6},
-		Charisma:  character.TestAttribute{Base: 8},
+	tc := core.TestChar{
+		Body:      core.TestAttribute{Base: 5},
+		Agility:   core.TestAttribute{Base: 7},
+		Reaction:  core.TestAttribute{Base: 6},
+		Strength:  core.TestAttribute{Base: 8},
+		Willpower: core.TestAttribute{Base: 5},
+		Logic:     core.TestAttribute{Base: 7},
+		Intuition: core.TestAttribute{Base: 6},
+		Charisma:  core.TestAttribute{Base: 8},
 		Essence:   6.0,
-		Skills:    []character.TestSkill{tsk},
+		Skills:    []core.TestSkill{tsk},
 	}
 	tc.Recalculate()
 

@@ -1,13 +1,10 @@
-package character
+package core
 
 import (
 	"fmt"
 	"math"
 
-	"shadowrunmud/character/item"
-	"shadowrunmud/character/metatype"
-	"shadowrunmud/character/skill"
-	"shadowrunmud/util"
+	"shadowrunmud/core/util"
 
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
@@ -55,10 +52,10 @@ type AttributesInfoF struct {
 }
 
 type Equipment struct {
-	// Weapons   map[string]item.Weapon    `yaml:"weapons"`
-	// Armor     map[string]item.Armor     `yaml:"armor"`
-	// Cyberware map[string]item.Cyberware `yaml:"cyberware"`
-	// Gear      map[string]item.Gear      `yaml:"gear"`
+	// Weapons   map[string]Weapon    `yaml:"weapons"`
+	// Armor     map[string]Armor     `yaml:"armor"`
+	// Cyberware map[string]Cyberware `yaml:"cyberware"`
+	// Gear      map[string]Gear      `yaml:"gear"`
 }
 
 /*
@@ -79,22 +76,22 @@ type ConditionDamage struct {
 
 type Character struct {
 	// Personal Data
-	ID              string            `yaml:"id"`
-	Name            string            `yaml:"name"`
-	MetatypeName    string            `yaml:"metatype_name"`
-	MetatypeID      string            `yaml:"metatype_id"`
-	Metatype        metatype.Metatype `yaml:"-"`
-	Ethnicity       string            `yaml:"ethnicity"`
-	Age             int               `yaml:"age"`
-	Sex             string            `yaml:"sex"`
-	Height          int               `yaml:"height"`
-	Weight          int               `yaml:"weight"`
-	StreetCred      int               `yaml:"street_cred"`
-	Notoriety       int               `yaml:"notoriety"`
-	PublicAwareness int               `yaml:"public_awareness"`
-	Karma           int               `yaml:"karma"`
-	TotalKarma      int               `yaml:"total_karma"`
-	ConditionDamage ConditionDamage   `yaml:"condition_damage"`
+	ID              string          `yaml:"id"`
+	Name            string          `yaml:"name"`
+	MetatypeName    string          `yaml:"metatype_name"`
+	MetatypeID      string          `yaml:"metatype_id"`
+	Metatype        Metatype        `yaml:"-"`
+	Ethnicity       string          `yaml:"ethnicity"`
+	Age             int             `yaml:"age"`
+	Sex             string          `yaml:"sex"`
+	Height          int             `yaml:"height"`
+	Weight          int             `yaml:"weight"`
+	StreetCred      int             `yaml:"street_cred"`
+	Notoriety       int             `yaml:"notoriety"`
+	PublicAwareness int             `yaml:"public_awareness"`
+	Karma           int             `yaml:"karma"`
+	TotalKarma      int             `yaml:"total_karma"`
+	ConditionDamage ConditionDamage `yaml:"condition_damage"`
 	// Attributes
 	Attributes Attributes `yaml:"attributes"`
 	Edge       int        `yaml:"edge"`
@@ -115,22 +112,22 @@ type Character struct {
 	// LiftCarry       int `yaml:"-"`
 	// Movement        int `yaml:"-"`
 	// Skills
-	ActiveSkills    map[string]skill.ActiveSkill    `yaml:"active_skills"`
-	LanguageSkills  map[string]skill.LanguageSkill  `yaml:"language_skills"`
-	KnowledgeSkills map[string]skill.KnowledgeSkill `yaml:"knowledge_skills"`
-	Qualities       map[string]string               `yaml:"qualities"`
-	Contacts        map[string]string               `yaml:"contacts"`
-	Identities      map[string]string               `yaml:"identities"`
-	Lifestyles      map[string]string               `yaml:"lifestyles"`
-	Currancy        map[string]int                  `yaml:"currancy"`
-	RangedWeapons   map[string]item.WeaponRanged    `yaml:"ranged_weapons"`
-	MeleeWeapons    map[string]item.WeaponMelee     `yaml:"melee_weapons"`
-	Armor           map[string]string               `yaml:"armor"`
-	Cyberdecks      map[string]string               `yaml:"cyberdecks"`
-	Augmentations   map[string]string               `yaml:"augmentations"`
-	Vehicals        map[string]string               `yaml:"vehicals"`
-	Gear            map[string]string               `yaml:"gear"`
-	AdeptPowers     map[string]string               `yaml:"adept_powers"`
+	ActiveSkills    map[string]ActiveSkill    `yaml:"active_skills"`
+	LanguageSkills  map[string]LanguageSkill  `yaml:"language_skills"`
+	KnowledgeSkills map[string]KnowledgeSkill `yaml:"knowledge_skills"`
+	Qualities       map[string]string         `yaml:"qualities"`
+	Contacts        map[string]string         `yaml:"contacts"`
+	Identities      map[string]string         `yaml:"identities"`
+	Lifestyles      map[string]string         `yaml:"lifestyles"`
+	Currancy        map[string]int            `yaml:"currancy"`
+	RangedWeapons   map[string]WeaponRanged   `yaml:"ranged_weapons"`
+	MeleeWeapons    map[string]WeaponMelee    `yaml:"melee_weapons"`
+	Armor           map[string]string         `yaml:"armor"`
+	Cyberdecks      map[string]string         `yaml:"cyberdecks"`
+	Augmentations   map[string]string         `yaml:"augmentations"`
+	Vehicals        map[string]string         `yaml:"vehicals"`
+	Gear            map[string]string         `yaml:"gear"`
+	AdeptPowers     map[string]string         `yaml:"adept_powers"`
 }
 
 func (c *Character) GetConditionPhysical() int {

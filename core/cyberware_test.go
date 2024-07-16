@@ -1,7 +1,9 @@
-package item
+package core_test
 
 import (
 	"testing"
+
+	"shadowrunmud/core"
 )
 
 func TestModifyReaction(t *testing.T) {
@@ -26,7 +28,7 @@ func TestModifyReaction(t *testing.T) {
 	}
 
 	for _, tt := range dt {
-		c := &Cyberware{
+		c := &core.Cyberware{
 			Name:     tt.Name,
 			IsActive: tt.IsActive,
 			Rating:   tt.Rating,

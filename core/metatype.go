@@ -1,11 +1,11 @@
-package metatype
+package core
 
 import (
 	"fmt"
 	"os"
 	"strings"
 
-	"shadowrunmud/util"
+	"shadowrunmud/core/util"
 
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
