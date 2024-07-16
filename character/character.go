@@ -360,7 +360,7 @@ func (c *Character) Save() error {
 // The function takes a `sync.WaitGroup` pointer as a parameter to indicate completion.
 // It is expected to be called as a goroutine.
 func LoadCharacter(id string) Character {
-	logrus.WithFields(logrus.Fields{"id": id}).Debug("Started loading character")
+	logrus.WithFields(logrus.Fields{"id": id}).Info("Started loading character")
 
 	var char Character
 	if err := util.LoadStructFromYAML(fmt.Sprintf(CharacterFilename, id), &char); err != nil {
