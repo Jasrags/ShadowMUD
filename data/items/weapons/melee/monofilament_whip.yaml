@@ -1,0 +1,18 @@
+id: monofilament_whip
+name: Monofilament Whip
+description: A whip with a monofilament blade.
+accuracy: 5
+reach: 2
+damage_value: 12
+damage_type: Physical
+armor_penatration: -8
+availability: 12
+legality_type: Restricted
+tags:
+    - Melee
+    - Exotic
+    - Whip
+    - Monofiliament
+modifiers: []
+cost: 10000
+rule_source: SR5:Core

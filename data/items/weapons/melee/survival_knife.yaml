@@ -1,11 +1,15 @@
 id: survival_knife
 name: Survival Knife
-description: A fine quality blade—smooth on one edge, serrated on the other—with several accessories, including a GPS monitor, mini-multitool, micro-lighter, and a hidden compartment in the handle. The sides of the steel are coated with a non-toxic chemical that blacks out the blade when inert to prevent unwanted reflection, but can be activated to provide two hours of phosphorescent light. All knives can cut flesh, but a survival knife is better at cutting rope and wood, or otherwise being used as a tool. The survival knife is the kind of gadget that no professional should be without.
+description: A survival knife is a large knife with a serrated edge. It is designed for use in the wilderness, and is often used by military personnel and survivalists.
 accuracy: 5
-reach: 0
 damage_value: 2
-damage_type: 0
+damage_type: Physical
 armor_penatration: -1
-availability: "4"
+legality_type: Legal
+tags:
+    - Melee
+    - Blade
+    - Knife
+modifiers: []
 cost: 100
 rule_source: SR5:Core

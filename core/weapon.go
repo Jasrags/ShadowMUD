@@ -167,37 +167,6 @@ func (w *Weapon) GetDamageValue() error {
 // 	},
 // }
 
-type WeaponMelee struct {
-	ID               int        `yaml:"id"`
-	Name             string     `yaml:"name"`
-	Description      string     `yaml:"description"`
-	Accuracy         int        `yaml:"accuracy"`
-	Reach            int        `yaml:"reach"`
-	DamageValue      int        `yaml:"damage_value"`
-	DamageType       DamageType `yaml:"damage_type"`
-	ArmorPenatration int        `yaml:"armor_penatration"`
-	Availability     string     `yaml:"availability"`
-	Cost             int        `yaml:"cost"`
-	RuleSource       string     `yaml:"rule_source"`
-}
-
-type WeaponRanged struct {
-	ID               int
-	Name             string
-	Description      string
-	Accuracy         int
-	DamageValue      int
-	DamageType       DamageType
-	ArmorPenatration int
-	Modes            []WeaponFiringMode
-	Recoil           int
-	AmmoType         string
-	AmmoCapacity     int
-	Availability     string
-	Cost             int
-	RuleSource       string
-}
-
 // type WeaponFiringMode int
 
 // const (

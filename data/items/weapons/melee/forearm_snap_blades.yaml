@@ -1,11 +1,15 @@
 id: forearm_snap_blades
 name: Forearm Snap-Blades
-description: These are essentially like spurs, only they’re external—painless to install or remove. A forearm sheath conceals three blades that can be extended or retracted via wireless link or muscle movement commands.
+description: Blades that extend from the forearm.
 accuracy: 4
-reach: 0
 damage_value: 2
-damage_type: 0
+damage_type: Physical
 armor_penatration: -2
-availability: 7R
+availability: 7
+legality_type: Restricted
+tags:
+    - Melee
+    - Blade
+modifiers: []
 cost: 200
 rule_source: SR5:Core

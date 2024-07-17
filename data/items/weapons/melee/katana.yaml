@@ -1,11 +1,17 @@
 id: katana
-name: katana
-description: The legendary two-handed sword of the samurai. The katana has become synonymous not just with street samurai, but with shadowrunners in general, at least in the trids; they’ve got everyone packing a katana, from the decker to the mage. But being a silly cliché doesn’t make this blade any less dangerous, or less helpful in a fight.
+name: Katana
+description: A traditional Japanese sword.
 accuracy: 7
 reach: 1
 damage_value: 3
-damage_type: 0
+damage_type: Physical
 armor_penatration: -3
-availability: 9R
+availability: 9
+legality_type: Restricted
+tags:
+    - Melee
+    - Blade
+    - Katana
+modifiers: []
 cost: 1000
 rule_source: SR5:Core

@@ -138,7 +138,62 @@ const (
 )
 
 type Modifier struct {
-	Type   string `yaml:"type"`
-	Effect string `yaml:"effect"`
-	Value  int    `yaml:"value"`
+	Type   string `yaml:"type,omitempty"`
+	Effect string `yaml:"effect,omitempty"`
+	Value  int    `yaml:"value,omitempty"`
 }
+
+type ItemTag string
+
+const (
+	ItemTagWeapon                 ItemTag = "Weapon"
+	ItemTagMelee                  ItemTag = "Melee"
+	ItemTagImprovised             ItemTag = "Improvised"
+	ItemTagClub                   ItemTag = "Club"
+	ItemTagBlade                  ItemTag = "Blade"
+	ItemTagExotic                 ItemTag = "Exotic"
+	ItemTagMiscellaneous          ItemTag = "Miscellaneous"
+	ItemTagThrowing               ItemTag = "Throwing"
+	ItemTagWhip                   ItemTag = "Whip"
+	ItemTagMonofiliament          ItemTag = "Monofiliament"
+	ItemTagBaton                  ItemTag = "Baton"
+	ItemTagKatana                 ItemTag = "Katana"
+	ItemTagAxe                    ItemTag = "Axe"
+	ItemTagKnife                  ItemTag = "Knife"
+	ItemTagSword                  ItemTag = "Sword"
+	ItemTagPolearm                ItemTag = "Polearm"
+	ItemTagChain                  ItemTag = "Chain"
+	ItemTagStaff                  ItemTag = "Staff"
+	ItemTagBallistic              ItemTag = "Ballistic"
+	ItemTagProjectile             ItemTag = "Projectile"
+	ItemTagFlamethrower           ItemTag = "Flamethrower"
+	ItemTagTaser                  ItemTag = "Taser"
+	ItemTagRanged                 ItemTag = "Ranged"
+	ItemTagFirearm                ItemTag = "Firearm"
+	ItemTagPistol                 ItemTag = "Pistol"
+	ItemTagHoldOut                ItemTag = "Hold-Out"
+	ItemTagLightPistol            ItemTag = "Light Pistol"
+	ItemTagHeavyPistol            ItemTag = "Heavy Pistol"
+	ItemTagMachinePistol          ItemTag = "Machine Pistol"
+	ItemTagSubmachineGun          ItemTag = "Submachine Gun"
+	ItemTagRifle                  ItemTag = "Rifle"
+	ItemTagAssaultRifle           ItemTag = "Assault Rifle"
+	ItemTagSniperRifle            ItemTag = "Sniper Rifle"
+	ItemTagSportingRifle          ItemTag = "Sporting Rifle"
+	ItemTagShotgun                ItemTag = "Shotgun"
+	ItemTagLightMachineGun        ItemTag = "Light Machine Gun"
+	ItemTagMediumMachineGun       ItemTag = "Medium Machine Gun"
+	ItemTagHeavyMachineGun        ItemTag = "Heavy Machine Gun"
+	ItemTagLaser                  ItemTag = "Laser"
+	ItemTagLargeCaliberProjectile ItemTag = "Large Caliber Projectile"
+	ItemTagGrenadeLauncher        ItemTag = "Grenade Launcher"
+	ItemTagMissileLauncher        ItemTag = "Missile Launcher"
+	ItemTagImplantMeleeWeapon     ItemTag = "Implant Melee Weapon"
+	ItemTagImplantFirearm         ItemTag = "Implant Firearm"
+	ItemTagAmmunition             ItemTag = "Ammunition"
+	ItemTagBallisticProjectile    ItemTag = "Ballistic Projectile"
+	ItemTagGrenade                ItemTag = "Grenade"
+	ItemTagRocket                 ItemTag = "Rocket"
+	ItemTagMissile                ItemTag = "Missile"
+	ItemTagChainsaw               ItemTag = "Chainsaw"
+)

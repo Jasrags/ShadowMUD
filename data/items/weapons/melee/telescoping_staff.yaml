@@ -1,0 +1,15 @@
+id: telescoping_staff
+name: Telescoping Staff
+description: A staff that extends to a full length.
+accuracy: 4
+reach: 2
+damage_value: 4
+damage_type: Physical
+availability: 4
+legality_type: Legal
+tags:
+    - Melee
+    - Staff
+modifiers: []
+cost: 350
+rule_source: SR5:Core

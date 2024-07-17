@@ -1,0 +1,15 @@
+id: extendable_baton
+name: Extendable Baton
+description: A baton that extends to a full length.
+accuracy: 5
+reach: 1
+damage_value: 2
+damage_type: Physical
+availability: 4
+legality_type: Legal
+tags:
+    - Melee
+    - Baton
+modifiers: []
+cost: 100
+rule_source: SR5:Core

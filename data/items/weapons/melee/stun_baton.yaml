@@ -1,0 +1,16 @@
+id: stun_baton
+name: Stun Baton
+description: A baton that delivers an electrical shock.
+accuracy: 4
+reach: 1
+damage_value: 9
+damage_type: Stun
+armor_penatration: -5
+availability: 6
+legality_type: Restricted
+tags:
+    - Melee
+    - Baton
+modifiers: []
+cost: 750
+rule_source: SR5:Core

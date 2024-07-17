@@ -1,0 +1,16 @@
+id: shock_gloves
+name: Shock Gloves
+description: These gloves are lined with a layer of conductive material that delivers an electric shock to the target.
+damage_value: 8
+damage_type: Stun
+armor_penatration: -5
+availability: 6
+legality_type: Restricted
+tags:
+    - Melee
+    - Miscellaneous
+modifiers:
+    - type: Electric attack
+      effect: Attack
+cost: 550
+rule_source: SR5:Core

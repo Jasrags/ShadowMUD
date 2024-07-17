@@ -1,0 +1,13 @@
+id: plasteel_toe_boots
+name: Plasteel Toe Boots
+description: These boots have a reinforced toe made of plasteel, making them a formidable weapon in a kick.
+damage_value: 1
+damage_type: Physical
+availability: 2
+legality_type: Legal
+tags:
+    - Melee
+    - Miscellaneous
+modifiers: []
+cost: 200
+rule_source: SR5:Core

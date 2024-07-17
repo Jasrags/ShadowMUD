@@ -1,0 +1,18 @@
+id: monofilament_chainsaw
+name: Monofilament Chainsaw
+description: A chainsaw with a monofilament blade.
+accuracy: 3
+reach: 1
+damage_value: 8
+damage_type: Physical
+armor_penatration: -6
+availability: 8
+legality_type: Legal
+tags:
+    - Melee
+    - Exotic
+    - Chainsaw
+    - Monofiliament
+modifiers: []
+cost: 500
+rule_source: SR5:Core

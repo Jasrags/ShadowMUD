@@ -1,0 +1,15 @@
+id: staff
+name: Staff
+description: A long stick.
+accuracy: 6
+reach: 2
+damage_value: 3
+damage_type: Physical
+availability: 3
+legality_type: Legal
+tags:
+    - Melee
+    - Staff
+modifiers: []
+cost: 100
+rule_source: SR5:Core

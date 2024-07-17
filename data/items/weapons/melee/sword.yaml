@@ -1,11 +1,17 @@
 id: sword
 name: Sword
-description: It’s sharp, it’s heavy, and it will fragging cut you wide open. Available in a wide variety of styles (wakizashi, seax, scimitar, jian, machete, and so on and so forth), this one-handed blade is not as formidable as a katana but is substantially easier to hide.
+description: A sword is a long, sharp blade.
 accuracy: 6
 reach: 1
 damage_value: 3
-damage_type: 0
+damage_type: Physical
 armor_penatration: -2
-availability: 5R
+availability: 5
+legality_type: Restricted
+tags:
+    - Melee
+    - Blade
+    - Sword
+modifiers: []
 cost: 500
 rule_source: SR5:Core

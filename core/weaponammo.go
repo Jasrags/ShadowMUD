@@ -1,9 +1,9 @@
 package core
 
 const (
-	MeleeWeaponAmunitionDataPath      = "data/items/weapons/amunition"
-	MeleeWeaponAmunitionFilename      = MeleeWeaponAmunitionDataPath + "/%s.yaml"
-	MeleeWeaponAmunitionileMinVersion = "0.0.1"
+	WeaponAmunitionDataPath      = "data/items/weapons/amunition"
+	WeaponAmunitionFilename      = WeaponAmunitionDataPath + "/%s.yaml"
+	WeaponAmunitionileMinVersion = "0.0.1"
 )
 
 type WeaponAmunition struct {
@@ -19,6 +19,7 @@ type WeaponAmunition struct {
 	Availability             int          `yaml:"availability"`
 	Legality                 LegalityType `yaml:"legality"`
 	Cost                     int          `yaml:"cost"`
+	ItemTags                 []ItemTag    `yaml:"tags"`
 	Modifiers                []Modifier   `yaml:"modifiers"`
 	RuleSource               RuleSource   `yaml:"rule_source"`
 	FileVersion              string       `yaml:"file_version,omitempty"`
