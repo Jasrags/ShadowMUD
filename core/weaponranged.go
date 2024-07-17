@@ -1,66 +1,284 @@
 package core
 
+import "fmt"
+
 const (
 	WeaponRangedDataPath    = "data/items/weapons/ranged"
 	WeaponRangedFilename    = WeaponRangedDataPath + "/%s.yaml"
 	WeaponRangedeMinVersion = "0.0.1"
 )
 
+type WeaponRangedReload string
+
+const (
+	WeaponRangedReloadBreakAction        WeaponRangedReload = "b"
+	WeaponRangedReloadDetachableMagazine WeaponRangedReload = "c"
+	WeaponRangedReloadDrum               WeaponRangedReload = "d"
+	WeaponRangedReloadMuzzleLoader       WeaponRangedReload = "ml"
+	WeaponRangedReloadInternalMagazine   WeaponRangedReload = "m"
+	WeaponRangedReloadCylinder           WeaponRangedReload = "cy"
+	WeaponRangedReloadBelt               WeaponRangedReload = "belt"
+)
+
 type WeaponRanged struct {
-	ID               string             `yaml:"id,omitempty"`
-	Name             string             `yaml:"name,omitempty"`
-	Description      string             `yaml:"description,omitempty"`
-	Accuracy         int                `yaml:"accuracy,omitempty"`
-	DamageValue      int                `yaml:"damage_value,omitempty"`
-	DamageType       DamageType         `yaml:"damage_type,omitempty"`
-	ArmorPenatration int                `yaml:"armor_penatration,omitempty"`
-	Modes            []WeaponFiringMode `yaml:"modes,omitempty"`
-	Recoil           int                `yaml:"recoil,omitempty"`
-	AmmoType         string             `yaml:"ammo_type,omitempty"`
-	AmmoCapacity     int                `yaml:"ammo_capacity,omitempty"`
-	Availability     string             `yaml:"availability,omitempty"`
-	ItemTags         []ItemTag          `yaml:"tags"`
-	Modifiers        []Modifier         `yaml:"modifiers"`
-	Cost             int                `yaml:"cost,omitempty"`
-	RuleSource       string             `yaml:"rule_source,omitempty"`
+	ID                 string             `yaml:"id,omitempty"`
+	Name               string             `yaml:"name,omitempty"`
+	Description        string             `yaml:"description,omitempty"`
+	Accuracy           int                `yaml:"accuracy,omitempty"`
+	DamageValue        int                `yaml:"damage_value,omitempty"`
+	DamageType         DamageType         `yaml:"damage_type,omitempty"`
+	ArmorPenatration   int                `yaml:"armor_penatration,omitempty"`
+	SelectedFiringMode WeaponFiringMode   `yaml:"selected_firing_mode,omitempty"`
+	FiringModes        []WeaponFiringMode `yaml:"firing_modes"`
+	Recoil             int                `yaml:"recoil,omitempty"`
+	AmmoType           string             `yaml:"ammo_type,omitempty"`
+	AmmoCapacity       int                `yaml:"ammo_capacity,omitempty"`
+	Reload             WeaponRangedReload `yaml:"reload,omitempty"`
+	Availability       int                `yaml:"availability,omitempty"`
+	LegalityType       LegalityType       `yaml:"legality_type,omitempty"`
+	ItemTags           []ItemTag          `yaml:"tags"`
+	Modifiers          []Modifier         `yaml:"modifiers"`
+	Cost               int                `yaml:"cost,omitempty"`
+	RuleSource         RuleSource         `yaml:"rule_source,omitempty"`
 }
 
-var CoreWeaponRanged = []WeaponRanged{}
+func (w *WeaponRanged) ToggleFiringMode() string {
+	if len(w.FiringModes) == 0 {
+		return fmt.Sprintf("[%s] No firing modes available", w.Name)
+	}
 
-// Throwing Weapons
-// ================
-// | Weapon | Acc | DV | AP | Modes | RC | Ammo | Avail | Cost | Source |
-// |--------|-----|----|----|-------|----|------|-------|------|--------|
-// | Shuriken | Physical | (STR+1)P | -1 | – | – | 4R | 25¥ | Core |
-// | Throwing Knife | Physical | (STR+1)P | -1 | – | – | 4R | 25¥ | Core |
-// Ballistic Projectiles
-// =====================
-// | Weapon | Acc | DV | AP | Modes | RC | Ammo | Avail | Cost | Source |
-// |--------|-----|----|----|-------|----|------|-------|------|--------|
-// | Bow | 6 | (Rating+2)P | -(Rating/4) | – | – | – | Rating | Rating×100¥ | Core |
-// | Light Crossbow | 7 | 5P | -1 | – | – | 4 (m) | 2 | 300¥ | Core |
-// | Medium Crossbow | 6 | 7P | -2 | – | – | 4 (m) | 4R | 500¥ | Core |
-// | Heavy Crossbow | 5 | 10P | -3 | – | – | 4 (m) | 8R | 1,000¥ | Core |
-// Exotic Ranged Weapons
-// =====================
-// | Weapon | Acc | DV | AP | Modes | RC | Ammo | Avail | Cost | Source |
-// |--------|-----|----|----|-------|----|------|-------|------|--------|
-// | Grapple gun | 3 | 7S | -2 | SS | – | 1 (ml) | 8R | 500¥ | Core |
-// Tasers
-// ======
-// | Weapon | Acc | DV  | AP | Modes | RC | Ammo | Avail | Cost | Source    |
-// |--------|-----|-----|----|-------|----|------|-------|------|-----------|
-// | Defiance EX Shocker | 4 | 9S(e) | -5 | SS | – | 4 (m) | – | 250¥ | Core |
-// | Yamaha Pulsar | 5 | 7S(e) | -5 | SA | – | 4 (m) | – | 180¥ | Core |
-// Pistols
-// -------
-// Hold-Out Pistols
-// ----------------
-// | Weapon | Acc | DV  | AP | Modes | RC | Ammo | Avail | Cost | Source    |
-// |--------|-----|-----|----|-------|----|------|-------|------|-----------|
-// | Fichetti Tiffani Needler | 5 | 8P(f) | +5 | SA | – | 4 (c) | 6R | 1,000¥ | Core |
-// | Streetline Special | 4 | 6P | – | SA | – | 6 (c) | 4R | 120¥ | Core |
-// | Walther Palm Pistol | 4 | 7P | – | SS/BF | – | 2 (b) | 4R | 180¥ | Core |
+	for i, v := range w.FiringModes {
+		if v == w.SelectedFiringMode {
+			if i+1 < len(w.FiringModes) {
+				w.SelectedFiringMode = w.FiringModes[i+1]
+			} else {
+				w.SelectedFiringMode = w.FiringModes[0]
+			}
+			break
+		}
+	}
+
+	return fmt.Sprintf("[%s] Firing mode changed to %s", w.Name, w.SelectedFiringMode)
+}
+
+var CoreWeaponRanged = []WeaponRanged{
+	{
+		ID:           "shuriken",
+		Name:         "Shuriken",
+		Description:  "A shuriken is a small, star-shaped piece of metal with sharpened edges, designed for throwing. It is also known as a “throwing star” or “ninja star.”",
+		DamageValue:  1,
+		DamageType:   DamageTypePhysical,
+		FiringModes:  []WeaponFiringMode{WeaponFiringModeSingleShot},
+		Recoil:       -1,
+		Availability: 4,
+		LegalityType: LegalityTypeRestricted,
+		Cost:         25,
+		RuleSource:   RuleSourceSR5Core,
+		ItemTags:     []ItemTag{ItemTagRanged, ItemTagThrowing},
+		// Wireless
+		//  If all the throwing knives or shuriken you throw in a single Combat Turn are wireless and you have a smartlink system, each knife you throw receives a +1 dice pool bonus per knife thrown that Combat Turn at your current target, as the knives inform and adjust for wind and other atmospheric conditions. So you’d get no bonus on the first throw, a +1 bonus on the second throw, a +2 bonus on the third throw, etc. (assuming you aimed all three knives at the same target).
+	},
+	{
+		ID:           "throwing_knife",
+		Name:         "Throwing Knife",
+		Description:  "A throwing knife is a knife that is specially designed and weighted so that it can be thrown effectively.",
+		DamageValue:  1,
+		DamageType:   DamageTypePhysical,
+		FiringModes:  []WeaponFiringMode{WeaponFiringModeSingleShot},
+		Recoil:       -1,
+		Availability: 4,
+		LegalityType: LegalityTypeRestricted,
+		Cost:         25,
+		RuleSource:   RuleSourceSR5Core,
+		ItemTags:     []ItemTag{ItemTagRanged, ItemTagThrowing},
+		// Wireless
+		//  If all the throwing knives or shuriken you throw in a single Combat Turn are wireless and you have a smartlink system, each knife you throw receives a +1 dice pool bonus per knife thrown that Combat Turn at your current target, as the knives inform and adjust for wind and other atmospheric conditions. So you’d get no bonus on the first throw, a +1 bonus on the second throw, a +2 bonus on the third throw, etc. (assuming you aimed all three knives at the same target).
+	},
+	{
+		ID:               "bow",
+		Name:             "Bow",
+		Description:      "A bow is a flexible arc that shoots aerodynamic projectiles called arrows. A string joins the two ends of the bow and when the string is drawn back, the ends of the bow are flexed. When the string is released, the potential energy of the flexed bow limbs is transformed into the velocity of the arrow.",
+		Accuracy:         6,
+		DamageValue:      2, // (Rating+2)
+		DamageType:       DamageTypePhysical,
+		FiringModes:      []WeaponFiringMode{WeaponFiringModeSingleShot},
+		ArmorPenatration: 0,   // -(Rating/4)
+		Availability:     1,   // Rating
+		Cost:             100, // Rating×100¥
+		RuleSource:       RuleSourceSR5Core,
+		ItemTags:         []ItemTag{ItemTagRanged, ItemTagBow, ItemTagBallistic},
+		// Max Rating
+		//     10
+		// Strength Minimum
+		//     If Strength is less than Rating then -3 DP per point below Rating.
+		// Damage Rating
+		//     Lowest value of Strength, Bows Rating, or Arrow Rating.
+		// Range Rating
+		//     Lowest value of Strength, Bows Rating, or Arrow Rating.
+		// Reload
+		//     Simple Action
+		// When attacking with a bow, a character whose Strength is less than the Rating suffers a –3 dice pool modifier per point below the minimum
+		// Use the lowest value of your Strength, the bow’s rating, or the arrow Rating for range and damage when attacking a target, because your average Rating 10
+	},
+	{
+		ID:               "light_crossbow",
+		Name:             "Light Crossbow",
+		Description:      "A crossbow is a type of ranged weapon based on the bow and consisting of a horizontal bow-like assembly mounted on a frame which is handheld in a similar fashion to the stock of a gun. It shoots arrow-like projectiles called bolts or quarrels.",
+		Accuracy:         7,
+		DamageValue:      5,
+		DamageType:       DamageTypePhysical,
+		FiringModes:      []WeaponFiringMode{WeaponFiringModeSemiAutomatic},
+		ArmorPenatration: -1,
+		AmmoCapacity:     4,
+		Reload:           WeaponRangedReloadInternalMagazine,
+		Availability:     2,
+		LegalityType:     LegalityTypeLegal,
+		Cost:             300,
+		RuleSource:       RuleSourceSR5Core,
+		ItemTags:         []ItemTag{ItemTagRanged, ItemTagCrossbow, ItemTagBallistic},
+	},
+	{
+		ID:               "medium_crossbow",
+		Name:             "Medium Crossbow",
+		Description:      "A crossbow is a type of ranged weapon based on the bow and consisting of a horizontal bow-like assembly mounted on a frame which is handheld in a similar fashion to the stock of a gun. It shoots arrow-like projectiles called bolts or quarrels.",
+		Accuracy:         6,
+		DamageValue:      7,
+		DamageType:       DamageTypePhysical,
+		FiringModes:      []WeaponFiringMode{WeaponFiringModeSemiAutomatic},
+		ArmorPenatration: -2,
+		AmmoCapacity:     4,
+		Reload:           WeaponRangedReloadInternalMagazine,
+		Availability:     4,
+		LegalityType:     LegalityTypeRestricted,
+		Cost:             500,
+		RuleSource:       RuleSourceSR5Core,
+		ItemTags:         []ItemTag{ItemTagRanged, ItemTagCrossbow, ItemTagBallistic},
+	},
+	{
+		ID:               "heavy_crossbow",
+		Name:             "Heavy Crossbow",
+		Description:      "A crossbow is a type of ranged weapon based on the bow and consisting of a horizontal bow-like assembly mounted on a frame which is handheld in a similar fashion to the stock of a gun. It shoots arrow-like projectiles called bolts or quarrels.",
+		Accuracy:         5,
+		DamageValue:      10,
+		DamageType:       DamageTypePhysical,
+		FiringModes:      []WeaponFiringMode{WeaponFiringModeSemiAutomatic},
+		ArmorPenatration: -3,
+		AmmoCapacity:     4,
+		Reload:           WeaponRangedReloadInternalMagazine,
+		Availability:     8,
+		LegalityType:     LegalityTypeRestricted,
+		Cost:             1000,
+		RuleSource:       RuleSourceSR5Core,
+		ItemTags:         []ItemTag{ItemTagRanged, ItemTagCrossbow, ItemTagBallistic},
+	},
+	{
+		ID:               "grapple_gun",
+		Name:             "Grapple Gun",
+		Description:      "A grapple gun is a device that allows the user to fire a grappling hook or a similar object to a distant location.",
+		Accuracy:         3,
+		DamageValue:      7,
+		DamageType:       DamageTypeStun,
+		ArmorPenatration: -2,
+		FiringModes:      []WeaponFiringMode{WeaponFiringModeSingleShot},
+		AmmoCapacity:     1,
+		Reload:           WeaponRangedReloadMuzzleLoader,
+		Availability:     8,
+		LegalityType:     LegalityTypeRestricted,
+		Cost:             500,
+		RuleSource:       RuleSourceSR5Core,
+		ItemTags:         []ItemTag{ItemTagRanged, ItemTagExotic},
+	},
+	{
+		ID:               "defiance_ex_shocker",
+		Name:             "Defiance EX Shocker",
+		Accuracy:         4,
+		DamageValue:      9,
+		DamageType:       DamageTypeStun,
+		ArmorPenatration: -5,
+		FiringModes:      []WeaponFiringMode{WeaponFiringModeSingleShot},
+		AmmoCapacity:     4,
+		Reload:           WeaponRangedReloadInternalMagazine,
+		Cost:             250,
+		RuleSource:       RuleSourceSR5Core,
+		ItemTags:         []ItemTag{ItemTagRanged, ItemTagTaser},
+		Modifiers:        []Modifier{{Type: "add", Effect: "ElectricDamage"}},
+		// Wireless
+		//  A successful hit informs you of the status of the target’s basic health (and Condition Monitors).
+	},
+	{
+		ID:               "yamaha_pulsar",
+		Name:             "Yamaha Pulsar",
+		Accuracy:         5,
+		DamageValue:      7,
+		DamageType:       DamageTypeStun,
+		ArmorPenatration: -5,
+		FiringModes:      []WeaponFiringMode{WeaponFiringModeSemiAutomatic},
+		AmmoCapacity:     4,
+		Reload:           WeaponRangedReloadInternalMagazine,
+		Cost:             180,
+		RuleSource:       RuleSourceSR5Core,
+		ItemTags:         []ItemTag{ItemTagRanged, ItemTagTaser},
+		Modifiers:        []Modifier{{Type: "add", Effect: "ElectricDamage"}},
+		// Wireless
+		//  A successful hit informs you of the status of the target’s basic health (and Condition Monitors).
+	},
+	{
+		ID:               "ficetti_tiffani_needler",
+		Name:             "Fichetti Tiffani Needler",
+		Description:      "The Fichetti Tiffani Needler is a hold-out pistol that fires flechette ammunition. It is a small, easily concealed weapon that is popular with shadowrunners and criminals.",
+		Accuracy:         5,
+		DamageValue:      8,
+		DamageType:       DamageTypePhysical,
+		ArmorPenatration: 5,
+		FiringModes:      []WeaponFiringMode{WeaponFiringModeSemiAutomatic},
+		AmmoCapacity:     4,
+		Reload:           WeaponRangedReloadDetachableMagazine,
+		Availability:     6,
+		LegalityType:     LegalityTypeRestricted,
+		Cost:             1000,
+		RuleSource:       RuleSourceSR5Core,
+		ItemTags:         []ItemTag{ItemTagRanged, ItemTagPistol, ItemTagHoldOutPistol},
+		// 8P(f)
+		// Wireless
+		//  You can change the color of the Tiffani Needler with a Simple Action.
+		// Can only fire flechette rounds
+	},
+	{
+		ID:           "streetline_special",
+		Name:         "Streetline Special",
+		Description:  "The Streetline Special is a hold-out pistol that is popular with shadowrunners and criminals. It is a small, easily concealed weapon.",
+		Accuracy:     4,
+		DamageValue:  6,
+		DamageType:   DamageTypePhysical,
+		FiringModes:  []WeaponFiringMode{WeaponFiringModeSemiAutomatic},
+		AmmoCapacity: 6,
+		Reload:       WeaponRangedReloadDetachableMagazine,
+		Availability: 4,
+		LegalityType: LegalityTypeRestricted,
+		Cost:         120,
+		RuleSource:   RuleSourceSR5Core,
+		ItemTags:     []ItemTag{ItemTagRanged, ItemTagPistol, ItemTagHoldOutPistol},
+		// MAD Scanner
+		//  -2 DP to detect Streetline Special
+	},
+	{
+		ID:           "walther_palm_pistol",
+		Name:         "Walther Palm Pistol",
+		Description:  "The Walther Palm Pistol is a hold-out pistol that is popular with shadowrunners and criminals. It is a small, easily concealed weapon.",
+		Accuracy:     4,
+		DamageValue:  7,
+		DamageType:   DamageTypePhysical,
+		FiringModes:  []WeaponFiringMode{WeaponFiringModeSingleShot, WeaponFiringModeBurstFire},
+		AmmoCapacity: 2,
+		Reload:       WeaponRangedReloadBreakAction,
+		Availability: 4,
+		LegalityType: LegalityTypeRestricted,
+		Cost:         180,
+		RuleSource:   RuleSourceSR5Core,
+		ItemTags:     []ItemTag{ItemTagRanged, ItemTagPistol, ItemTagHoldOutPistol},
+	},
+}
+
 // Light Pistols
 // -------------
 // | Weapon | Acc | DV | AP | Modes | RC | Ammo | Avail | Cost | Source |

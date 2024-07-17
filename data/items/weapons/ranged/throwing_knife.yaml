@@ -1,0 +1,16 @@
+id: throwing_knife
+name: Throwing Knife
+description: A throwing knife is a knife that is specially designed and weighted so that it can be thrown effectively.
+damage_value: 1
+damage_type: Physical
+firing_modes:
+    - Single-Shot
+recoil: -1
+availability: 4
+legality_type: Restricted
+tags:
+    - Ranged
+    - Throwing
+modifiers: []
+cost: 25
+rule_source: SR5:Core

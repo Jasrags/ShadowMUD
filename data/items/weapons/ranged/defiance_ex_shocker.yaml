@@ -1,0 +1,18 @@
+id: defiance_ex_shocker
+name: Defiance EX Shocker
+accuracy: 4
+damage_value: 9
+damage_type: Stun
+armor_penatration: -5
+firing_modes:
+    - Single-Shot
+ammo_capacity: 4
+reload: m
+tags:
+    - Ranged
+    - Taser
+modifiers:
+    - type: add
+      effect: ElectricDamage
+cost: 250
+rule_source: SR5:Core

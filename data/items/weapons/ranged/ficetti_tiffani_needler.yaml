@@ -1,0 +1,20 @@
+id: ficetti_tiffani_needler
+name: Fichetti Tiffani Needler
+description: The Fichetti Tiffani Needler is a hold-out pistol that fires flechette ammunition. It is a small, easily concealed weapon that is popular with shadowrunners and criminals.
+accuracy: 5
+damage_value: 8
+damage_type: Physical
+armor_penatration: 5
+firing_modes:
+    - Semi-Automatic
+ammo_capacity: 4
+reload: c
+availability: 6
+legality_type: Restricted
+tags:
+    - Ranged
+    - Pistol
+    - Hold-Out Pistol
+modifiers: []
+cost: 1000
+rule_source: SR5:Core

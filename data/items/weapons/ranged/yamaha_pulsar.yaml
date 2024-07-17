@@ -1,0 +1,18 @@
+id: yamaha_pulsar
+name: Yamaha Pulsar
+accuracy: 5
+damage_value: 7
+damage_type: Stun
+armor_penatration: -5
+firing_modes:
+    - Semi-Automatic
+ammo_capacity: 4
+reload: m
+tags:
+    - Ranged
+    - Taser
+modifiers:
+    - type: add
+      effect: ElectricDamage
+cost: 180
+rule_source: SR5:Core

@@ -1,0 +1,20 @@
+id: walther_palm_pistol
+name: Walther Palm Pistol
+description: The Walther Palm Pistol is a hold-out pistol that is popular with shadowrunners and criminals. It is a small, easily concealed weapon.
+accuracy: 4
+damage_value: 7
+damage_type: Physical
+firing_modes:
+    - Single-Shot
+    - Burst Fire
+ammo_capacity: 2
+reload: b
+availability: 4
+legality_type: Restricted
+tags:
+    - Ranged
+    - Pistol
+    - Hold-Out Pistol
+modifiers: []
+cost: 180
+rule_source: SR5:Core

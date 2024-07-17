@@ -1,0 +1,19 @@
+id: grapple_gun
+name: Grapple Gun
+description: A grapple gun is a device that allows the user to fire a grappling hook or a similar object to a distant location.
+accuracy: 3
+damage_value: 7
+damage_type: Stun
+armor_penatration: -2
+firing_modes:
+    - Single-Shot
+ammo_capacity: 1
+reload: ml
+availability: 8
+legality_type: Restricted
+tags:
+    - Ranged
+    - Exotic
+modifiers: []
+cost: 500
+rule_source: SR5:Core
