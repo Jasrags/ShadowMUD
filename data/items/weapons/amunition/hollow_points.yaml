@@ -1,0 +1,10 @@
+id: hollow_points
+name: Hollow Points
+description: Hollow points are designed to expand on impact, causing more damage to soft targets. They are less effective against armored targets.
+damage_value_modifier: 1
+armor_penatration_modifier: 2
+availability: 4
+legality: Forbidden
+cost: 70
+modifiers: []
+rule_source: SR5:Core

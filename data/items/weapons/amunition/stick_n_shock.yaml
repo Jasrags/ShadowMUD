@@ -1,0 +1,14 @@
+id: stick_n_shock
+name: Stick-n-Shock
+description: Stick-n-Shock rounds are designed to deliver an electrical shock to the target. They are often used by security forces and police to subdue suspects without causing permanent harm. Stick-n-Shock rounds are less effective against armored targets.
+damage_type: Stun
+damage_value_modifier: -2
+armor_penatration_modifier: -5
+availability: 6
+legality: Restricted
+cost: 80
+modifiers:
+    - type: add
+      effect: ElectricDamage
+      value: 0
+rule_source: SR5:Core

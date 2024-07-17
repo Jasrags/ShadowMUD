@@ -17,24 +17,104 @@ const (
 	MeleeWeaponileMinVersion = "0.0.1"
 )
 
+type WeaponFiringMode string
+
+const (
+	WeaponFiringModeSingleShot    WeaponFiringMode = "Single-Shot"
+	WeaponFiringModeSemiAutomatic WeaponFiringMode = "Semi-Automatic"
+	WeaponFiringModeBurstFire     WeaponFiringMode = "Burst Fire"
+	WeaponFiringModeLongBurst     WeaponFiringMode = "Long Burst"
+	WeaponFiringModeFullAuto      WeaponFiringMode = "Full Auto"
+)
+
+type WeaponType string
+
+const (
+	WeaponTypeMelee  WeaponType = "Melee"
+	WeaponTypeRanged WeaponType = "Ranged"
+)
+
+type WeaponCategory string
+
+const (
+	WeaponCategoryImprovised WeaponCategory = "Improvised"
+	WeaponCategoryClubs      WeaponCategory = "Clubs"
+	WeaponCategoryBlades     WeaponCategory = "Blades"
+	WeaponCategoryExotic     WeaponCategory = "Exotic"
+	WeaponCategoryMisc       WeaponCategory = "Misc"
+)
+
+type WeaponSubCategory string
+
+const (
+	WeaponSubCategoryPistol        WeaponSubCategory = "Pistol"
+	WeaponSubCategorySubmachineGun WeaponSubCategory = "Submachine Gun"
+	WeaponSubCategoryRifle         WeaponSubCategory = "Rifle"
+	WeaponSubCategoryShotgun       WeaponSubCategory = "Shotgun"
+	WeaponSubCategoryMachineGun    WeaponSubCategory = "Machine Gun"
+)
+
+type WeaponTag string
+
+const (
+	WeaponTagMelee            WeaponTag = "Melee"
+	WeaponTagImprovised       WeaponTag = "Improvised"
+	WeaponTagClubs            WeaponTag = "Clubs"
+	WeaponTagBlades           WeaponTag = "Blades"
+	WeaponTagExotic           WeaponTag = "Exotic"
+	WeaponTagMisc             WeaponTag = "Misc"
+	WeaponTagThrowing         WeaponTag = "Throwing"
+	WeaponTagBallistic        WeaponTag = "Ballistic"
+	WeaponTagFlamethrower     WeaponTag = "Flamethrower"
+	WeaponTagTaser            WeaponTag = "Taser"
+	WeaponTagRanged           WeaponTag = "Ranged"
+	WeaponTagFirearm          WeaponTag = "Firearm"
+	WeaponTagPistol           WeaponTag = "Pistol"
+	WeaponTagHoldOutPistol    WeaponTag = "Hold-Out Pistol"
+	WeaponTagLightPistol      WeaponTag = "Light Pistol"
+	WeaponTagHeavyPistol      WeaponTag = "Heavy Pistol"
+	WeaponTagMachinePistol    WeaponTag = "Machine Pistol"
+	WeaponTagSubmachineGun    WeaponTag = "Submachine Gun"
+	WeaponTagRifle            WeaponTag = "Rifle"
+	WeaponTagAssaultRifle     WeaponTag = "Assault Rifle"
+	WeaponTagSniperRifle      WeaponTag = "Sniper Rifle"
+	WeaponTagSportingRifle    WeaponTag = "Sporting Rifle"
+	WeaponTagShotgun          WeaponTag = "Shotgun"
+	WeaponTagMachineGun       WeaponTag = "Machine Gun"
+	WeaponTagLightMachineGun  WeaponTag = "Light Machine Gun"
+	WeaponTagMediumMachineGun WeaponTag = "Medium Machine Gun"
+	WeaponTagHeavyMachineGun  WeaponTag = "Heavy Machine Gun"
+	WeaponTagExoticFirearm    WeaponTag = "Exotic Firearm"
+	WeaponTagLaser            WeaponTag = "Laser"
+	WeaponTagLargeCaliber     WeaponTag = "Large-Caliber"
+	WeaponTagAssaultCannon    WeaponTag = "Assault Cannon"
+	WeaponTagGrenadeLauncher  WeaponTag = "Grenade Launcher"
+	WeaponTagMissileLauncher  WeaponTag = "Missile Launcher"
+	WeaponTagImplant          WeaponTag = "Implant"
+	WeaponTagImplantMelee     WeaponTag = "Implant Melee"
+	WeaponTagImplantFirearm   WeaponTag = "Implant Firearm"
+	WeaponTagTwoHanded        WeaponTag = "Two-Handed"
+)
+
 type Weapon struct {
-	ID               string
-	Name             string
-	Description      string
-	Type             WeaponType
-	Category         WeaponCategory
-	SubCategory      WeaponSubCategory
-	Tags             []WeaponTag
-	Accuracy         int
-	Reach            int
-	DamageValue      int
-	DamageType       DamageType
-	ArmorPenatration int
-	Availability     int
-	Legality         LegalityType
-	Cost             int
-	RuleSource       string
-	FileVersion      string
+	ID               string            `yaml:"id,omitempty"`
+	Name             string            `yaml:"name"`
+	Description      string            `yaml:"description"`
+	Type             WeaponType        `yaml:"type"`
+	Category         WeaponCategory    `yaml:"category,omitempty"`
+	SubCategory      WeaponSubCategory `yaml:"sub_category,omitempty"`
+	Concealability   AttributesInfo    `yaml:"concealability"`
+	Tags             []WeaponTag       `yaml:"tags"`
+	Accuracy         AttributesInfo    `yaml:"accuracy"`
+	Reach            int               `yaml:"reach,omitempty"`
+	DamageValue      int               `yaml:"damage_value,omitempty"`
+	DamageType       DamageType        `yaml:"damage_type,omitempty"`
+	ArmorPenatration int               `yaml:"armor_penatration,omitempty"`
+	Availability     int               `yaml:"availability,omitempty"`
+	Legality         LegalityType      `yaml:"legality,omitempty"`
+	Cost             int               `yaml:"cost,omitempty"`
+	RuleSource       string            `yaml:"rule_source,omitempty"`
+	FileVersion      string            `yaml:"file_version,omitempty"`
 }
 
 func (w *Weapon) GetDamageValue() error {
@@ -386,46 +466,3 @@ var WeaponsRanged = map[string]WeaponRanged{
 		RuleSource:       "SR5:Core",
 	},
 }
-
-//     1 Melee Weapons
-//         1.1 Improvised Weapons
-//         1.2 Clubs
-//         1.3 Blades
-//         1.4 Exotic Melee Weapons
-//         1.5 Misc. Melee Weapons
-//     2 Throwing Weapons
-//     3 Ballistic Projectiles
-//     4 Flamethrowers
-//     5 Exotic Ranged Weapons
-//     6 Tasers
-//     7 Firearms
-//         7.1 Pistols
-//             7.1.1 Hold-Out Pistols
-//             7.1.2 Light Pistols
-//             7.1.3 Heavy Pistols
-//             7.1.4 Machine Pistols
-//         7.2 Submachine Guns
-//         7.3 Rifles
-//             7.3.1 Assault Rifles
-//             7.3.2 Sniper Rifles
-//             7.3.3 Sporting Rifles
-//         7.4 Shotguns
-//         7.5 Machine Guns
-//             7.5.1 Light Machine Guns
-//             7.5.2 Medium Machine Guns
-//             7.5.3 Heavy Machine Guns
-//         7.6 Exotic Firearms
-//     8 Lasers
-//     9 Large-Caliber Projectiles
-//         9.1 Assault Cannons
-//         9.2 Grenade Launchers
-//         9.3 Missile Launchers
-//     10 Implant Weapons
-//         10.1 Implant Melee Weapons
-//         10.2 Implant Firearms
-//     11 Weapon Consumables
-//         11.1 Ammunition
-//         11.2 Ballistic Projectile Consumables
-//         11.3 Grenades
-//         11.4 Rockets & Missiles
-//     12 Firearm Accessories

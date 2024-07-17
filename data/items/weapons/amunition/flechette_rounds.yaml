@@ -1,0 +1,10 @@
+id: flechette_rounds
+name: Flechette Rounds
+description: The payload of a flechette round is made up of tiny, tightly packed metal slivers. The round breaks up and shatters on impact, becoming a tumbling hail of shrapnel. Flechette rounds are devastating against unprotected targets, but not as effective against hardened armor.
+damage_value_modifier: 2
+armor_penatration_modifier: 5
+availability: 6
+legality: Forbidden
+cost: 65
+modifiers: []
+rule_source: SR5:Core

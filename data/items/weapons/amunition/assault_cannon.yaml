@@ -1,0 +1,8 @@
+id: assault_cannon
+name: Assault Cannon
+description: These are for assault cannons only, and they’re the only thing assault cannons can load.
+availability: 12
+legality: Forbidden
+cost: 400
+modifiers: []
+rule_source: SR5:Core

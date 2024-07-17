@@ -1,0 +1,8 @@
+id: injection_darts
+name: Injection Darts
+description: Injection darts are used to deliver drugs or toxins to a target. They are fired from a dart pistol or a dart rifle. Injection darts are not designed to cause damage, but to deliver a payload to the target. Injection darts are not available for all weapons, and are not available for all drugs or toxins.
+availability: 4
+legality: Restricted
+cost: 75
+modifiers: []
+rule_source: SR5:Core

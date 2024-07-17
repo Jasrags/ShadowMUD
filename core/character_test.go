@@ -9,7 +9,6 @@ import (
 )
 
 func TestCharacterStreetSamurai(t *testing.T) {
-
 	//  Armor: 13
 	//  TODO: Physical: 14, Stun: 10},
 	//  Limits: Physical: 8 (9), Mental: 4, Social: 3
@@ -38,14 +37,14 @@ func TestCharacterStreetSamurai(t *testing.T) {
 	//      Incompetent (Acting)
 	//  Augmentations:
 	//      Cybereyes [Rating 3, flare compensation, low-light, smartlink, thermographic, vision enhancement 2, vision magnification],
-	//      dermal plating 2 (alphaware),
-	//      cyberarm [right, obvious, Strength 11, Agility 9, cyber sub-machine gun w/ external clip port],
-	//      cyberarm [left, obvious, Strength 11, Agility 9, Armor 2, cyber spur, cyberarm slide],
-	//      enhanced articulation,
-	//      platelet factories,
-	//      reflex recorder [Blades, Longarms, Sneaking, Unarmed Combat],
-	//      synaptic booster 2,
-	//      synthcardium 1
+	//     1.0 dermal plating 2 (alphaware),
+	//    1.0  cyberarm [right, obvious, Strength 11, Agility 9, cyber sub-machine gun w/ external clip port],
+	//    1.0  cyberarm [left, obvious, Strength 11, Agility 9, Armor 2, cyber spur, cyberarm slide],
+	//    0.3  enhanced articulation,
+	//    0.2  platelet factories,
+	//    0.4  reflex recorder [Blades, Longarms, Sneaking, Unarmed Combat],
+	//    1.0  synaptic booster 2,
+	//    0.1  synthcardium 1
 	//  Vehicles:
 	//      Harley-Davidson Scorpion [Handling 4/3, Speed 4, Accel 2, Body 8, Armor 9, Pilot 1, Sensor 2]
 	//  Gear:
@@ -153,7 +152,80 @@ func TestCharacterStreetSamurai(t *testing.T) {
 		// RangedWeapons: map[string]core.RangedWeapon{},
 		// MeleeWeapons: map[string]core.MeleeWeapon{},
 		// Armor: map[string]string{},
-		// Cyberware: map[string]core.Cyberware{},
+		Cyberware: map[string]core.Cyberware{
+			"Cybereyes": {
+				Rating:      3,
+				EssenceCost: core.AttributesInfoF{Base: -0.4},
+				Capacity:    core.AttributesInfo{Base: 12},
+				Grade:       core.CyberwareGradeStandard,
+				// [Rating 3, flare compensation, low-light, smartlink, thermographic, vision enhancement 2, vision magnification],
+				// FlareCompensation:   true,
+				// LowLight:            true,
+				// Smartlink:           true,
+				// Thermographic:       true,
+				// VisionEnhancement:   2,
+				// VisionMagnification: true,
+			},
+			"DermalPlating": {
+				Rating:      2,
+				EssenceCost: core.AttributesInfoF{Base: -1.0},
+				Grade:       core.CyberwareGradeAlphaware,
+			},
+			"Obvious Full Arm Left": {
+				EssenceCost: core.AttributesInfoF{Base: -1.0},
+				Capacity:    core.AttributesInfo{Base: 15},
+				Grade:       core.CyberwareGradeStandard,
+				// [left, obvious, Strength 11, Agility 9, Armor 2, cyber spur, cyberarm slide],
+			},
+			"Obvious Full Arm Right": {
+				EssenceCost: core.AttributesInfoF{Base: -1.0},
+				Capacity:    core.AttributesInfo{Base: 15},
+				Grade:       core.CyberwareGradeStandard,
+				// [right, obvious, Strength 11, Agility 9, cyber sub-machine gun w/ external clip port]
+			},
+			"EnhancedArticulation": {
+				EssenceCost: core.AttributesInfoF{Base: -0.3},
+				Grade:       core.CyberwareGradeStandard,
+			},
+			"PlateletFactories": {
+				EssenceCost: core.AttributesInfoF{Base: -0.2},
+				Grade:       core.CyberwareGradeStandard,
+			},
+			"ReflexRecorderBlades": {
+				EssenceCost: core.AttributesInfoF{Base: -0.1},
+				Grade:       core.CyberwareGradeStandard,
+				//+1 Rating to Specific Physical Skill
+				//[Blades, Longarms, Sneaking, Unarmed Combat]
+			},
+			"ReflexRecorderLongarms": {
+				EssenceCost: core.AttributesInfoF{Base: -0.1},
+				//+1 Rating to Specific Physical Skill
+				//[Blades, Longarms, Sneaking, Unarmed Combat]
+			},
+			"ReflexRecorderSneaking": {
+				EssenceCost: core.AttributesInfoF{Base: -0.1},
+				Grade:       core.CyberwareGradeStandard,
+				//+1 Rating to Specific Physical Skill
+				//[Blades, Longarms, Sneaking, Unarmed Combat]
+			},
+			"ReflexRecorderUnarmedCombat": {
+				EssenceCost: core.AttributesInfoF{Base: -0.1},
+				Grade:       core.CyberwareGradeStandard,
+				//+1 Rating to Specific Physical Skill
+				//[Blades, Longarms, Sneaking, Unarmed Combat]
+			},
+			"SynapticBooster": {
+				Rating:      2,
+				EssenceCost: core.AttributesInfoF{Base: -1.0},
+				Grade:       core.CyberwareGradeStandard,
+			},
+		},
+		Bioware: map[string]core.Bioware{
+			"Synthcardium": {
+				Rating:      1,
+				EssenceCost: -0.1,
+			},
+		},
 		// Cyberdecks: map[string]core.Cyberdeck{},
 		// Vehicles: map[string]core.Vehicle{},
 		// Programs: map[string]core.Program{},
@@ -260,7 +332,7 @@ func TestCharacterStreetSamurai(t *testing.T) {
 		value     float64
 	}{
 		// TODO: Uncomment when recalculated
-		// {"Essence", c.Attributes.Essence, 6, 5.12, 0.88},
+		{"Essence", c.Attributes.Essence, 6, 5.12, 0.88},
 	}
 
 	for _, tt := range td2 {
@@ -478,7 +550,7 @@ func TestRecalculateCyberware(t *testing.T) {
 		},
 		Cyberware: map[string]core.Cyberware{
 			"wired-reflexes-r1": {
-				EssenceCost: 2.0,
+				EssenceCost: core.AttributesInfoF{Base: 2.0},
 				Rating:      1,
 				Modifiers: []core.CyberwareModifier{
 					{Type: "Reaction", Effect: "Increase", Value: 1},

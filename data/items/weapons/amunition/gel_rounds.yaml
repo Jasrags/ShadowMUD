@@ -1,0 +1,10 @@
+id: gel_rounds
+name: Gel Rounds
+description: Gel rounds are designed to deliver a non-lethal payload. They are often used by security forces and police to subdue suspects without causing permanent harm. Gel rounds are less effective against armored targets.
+damage_type: Stun
+armor_penatration_modifier: 1
+availability: 2
+legality: Restricted
+cost: 25
+modifiers: []
+rule_source: SR5:Core

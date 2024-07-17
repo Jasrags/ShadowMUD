@@ -30,6 +30,18 @@ const (
 	CyberwareGradeUsed      CyberwareGrade = "Used"
 )
 
+type CyberwarePart string
+
+const (
+	CyberwarePartBody            CyberwarePart = "Body"
+	CyberwarePartHead            CyberwarePart = "Head"
+	CyberwarePartLimb            CyberwarePart = "Limb"
+	CyberwarePartLimbAccessories CyberwarePart = "Limb Accessories"
+	CyberwarePartWeapon          CyberwarePart = "Weapon"
+	CyberwarePartEye             CyberwarePart = "Eye"
+	CyberwarePartEar             CyberwarePart = "Ear"
+)
+
 func GetCyberwareGradeModifiers(grade CyberwareGrade) (float64, int, float64, error) {
 	var essenceCostMultiplier float64
 	var availMod int
@@ -72,21 +84,47 @@ type CyberwareModifier struct {
 }
 
 type Cyberware struct {
-	ID           string              `yaml:"id,omitempty"`
-	Name         string              `yaml:"name"`
-	Description  string              `yaml:"description"`
-	EssenceCost  float64             `yaml:"essence_cost"`
-	Capacity     int                 `yaml:"capacity,omitempty"`
-	Rating       int                 `yaml:"rating,omitempty"`
-	Grade        CyberwareGrade      `yaml:"grade,omitempty"`
-	ToggleAction ActionType          `yaml:"toggle_action,omitempty"`
-	IsActive     bool                `yaml:"is_active,omitempty"`
-	Modifiers    []CyberwareModifier `yaml:"modifiers"`
-	Cost         int                 `yaml:"cost"`
-	Availability int                 `yaml:"availability"`
-	Legality     LegalityType        `yaml:"legality"`
-	Notes        string              `yaml:"notes"`
-	RuleSource   RuleSource          `yaml:"rule_source"`
+	ID            string                   `yaml:"id,omitempty"`
+	Name          string                   `yaml:"name"`
+	Description   string                   `yaml:"description"`
+	EssenceCost   AttributesInfoF          `yaml:"essence_cost"`
+	Capacity      AttributesInfo           `yaml:"capacity"`
+	Rating        int                      `yaml:"rating,omitempty"`
+	CyberwarePart CyberwarePart            `yaml:"cyberware_part"`
+	Grade         CyberwareGrade           `yaml:"grade,omitempty"`
+	ToggleAction  ActionType               `yaml:"toggle_action,omitempty"`
+	IsActive      bool                     `yaml:"is_active,omitempty"`
+	Modifications []CyberwareModifications `yaml:"modifications"`
+	Modifiers     []CyberwareModifier      `yaml:"modifiers"`
+	Cost          AttributesInfo           `yaml:"cost"`
+	Availability  int                      `yaml:"availability"`
+	Legality      LegalityType             `yaml:"legality"`
+	Notes         string                   `yaml:"notes"`
+	RuleSource    RuleSource               `yaml:"rule_source"`
+	FileVersion   string                   `yaml:"file_version"`
+}
+
+func (c *Cyberware) Recalculate() {
+	c.Capacity.Reset()
+
+	essenceCostMultiplier, _, _, _ := GetCyberwareGradeModifiers(c.Grade)
+	for _, mod := range c.Modifications {
+		c.Capacity.Mods += mod.CapacityCost
+		c.EssenceCost.Mods += mod.EssenceCost * essenceCostMultiplier
+	}
+	c.EssenceCost.Reset()
+	for _, mod := range c.Modifications {
+		c.EssenceCost.Mods += mod.EssenceCost
+	}
+}
+
+type CyberwareModifications struct {
+	ID           string     `yaml:"id,omitempty"`
+	Name         string     `yaml:"name"`
+	Description  string     `yaml:"description"`
+	EssenceCost  float64    `yaml:"essence_cost"`
+	CapacityCost int        `yaml:"capacity,omitempty"`
+	RuleSource   RuleSource `yaml:"rule_source"`
 }
 
 func NewCyberware() *Cyberware {

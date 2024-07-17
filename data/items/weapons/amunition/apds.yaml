@@ -1,0 +1,9 @@
+id: apds
+name: APDS
+description: These are military-grade armor piercing rounds—their full name is armor piercing discarding sabot. They are designed to travel at high velocities and punch through personal body armor.
+armor_penatration_modifier: -4
+availability: 12
+legality: Forbidden
+cost: 120
+modifiers: []
+rule_source: SR5:Core

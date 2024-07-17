@@ -1,0 +1,8 @@
+id: taser_darts
+name: Taser Dart
+description: Taser darts are used to deliver an electrical shock to a target. They are fired from a dart pistol or a dart rifle. Taser darts are not designed to cause damage, but to deliver an electrical shock to the target. Taser darts are not available for all weapons.
+availability: 3
+legality: Legal
+cost: 50
+modifiers: []
+rule_source: SR5:Core

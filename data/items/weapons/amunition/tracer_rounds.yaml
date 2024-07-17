@@ -1,0 +1,9 @@
+id: tracer_rounds
+name: Tracer
+description: Tracer rounds are designed to leave a visible trail in the air, making it easier to track the path of the bullet. Tracer rounds are often used to help a shooter adjust their aim. Tracer rounds are less effective against armored targets.
+accuracy_modifier: 1
+availability: 6
+legality: Restricted
+cost: 60
+modifiers: []
+rule_source: SR5:Core

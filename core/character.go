@@ -69,6 +69,11 @@ type AttributesInfo struct {
 	Mods  int `yaml:"-"`
 }
 
+func (ai *AttributesInfo) Reset() {
+	ai.Mods = 0
+	ai.Value = 0
+}
+
 func (ai *AttributesInfo) Recalculate() {
 	ai.Value = ai.Base + ai.Mods
 }
@@ -77,6 +82,15 @@ type AttributesInfoF struct {
 	Value float64 `yaml:"-"`
 	Base  float64 `yaml:"base"`
 	Mods  float64 `yaml:"-"`
+}
+
+func (ai *AttributesInfoF) Reset() {
+	ai.Mods = 0
+	ai.Value = 0
+}
+
+func (ai *AttributesInfoF) Recalculate() {
+	ai.Value = ai.Base + ai.Mods
 }
 
 type Equipment struct {
@@ -151,6 +165,7 @@ type Character struct {
 	MeleeWeapons    map[string]WeaponMelee    `yaml:"melee_weapons"`
 	Armor           map[string]string         `yaml:"armor"`
 	Cyberware       map[string]Cyberware      `yaml:"cyberware"`
+	Bioware         map[string]Bioware        `yaml:"bioware"`
 	Cyberdecks      map[string]string         `yaml:"cyberdecks"`
 	Augmentations   map[string]string         `yaml:"augmentations"`
 	Vehicals        map[string]string         `yaml:"vehicals"`
@@ -202,6 +217,7 @@ type Initiatives struct {
 	MatrixARInitiative        int // (Reaction + Intuition) + 1D6
 	MatrixVRHotSimInitiative  int // (Data Processing + Intuition) + 4D6
 	MatrixVRColdSimInitiative int // (Data Processing + Intuition) + 3D6
+	RiggerARInitiative        int // (Reaction + Intuition) + 1D6
 }
 
 // Return base initiative values
@@ -229,17 +245,19 @@ Rigger AR               Reaction + Intuition + 1D6
 */
 func (c *Character) RollInitiative() Initiatives {
 	// TODO: Add DataProcessing
-	total1, _ := util.RollDice(1)
-	total2, _ := util.RollDice(2)
-	total3, _ := util.RollDice(1)
-	// total4, _ := util.RollDice(4)
-	// total5, _ := util.RollDice(3)
+	total1, _ := util.RollDice(c.InitiativeDice.Physical.Value)
+	total2, _ := util.RollDice(c.InitiativeDice.Astral.Value)
+	total3, _ := util.RollDice(c.InitiativeDice.MatrixAR.Value)
+	// total4, _ := util.RollDice(c.InitiativeDice.MatrixVRHotSim.Value)
+	// total5, _ := util.RollDice(c.InitiativeDice.MatrixVRColdSim.Value)
+	// total6, _ := util.RollDice(c.InitiativeDice.RiggerAR.Value)
 	return Initiatives{
 		Initiative:         (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total1,
 		AstralInitiative:   (c.Attributes.Intuition.Value * 2) + total2,
 		MatrixARInitiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total3,
 		// MatrixVRHotSimInitiative:  (c.DataProcessing + c.Intuition)+total4,
 		// MatrixVRColdSimInitiative: (c.DataProcessing + c.Intuition)+total5,
+		// RiggerARInitiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total6,
 	}
 }
 
@@ -301,11 +319,12 @@ func (c *Character) RemoveCyberware(id string) {
 
 func (c *Character) RecalculateCyberware() {
 	// Apply essence modifiers
-
+	for _, cw := range c.Cyberware {
+		c.Attributes.Essence.Mods += cw.EssenceCost.Value
+	}
 	// Apply cyberware modifiers
 	for _, cyberware := range c.Cyberware {
 		for _, modifier := range cyberware.Modifiers {
-
 			switch modifier.Effect {
 			case "Increase":
 				switch modifier.Type {
@@ -318,8 +337,15 @@ func (c *Character) RecalculateCyberware() {
 	}
 }
 
+func (c *Character) RecalculateBioware() {
+	for _, bw := range c.Bioware {
+		c.Attributes.Essence.Mods += bw.EssenceCost
+	}
+}
+
 func (c *Character) Recalculate() {
 	c.RecalculateCyberware()
+	c.RecalculateBioware()
 	c.RecalculateAttributes()
 	c.RecalculateInitiativeDice()
 }
@@ -333,6 +359,7 @@ func (c *Character) RecalculateAttributes() {
 	c.Attributes.Logic.Recalculate()
 	c.Attributes.Intuition.Recalculate()
 	c.Attributes.Charisma.Recalculate()
+	c.Attributes.Essence.Recalculate()
 }
 
 func (c *Character) RecalculateInitiativeDice() {

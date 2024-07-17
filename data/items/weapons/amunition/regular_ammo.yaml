@@ -1,0 +1,8 @@
+id: regular_ammo
+name: Regular Ammo
+description: Regular ammo is the standard ammunition for most firearms. It is a lead slug encased in a copper jacket. Regular ammo is effective against most targets, but is less effective against armored targets.
+availability: 2
+legality: Restricted
+cost: 20
+modifiers: []
+rule_source: SR5:Core

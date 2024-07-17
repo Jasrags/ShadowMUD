@@ -1,0 +1,10 @@
+id: explosive_rounds
+name: Explosive Rounds
+description: These slugs carry a shaped-charge explosive, designed to explode and fragment on impact. Explosive rounds misfire whenever you roll a critical glitch. When this happens, you must resist one “attack” with a Damage Value equal to the normal damage done by the weapon (and don’t forget the modifier for the explosive rounds). The attack misses its intended target, and the weapon firing the bullets is destroyed.
+damage_value_modifier: 1
+armor_penatration_modifier: -1
+availability: 9
+legality: Forbidden
+cost: 80
+modifiers: []
+rule_source: SR5:Core
