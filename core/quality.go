@@ -27,14 +27,15 @@ func NewQuality() *Quality {
 }
 
 type Quality struct {
-	ID            string   `yaml:"id,omitempty"`
-	Name          string   `yaml:"name"`
-	Description   string   `yaml:"description"`
-	Prerequisites []string `yaml:"prerequisites,omitempty"`
-	Cost          int      `yaml:"cost"`
-	Rating        int      `yaml:"rating,omitempty"`
-	RuleSource    string   `yaml:"rule_source"`
-	FileVersion   string   `yaml:"file_version"`
+	ID            string      `yaml:"id,omitempty"`
+	Type          QualityType `yaml:"type"`
+	Name          string      `yaml:"name"`
+	Description   string      `yaml:"description"`
+	Prerequisites []string    `yaml:"prerequisites,omitempty"`
+	Cost          int         `yaml:"cost"`
+	Rating        int         `yaml:"rating,omitempty"`
+	RuleSource    string      `yaml:"rule_source"`
+	FileVersion   string      `yaml:"file_version"`
 }
 
 func LoadQualities() map[string]Quality {

@@ -20,6 +20,25 @@ func NewCharacter() *Character {
 	uuid := uuid.New().String()
 	return &Character{
 		ID: uuid,
+		Attributes: Attributes{
+			Body:      AttributesInfo{Base: 1},
+			Agility:   AttributesInfo{Base: 1},
+			Reaction:  AttributesInfo{Base: 1},
+			Strength:  AttributesInfo{Base: 1},
+			Willpower: AttributesInfo{Base: 1},
+			Logic:     AttributesInfo{Base: 1},
+			Intuition: AttributesInfo{Base: 1},
+			Charisma:  AttributesInfo{Base: 1},
+			Essence:   AttributesInfoF{Base: 6},
+		},
+		InitiativeDice: InitiativeDice{
+			Physical:        AttributesInfo{Base: InitiativeDicePhysical},
+			Astral:          AttributesInfo{Base: InitiativeDiceAstral},
+			MatrixAR:        AttributesInfo{Base: InitiativeDiceMatrixAR},
+			MatrixVRHotSim:  AttributesInfo{Base: InitiativeDiceMatrixVRHotSim},
+			MatrixVRColdSim: AttributesInfo{Base: InitiativeDiceMatrixVRColdSim},
+			RiggerAR:        AttributesInfo{Base: InitiativeDiceRiggerAR},
+		},
 	}
 }
 
@@ -33,6 +52,15 @@ type Attributes struct {
 	Intuition AttributesInfo  `yaml:"intuition"`
 	Charisma  AttributesInfo  `yaml:"charisma"`
 	Essence   AttributesInfoF `yaml:"essence"`
+}
+
+type InitiativeDice struct {
+	Physical        AttributesInfo `yaml:"physical"`
+	Astral          AttributesInfo `yaml:"astral"`
+	MatrixAR        AttributesInfo `yaml:"matrix_ar"`
+	MatrixVRHotSim  AttributesInfo `yaml:"matrix_vr"`
+	MatrixVRColdSim AttributesInfo `yaml:"hot_sim"`
+	RiggerAR        AttributesInfo `yaml:"rigger_ar"`
 }
 
 type AttributesInfo struct {
@@ -78,7 +106,6 @@ type Character struct {
 	// Personal Data
 	ID              string          `yaml:"id"`
 	Name            string          `yaml:"name"`
-	MetatypeName    string          `yaml:"metatype_name"`
 	MetatypeID      string          `yaml:"metatype_id"`
 	Metatype        Metatype        `yaml:"-"`
 	Ethnicity       string          `yaml:"ethnicity"`
@@ -93,36 +120,37 @@ type Character struct {
 	TotalKarma      int             `yaml:"total_karma"`
 	ConditionDamage ConditionDamage `yaml:"condition_damage"`
 	// Attributes
-	Attributes Attributes `yaml:"attributes"`
-	Edge       int        `yaml:"edge"`
-	EdgePoints int        `yaml:"edge_points"`
+	Attributes     Attributes     `yaml:"attributes"`
+	InitiativeDice InitiativeDice `yaml:"initiative_dice"`
+	Edge           int            `yaml:"edge"`
+	EdgePoints     int            `yaml:"edge_points"`
 	// Derived Attributes
-	// Essence       float64 `yaml:"-"`
 	Magic         int `yaml:"-"`
 	Resonance     int `yaml:"-"`
 	PhysicalLimit int `yaml:"-"`
 	MentalLimit   int `yaml:"-"`
 	SocialLimit   int `yaml:"-"`
 	// Initiative       int
-	MatrixInitiative int `yaml:"-"`
+	// MatrixInitiative int `yaml:"-"`
 	// AstralInitiative int
-	Composure       int `yaml:"-"`
-	JudgeIntentions int `yaml:"-"`
-	Memory          int `yaml:"-"`
+	// Composure       int `yaml:"-"`
+	// JudgeIntentions int `yaml:"-"`
+	// Memory          int `yaml:"-"`
 	// LiftCarry       int `yaml:"-"`
 	// Movement        int `yaml:"-"`
 	// Skills
 	ActiveSkills    map[string]ActiveSkill    `yaml:"active_skills"`
 	LanguageSkills  map[string]LanguageSkill  `yaml:"language_skills"`
 	KnowledgeSkills map[string]KnowledgeSkill `yaml:"knowledge_skills"`
-	Qualities       map[string]string         `yaml:"qualities"`
-	Contacts        map[string]string         `yaml:"contacts"`
+	Qualities       map[string]Quality        `yaml:"qualities"`
+	Contacts        map[string]Contact        `yaml:"contacts"`
 	Identities      map[string]string         `yaml:"identities"`
 	Lifestyles      map[string]string         `yaml:"lifestyles"`
 	Currancy        map[string]int            `yaml:"currancy"`
 	RangedWeapons   map[string]WeaponRanged   `yaml:"ranged_weapons"`
 	MeleeWeapons    map[string]WeaponMelee    `yaml:"melee_weapons"`
 	Armor           map[string]string         `yaml:"armor"`
+	Cyberware       map[string]Cyberware      `yaml:"cyberware"`
 	Cyberdecks      map[string]string         `yaml:"cyberdecks"`
 	Augmentations   map[string]string         `yaml:"augmentations"`
 	Vehicals        map[string]string         `yaml:"vehicals"`
@@ -130,15 +158,18 @@ type Character struct {
 	AdeptPowers     map[string]string         `yaml:"adept_powers"`
 }
 
+// Will need to make this a function that can be called to recalculate
 func (c *Character) GetConditionPhysical() int {
 	return (c.Attributes.Body.Value / 2) + 8
 }
 
+// Will need to make this a function that can be called to recalculate
 func (c *Character) GetConditionStun() int {
 	return (c.Attributes.Willpower.Value / 2) + 8
 }
 
 // TODO: Indomitable quality can modify these limits
+// Will need to make this a function that can be called to recalculate
 func (c *Character) GetPhysicalLimit() int {
 	s := float64(c.Attributes.Strength.Value)
 	b := float64(c.Attributes.Body.Value)
@@ -147,6 +178,7 @@ func (c *Character) GetPhysicalLimit() int {
 	return int(math.Ceil((s*2 + b + r) / 3))
 }
 
+// Will need to make this a function that can be called to recalculate
 func (c *Character) GetMentalLimit() int {
 	l := float64(c.Attributes.Logic.Value)
 	i := float64(c.Attributes.Intuition.Value)
@@ -155,6 +187,7 @@ func (c *Character) GetMentalLimit() int {
 	return int(math.Ceil((l*2 + i + w) / 3))
 }
 
+// Will need to make this a function that can be called to recalculate
 func (c *Character) GetSocialLimit() int {
 	ch := float64(c.Attributes.Charisma.Value)
 	w := float64(c.Attributes.Willpower.Value)
@@ -183,7 +216,17 @@ func (c *Character) GetInitiative() Initiatives {
 	}
 }
 
-// Use base initiative values to roll initiative
+/*
+Use base initiative values to roll initiative
+
+FINAL CALCULATIONS TABLE
+Physical                Reaction + Intuition + 1D6
+Astral                  Intuition x 2 + 2D6
+Matrix AR               Reaction + Intuition + 1D6
+Matrix VR (Hot Sim)     Data Processing + Intuition + 4D6
+Matrix VR (Cold Sim)    Data Processing + Intuition + 3D6
+Rigger AR               Reaction + Intuition + 1D6
+*/
 func (c *Character) RollInitiative() Initiatives {
 	// TODO: Add DataProcessing
 	total1, _ := util.RollDice(1)
@@ -248,6 +291,39 @@ func (c *Character) Validate() error {
 	return nil
 }
 
+func (c *Character) AddCyberware(cyberware Cyberware) {
+	c.Cyberware[cyberware.ID] = cyberware
+}
+
+func (c *Character) RemoveCyberware(id string) {
+	delete(c.Cyberware, id)
+}
+
+func (c *Character) RecalculateCyberware() {
+	// Apply essence modifiers
+
+	// Apply cyberware modifiers
+	for _, cyberware := range c.Cyberware {
+		for _, modifier := range cyberware.Modifiers {
+
+			switch modifier.Effect {
+			case "Increase":
+				switch modifier.Type {
+				case "Reaction":
+					c.Attributes.Reaction.Mods += modifier.Value
+				}
+			}
+
+		}
+	}
+}
+
+func (c *Character) Recalculate() {
+	c.RecalculateCyberware()
+	c.RecalculateAttributes()
+	c.RecalculateInitiativeDice()
+}
+
 func (c *Character) RecalculateAttributes() {
 	c.Attributes.Body.Recalculate()
 	c.Attributes.Agility.Recalculate()
@@ -257,6 +333,15 @@ func (c *Character) RecalculateAttributes() {
 	c.Attributes.Logic.Recalculate()
 	c.Attributes.Intuition.Recalculate()
 	c.Attributes.Charisma.Recalculate()
+}
+
+func (c *Character) RecalculateInitiativeDice() {
+	c.InitiativeDice.Physical.Recalculate()
+	c.InitiativeDice.Astral.Recalculate()
+	c.InitiativeDice.MatrixAR.Recalculate()
+	c.InitiativeDice.MatrixVRHotSim.Recalculate()
+	c.InitiativeDice.MatrixVRColdSim.Recalculate()
+	c.InitiativeDice.RiggerAR.Recalculate()
 }
 
 func (c *Character) Save() error {

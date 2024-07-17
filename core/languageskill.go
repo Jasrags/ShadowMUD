@@ -39,7 +39,7 @@ type LanguageSkill struct {
 	ID          string `yaml:"id,omitempty"`
 	Name        string `yaml:"name"`
 	IsCommon    bool   `yaml:"is_common"`
-	Rank        int    `yaml:"rank,omitempty"`
+	Rating      int    `yaml:"rating,omitempty"`
 	RuleSource  string `yaml:"rule_source"`
 	FileVersion string `yaml:"file_version"`
 }

@@ -21,7 +21,7 @@ type KnowledgeSkill struct {
 	Name        string `yaml:"name"`
 	Description string `yaml:"description"`
 	IsCommon    bool   `yaml:"is_common"`
-	Rank        int    `yaml:"rank,omitempty"`
+	Rating      int    `yaml:"rating,omitempty"`
 	RuleSource  string `yaml:"rule_source"`
 	FileVersion string `yaml:"file_version"`
 }

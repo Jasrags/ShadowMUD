@@ -79,32 +79,20 @@ type Cyberware struct {
 	Capacity     int                 `yaml:"capacity,omitempty"`
 	Rating       int                 `yaml:"rating,omitempty"`
 	Grade        CyberwareGrade      `yaml:"grade,omitempty"`
-	ToggleAction string              `yaml:"toggle_action,omitempty"`
+	ToggleAction ActionType          `yaml:"toggle_action,omitempty"`
 	IsActive     bool                `yaml:"is_active,omitempty"`
 	Modifiers    []CyberwareModifier `yaml:"modifiers"`
 	Cost         int                 `yaml:"cost"`
-	Availability string              `yaml:"availability"`
+	Availability int                 `yaml:"availability"`
 	Legality     LegalityType        `yaml:"legality"`
 	Notes        string              `yaml:"notes"`
-	RuleSource   string              `yaml:"rule_source"`
+	RuleSource   RuleSource          `yaml:"rule_source"`
 }
 
-func (c *Cyberware) ModifyReaction() int {
-	var n int
-	if c.IsActive {
-		n = c.Rating
+func NewCyberware() *Cyberware {
+	return &Cyberware{
+		Modifiers: make([]CyberwareModifier, 0),
 	}
-
-	return n
-}
-
-func (c *Cyberware) ModifyInitiativeDice() int {
-	var n int
-	if c.IsActive {
-		n = c.Rating
-	}
-
-	return n
 }
 
 // Part 	Device 	            Essence 	Capacity 	Avail 	Cost 	Source

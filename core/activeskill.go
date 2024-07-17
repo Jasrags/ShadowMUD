@@ -25,7 +25,7 @@ type ActiveSkill struct {
 	SkillGroup             string    `yaml:"skill_group,omitempty"`
 	Specializations        []string  `yaml:"specializations"`
 	SelectedSpecialization string    `yaml:"selected_specialization,omitempty"`
-	Rank                   int       `yaml:"rank,omitempty"`
+	Rating                 int       `yaml:"rating,omitempty"`
 	RuleSource             string    `yaml:"rule_source"`
 	FileVersion            string    `yaml:"file_version"`
 }

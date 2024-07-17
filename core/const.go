@@ -1,5 +1,14 @@
 package core
 
+const (
+	InitiativeDicePhysical        = 1
+	InitiativeDiceAstral          = 2
+	InitiativeDiceMatrixAR        = 1
+	InitiativeDiceMatrixVRHotSim  = 4
+	InitiativeDiceMatrixVRColdSim = 3
+	InitiativeDiceRiggerAR        = 1
+)
+
 type RuleSource string
 
 const (

@@ -65,7 +65,7 @@ type Armor struct {
 	Availability int
 	Legality     LegalityType
 	Mods         []ArmorMod
-	RuleSource   string
+	RuleSource   RuleSource
 	FileVersion  string
 }
 
@@ -85,7 +85,7 @@ type ArmorMod struct {
 	Capacity     int
 	Availability int
 	Legality     LegalityType
-	RuleSource   string
+	RuleSource   RuleSource
 	FileVersion  string
 }
 

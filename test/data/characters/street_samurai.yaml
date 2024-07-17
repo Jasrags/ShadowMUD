@@ -1,0 +1,213 @@
+id: street-samurai
+name: Street Samurai
+metatype_id: ork
+ethnicity: Japanese
+age: 30
+sex: Male
+height: 180
+weight: 90
+street_cred: 1
+notoriety: 1
+public_awareness: 1
+karma: 1
+total_karma: 1
+condition_damage:
+    physical: 1
+    stun: 1
+attributes:
+    body:
+        base: 7
+    agility:
+        base: 6
+    reaction:
+        base: 5
+    strength:
+        base: 5
+    willpower:
+        base: 3
+    logic:
+        base: 2
+    intuition:
+        base: 3
+    charisma:
+        base: 2
+    essence:
+        base: 6
+initiative_dice:
+    physical:
+        base: 1
+    astral:
+        base: 2
+    matrix_ar:
+        base: 1
+    matrix_vr:
+        base: 4
+    hot_sim:
+        base: 3
+    rigger_ar:
+        base: 1
+edge: 1
+edge_points: 1
+active_skills:
+    Automatics:
+        name: Automatics
+        is_defaultable: false
+        description: ""
+        linked_attribute: ""
+        specializations: []
+        rating: 5
+        rule_source: ""
+        file_version: ""
+    Blades:
+        name: Blades
+        is_defaultable: false
+        description: ""
+        linked_attribute: ""
+        specializations: []
+        rating: 5
+        rule_source: ""
+        file_version: ""
+    Longarms:
+        name: Longarms
+        is_defaultable: false
+        description: ""
+        linked_attribute: ""
+        specializations: []
+        rating: 3
+        rule_source: ""
+        file_version: ""
+    Pilot Ground Craft:
+        name: Pilot Ground Craft
+        is_defaultable: false
+        description: ""
+        linked_attribute: ""
+        specializations: []
+        rating: 1
+        rule_source: ""
+        file_version: ""
+    Pistols:
+        name: Pistols
+        is_defaultable: false
+        description: ""
+        linked_attribute: ""
+        specializations: []
+        rating: 4
+        rule_source: ""
+        file_version: ""
+    Sneaking:
+        name: Sneaking
+        is_defaultable: false
+        description: ""
+        linked_attribute: ""
+        specializations: []
+        rating: 2
+        rule_source: ""
+        file_version: ""
+    Unarmed Combat:
+        name: Unarmed Comba
+        is_defaultable: false
+        description: ""
+        linked_attribute: ""
+        specializations: []
+        rating: 2
+        rule_source: ""
+        file_version: ""
+language_skills:
+    English:
+        name: English
+        is_common: false
+        rating: 10
+        rule_source: ""
+        file_version: ""
+    Japanese:
+        name: Japanese
+        is_common: false
+        rating: 2
+        rule_source: ""
+        file_version: ""
+knowledge_skills:
+    Great Restaurants:
+        name: Great Restaurants
+        description: ""
+        is_common: false
+        rating: 2
+        rule_source: ""
+        file_version: ""
+    Law Enforcement:
+        name: Law Enforcement
+        description: ""
+        is_common: false
+        rating: 2
+        rule_source: ""
+        file_version: ""
+    Poetry:
+        name: Poetry
+        description: ""
+        is_common: false
+        rating: 1
+        rule_source: ""
+        file_version: ""
+    Safe Houses:
+        name: Safe Houses
+        description: ""
+        is_common: false
+        rating: 3
+        rule_source: ""
+        file_version: ""
+qualities:
+    Ambidextrous:
+        type: Positive
+        name: Ambidextrous
+        description: ""
+        cost: 0
+        rule_source: ""
+        file_version: ""
+    Code of Honor (Bushido):
+        type: Positive
+        name: Code of Honor (Bushido)
+        description: ""
+        cost: 0
+        rule_source: ""
+        file_version: ""
+    Guts:
+        type: Positive
+        name: Guts
+        description: ""
+        cost: 0
+        rule_source: ""
+        file_version: ""
+    Home Ground (Street Politics):
+        type: Positive
+        name: Home Ground (Street Politics)
+        description: ""
+        cost: 0
+        rule_source: ""
+        file_version: ""
+    Incompetent (Acting):
+        type: Negative
+        name: Incompetent (Acting)
+        description: ""
+        cost: 0
+        rule_source: ""
+        file_version: ""
+contacts:
+    Fixer:
+        name: ""
+        description: ""
+        type: Fixer
+        connection: 4
+        loyalty: 2
+        rule_source: ""
+        file_version: ""
+identities: {}
+lifestyles: {}
+currancy: {}
+ranged_weapons: {}
+melee_weapons: {}
+armor: {}
+cyberware: {}
+cyberdecks: {}
+augmentations: {}
+vehicals: {}
+gear: {}
+adept_powers: {}

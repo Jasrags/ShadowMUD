@@ -50,7 +50,7 @@ type Metatype struct {
 	Charisma     MetatypeAttribute `yaml:"charisma"`
 	Edge         MetatypeAttribute `yaml:"edge"`
 	RacialTraits []string          `yaml:"racial_traits"`
-	RuleSource   string            `yaml:"rule_source"`
+	RuleSource   RuleSource        `yaml:"rule_source"`
 	FileVersion  string            `yaml:"file_version"`
 }
 
