@@ -19,6 +19,11 @@ func TestSaveCoreWeaponRanged(t *testing.T) {
 }
 
 func TestToggleFiringMode(t *testing.T) {
+	firingModes := []core.WeaponFiringMode{
+		core.WeaponFiringModeSemiAutomatic,
+		core.WeaponFiringModeBurstFire,
+		core.WeaponFiringModeFullAuto,
+	}
 	dt := []struct {
 		Name            string
 		CurrentFireMode core.WeaponFiringMode
@@ -32,43 +37,29 @@ func TestToggleFiringMode(t *testing.T) {
 		{
 			Name:            "Semi-Automatic to Burst Fire",
 			CurrentFireMode: core.WeaponFiringModeSemiAutomatic,
-			FiringModes: []core.WeaponFiringMode{
-				core.WeaponFiringModeSemiAutomatic,
-				core.WeaponFiringModeBurstFire,
-				core.WeaponFiringModeFullAuto,
-			},
-			Expected: "[Ares Light Fire 70] Firing mode changed to Burst Fire",
+			FiringModes:     firingModes,
+			Expected:        "[Ares Light Fire 70] Firing mode changed to Burst Fire",
 		},
 		{
 			Name:            "Burst Fire to Full Auto",
 			CurrentFireMode: core.WeaponFiringModeBurstFire,
-			FiringModes: []core.WeaponFiringMode{
-				core.WeaponFiringModeSemiAutomatic,
-				core.WeaponFiringModeBurstFire,
-				core.WeaponFiringModeFullAuto,
-			},
-			Expected: "[Ares Light Fire 70] Firing mode changed to Full Auto",
+			FiringModes:     firingModes,
+			Expected:        "[Ares Light Fire 70] Firing mode changed to Full Auto",
 		},
 		{
 			Name:            "Full Auto to Semi-Automatic",
 			CurrentFireMode: core.WeaponFiringModeFullAuto,
-			FiringModes: []core.WeaponFiringMode{
-				core.WeaponFiringModeSemiAutomatic,
-				core.WeaponFiringModeBurstFire,
-				core.WeaponFiringModeFullAuto,
-			},
-			Expected: "[Ares Light Fire 70] Firing mode changed to Semi-Automatic",
+			FiringModes:     firingModes,
+			Expected:        "[Ares Light Fire 70] Firing mode changed to Semi-Automatic",
 		},
 	}
 
 	for _, tt := range dt {
 		t.Run(tt.Name, func(t *testing.T) {
-
-			w := &core.WeaponRanged{
-				Name:               "Ares Light Fire 70",
-				FiringModes:        tt.FiringModes,
-				SelectedFiringMode: tt.CurrentFireMode,
-			}
+			w := &core.WeaponRanged{}
+			w.Spec.Name = "Ares Light Fire 70"
+			w.Spec.FiringModes = tt.FiringModes
+			w.SelectedFiringMode = tt.CurrentFireMode
 
 			result := w.ToggleFiringMode()
 			assert.Equal(t, tt.Expected, result)

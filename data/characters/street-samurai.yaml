@@ -1,0 +1,72 @@
+id: street-samurai
+name: Street Samurai
+metatype_id: ""
+ethnicity: ""
+age: 0
+sex: ""
+height: 0
+weight: 0
+street_cred: 0
+notoriety: 0
+public_awareness: 0
+karma: 0
+total_karma: 0
+condition_damage:
+    physical: 0
+    stun: 0
+attributes:
+    body:
+        base: 0
+    agility:
+        base: 0
+    reaction:
+        base: 0
+    strength:
+        base: 0
+    willpower:
+        base: 0
+    logic:
+        base: 0
+    intuition:
+        base: 0
+    charisma:
+        base: 0
+    essence:
+        base: 0
+initiative_dice:
+    physical:
+        base: 0
+    astral:
+        base: 0
+    matrix_ar:
+        base: 0
+    matrix_vr:
+        base: 0
+    hot_sim:
+        base: 0
+    rigger_ar:
+        base: 0
+edge: 0
+edge_points: 0
+active_skills: {}
+language_skills: {}
+knowledge_skills: {}
+qualities: {}
+contacts: {}
+identities: {}
+lifestyles: {}
+currancy: {}
+ranged_weapons: {}
+melee_weapons: {}
+armor:
+    - id: sync_leather
+      armor_rating: 4
+      modifications: []
+      modifiers: []
+cyberware: {}
+bioware: {}
+cyberdecks: {}
+augmentations: {}
+vehicals: {}
+gear: {}
+adept_powers: {}

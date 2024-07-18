@@ -1,9 +1,8 @@
 package core
 
 const (
-	SkillGroupsDataPath      = "data/skills/groups"
-	SkillGroupFilename       = SkillGroupsDataPath + "/%s.yaml"
-	SkillGroupFileMinVersion = "0.0.1"
+	SkillGroupsDataPath = "data/skills/groups"
+	SkillGroupFilename  = SkillGroupsDataPath + "/%s.yaml"
 )
 
 type SkillGroup struct {
@@ -12,7 +11,6 @@ type SkillGroup struct {
 	Description string     `yaml:"description,omitempty"`
 	Skills      []string   `yaml:"skills"`
 	RuleSource  RuleSource `yaml:"rule_source,omitempty"`
-	FileVersion string     `yaml:"file_version,omitempty"`
 }
 
 var CoreSkillGroups = []SkillGroup{

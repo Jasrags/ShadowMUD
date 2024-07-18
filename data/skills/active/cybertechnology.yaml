@@ -1,7 +1,7 @@
 id: cybertechnology
 name: Cybertechnology
-is_defaultable: false
 description: Cybertechnology is the ability to create, maintain, and repair cybernetic parts. A character with the proper tools and parts may repair or even build new cybernetics. Cybertechnology is not a surgical skill. Characters cannot attach or re-attach cybernetics to organic material with this skill. This skill may be used to modify or upgrade cybernetics within cyberlimbs.
+is_defaultable: false
 linked_attribute: Logic
 specializations:
     - Bodyware
@@ -9,4 +9,3 @@ specializations:
     - Headware
     - Repair
 rule_source: SR5:Core
-file_version: ""

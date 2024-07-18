@@ -1,7 +1,7 @@
 id: assensing
 name: Assensing
-is_defaultable: false
 description: Assensing is a magic user’s ability to read and interpret fluctuations in the astral world. This skill allows practitioners to learn information by reading astral auras. Only characters capable of astral perception may take this skill.
+is_defaultable: false
 linked_attribute: Intuition
 specializations:
     - Aura Reading
@@ -13,4 +13,3 @@ specializations:
     - People
     - Spirits
 rule_source: SR5:Core
-file_version: ""

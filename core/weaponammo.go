@@ -1,12 +1,11 @@
 package core
 
 const (
-	WeaponAmunitionDataPath      = "data/items/weapons/amunition"
-	WeaponAmunitionFilename      = WeaponAmunitionDataPath + "/%s.yaml"
-	WeaponAmunitionileMinVersion = "0.0.1"
+	WeaponAmunitionDataPath = "data/items/weapons/amunition"
+	WeaponAmunitionFilename = WeaponAmunitionDataPath + "/%s.yaml"
 )
 
-type WeaponAmunition struct {
+type WeaponAmunitionSpec struct {
 	ID                       string       `yaml:"id"`
 	Name                     string       `yaml:"name"`
 	Description              string       `yaml:"description"`
@@ -22,10 +21,16 @@ type WeaponAmunition struct {
 	ItemTags                 []ItemTag    `yaml:"tags"`
 	Modifiers                []Modifier   `yaml:"modifiers"`
 	RuleSource               RuleSource   `yaml:"rule_source"`
-	FileVersion              string       `yaml:"file_version,omitempty"`
 }
 
-var CoreWeaponAmunition = []WeaponAmunition{
+type WeaponAmunition struct {
+	ID        string              `yaml:"id"`
+	Quantity  int                 `yaml:"quantity"`
+	Modifiers []Modifier          `yaml:"modifiers"`
+	Spec      WeaponAmunitionSpec `yaml:"-"`
+}
+
+var CoreWeaponAmunition = []WeaponAmunitionSpec{
 	{
 		ID:                       "apds",
 		Name:                     "APDS",
@@ -144,10 +149,4 @@ var CoreWeaponAmunition = []WeaponAmunition{
 		Cost:             60,
 		RuleSource:       RuleSourceSR5Core,
 	},
-}
-
-// TODO: Load the data from the yaml files
-func LoadWeaponAmunition() map[string]WeaponAmunition {
-	data := make(map[string]WeaponAmunition)
-	return data
 }

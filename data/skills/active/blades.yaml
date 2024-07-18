@@ -1,7 +1,7 @@
 id: blades
 name: Blades
-is_defaultable: true
 description: Slice and dice! The Blades skill includes the use of all handheld slashing and stabbing weapons. You can use a range of edged weapons including daggers, swords, and axes.
+is_defaultable: true
 linked_attribute: Agility
 specializations:
     - Axes
@@ -9,4 +9,3 @@ specializations:
     - Swords
     - Parrying
 rule_source: SR5:Core
-file_version: ""

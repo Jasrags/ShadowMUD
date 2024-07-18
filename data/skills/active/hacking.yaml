@@ -1,7 +1,7 @@
 id: hacking
 name: Hacking
-is_defaultable: false
 description: Hacking is used to discover and exploit security flaws in computers and other electronics.
+is_defaultable: false
 linked_attribute: Logic
 specializations:
     - Devices
@@ -9,4 +9,3 @@ specializations:
     - Hosts
     - Personas
 rule_source: SR5:Core
-file_version: ""

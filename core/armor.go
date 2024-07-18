@@ -6,7 +6,7 @@ const (
 	ArmorFileMinVersion = "0.0.1"
 )
 
-type Armor struct {
+type ArmorSpec struct {
 	ID            string              `yaml:"id,omitempty"`
 	Name          string              `yaml:"name,omitempty"`
 	Description   string              `yaml:"description,omitempty"`
@@ -19,11 +19,27 @@ type Armor struct {
 	Modifiers     []Modifier          `yaml:"modifiers"`
 	Cost          int                 `yaml:"cost,omitempty"`
 	RuleSource    RuleSource          `yaml:"rule_source,omitempty"`
-	FileVersion   string              `yaml:"file_version,omitempty"`
+}
+
+func (as ArmorSpec) GetInstance() Armor {
+	return Armor{
+		ID:            as.ID,
+		ArmorRating:   as.ArmorRating,
+		Modifications: as.Modifications,
+		Modifiers:     as.Modifiers,
+	}
+}
+
+type Armor struct {
+	ID            string              `yaml:"id,omitempty"`
+	ArmorRating   int                 `yaml:"armor_rating,omitempty"`
+	Modifications []ArmorModification `yaml:"modifications"`
+	Modifiers     []Modifier          `yaml:"modifiers"`
+	Spec          ArmorSpec           `yaml:"-"`
 }
 
 var (
-	CoreArmor = []Armor{
+	CoreArmor = []ArmorSpec{
 		{
 			ID:           "clothing",
 			Name:         "Clothing",
@@ -227,9 +243,3 @@ var (
 		},
 	}
 )
-
-// TODO: Load the data from the yaml files
-func LoadArmor() map[string]Armor {
-	data := make(map[string]Armor)
-	return data
-}

@@ -1,7 +1,7 @@
 id: archery
 name: Archery
-is_defaultable: true
 description: Archery is used to fire string-loaded projectile weapons. An archer is familiar with many different styles of bow and the multitude of arrows that can be used to maximum effect.
+is_defaultable: true
 linked_attribute: Agility
 specializations:
     - Bow
@@ -9,4 +9,3 @@ specializations:
     - Non-Standard Ammunition
     - Slingshot
 rule_source: SR5:Core
-file_version: 0.0.1

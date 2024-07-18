@@ -1,7 +1,7 @@
 id: clubs
 name: Clubs
-is_defaultable: true
 description: Clubs governs the use of all hand-held bludgeoning instruments. With this skill you can turn any blunt item, be it a baseball bat, crutch, or mace, into a weapon.
+is_defaultable: true
 linked_attribute: Agility
 specializations:
     - Batons
@@ -10,4 +10,3 @@ specializations:
     - Staves
     - Parrying
 rule_source: SR5:Core
-file_version: ""

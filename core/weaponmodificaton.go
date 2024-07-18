@@ -1,9 +1,8 @@
 package core
 
 const (
-	WeaponModificationsDataPath  = "data/items/weapons/modifications"
-	WeaponModificationFilename   = WeaponModificationsDataPath + "/%s.yaml"
-	WeaponModificationMinVersion = "0.0.1"
+	WeaponModificationsDataPath = "data/items/weapons/modifications"
+	WeaponModificationFilename  = WeaponModificationsDataPath + "/%s.yaml"
 )
 
 type WeaponMountPoint string
@@ -17,24 +16,30 @@ const (
 	WeaponMountPointInternal    WeaponMountPoint = "Internal"
 )
 
-type WeaponModification struct {
+type WeaponModificationSpec struct {
 	ID          string             `yaml:"id,omitempty"`
 	Name        string             `yaml:"name,omitempty"`
 	Description string             `yaml:"description,omitempty"`
 	MountPoints []WeaponMountPoint `yaml:"mount_points"`
 	// ArmorRating  int          `yaml:"armor_rating,omitempty"`
-	Rating       int          `yaml:"rating,omitempty"`
 	Cost         int          `yaml:"cost,omitempty"`
-	CapacityCost int          `yaml:"capacity_cost,omitempty"`
+	Capacity     int          `yaml:"capacity,omitempty"`
 	Availability int          `yaml:"availability,omitempty"`
 	Legality     LegalityType `yaml:"legality,omitempty"`
 	ItemTags     []ItemTag    `yaml:"tags"`
 	Modifiers    []Modifier   `yaml:"modifiers"`
 	RuleSource   RuleSource   `yaml:"rule_source,omitempty"`
-	FileVersion  string       `yaml:"file_version,omitempty"`
 }
 
-var CoreWeaponModifications = []WeaponModification{
+type WeaponModification struct {
+	ID        string                 `yaml:"id,omitempty"`
+	Rating    int                    `yaml:"rating,omitempty"`
+	ItemTags  []ItemTag              `yaml:"tags"`
+	Modifiers []Modifier             `yaml:"modifiers"`
+	Spec      WeaponModificationSpec `yaml:"_"`
+}
+
+var CoreWeaponModifications = []WeaponModificationSpec{
 	{
 		//Under-Barrel
 		ID:           "bipod",
@@ -266,10 +271,4 @@ var CoreWeaponModifications = []WeaponModification{
 		Modifiers:    []Modifier{},
 		RuleSource:   RuleSourceSR5Core,
 	},
-}
-
-// TODO: Load the data from the yaml files
-func LoadWeaponModifications() map[string]WeaponModification {
-	data := make(map[string]WeaponModification)
-	return data
 }

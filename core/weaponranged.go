@@ -3,9 +3,8 @@ package core
 import "fmt"
 
 const (
-	WeaponRangedDataPath    = "data/items/weapons/ranged"
-	WeaponRangedFilename    = WeaponRangedDataPath + "/%s.yaml"
-	WeaponRangedeMinVersion = "0.0.1"
+	WeaponRangedDataPath = "data/items/weapons/ranged"
+	WeaponRangedFilename = WeaponRangedDataPath + "/%s.yaml"
 )
 
 type WeaponRangedReload string
@@ -20,50 +19,72 @@ const (
 	WeaponRangedReloadBelt               WeaponRangedReload = "belt"
 )
 
+type WeaponFiringMode string
+
+const (
+	WeaponFiringModeSingleShot    WeaponFiringMode = "Single-Shot"
+	WeaponFiringModeSemiAutomatic WeaponFiringMode = "Semi-Automatic"
+	WeaponFiringModeBurstFire     WeaponFiringMode = "Burst Fire"
+	WeaponFiringModeLongBurst     WeaponFiringMode = "Long Burst"
+	WeaponFiringModeFullAuto      WeaponFiringMode = "Full Auto"
+)
+
+type WeaponRangedSpec struct {
+	ID               string               `yaml:"id,omitempty"`
+	Name             string               `yaml:"name,omitempty"`
+	Description      string               `yaml:"description,omitempty"`
+	Accuracy         int                  `yaml:"accuracy,omitempty"`
+	DamageValue      int                  `yaml:"damage_value,omitempty"`
+	DamageType       DamageType           `yaml:"damage_type,omitempty"`
+	ArmorPenatration int                  `yaml:"armor_penatration,omitempty"`
+	FiringModes      []WeaponFiringMode   `yaml:"firing_modes"`
+	Recoil           int                  `yaml:"recoil,omitempty"`
+	AmmoType         string               `yaml:"ammo_type,omitempty"`
+	AmmoCapacity     int                  `yaml:"ammo_capacity,omitempty"`
+	Reload           WeaponRangedReload   `yaml:"reload,omitempty"`
+	Availability     int                  `yaml:"availability,omitempty"`
+	LegalityType     LegalityType         `yaml:"legality_type,omitempty"`
+	ItemTags         []ItemTag            `yaml:"tags"`
+	Modifications    []WeaponModification `yaml:"modifications"`
+	Modifiers        []Modifier           `yaml:"modifiers"`
+	Cost             int                  `yaml:"cost,omitempty"`
+	RuleSource       RuleSource           `yaml:"rule_source,omitempty"`
+}
+
 type WeaponRanged struct {
 	ID                 string               `yaml:"id,omitempty"`
-	Name               string               `yaml:"name,omitempty"`
-	Description        string               `yaml:"description,omitempty"`
-	Accuracy           int                  `yaml:"accuracy,omitempty"`
-	DamageValue        int                  `yaml:"damage_value,omitempty"`
-	DamageType         DamageType           `yaml:"damage_type,omitempty"`
-	ArmorPenatration   int                  `yaml:"armor_penatration,omitempty"`
 	SelectedFiringMode WeaponFiringMode     `yaml:"selected_firing_mode,omitempty"`
-	FiringModes        []WeaponFiringMode   `yaml:"firing_modes"`
-	Recoil             int                  `yaml:"recoil,omitempty"`
-	AmmoType           string               `yaml:"ammo_type,omitempty"`
-	AmmoCapacity       int                  `yaml:"ammo_capacity,omitempty"`
-	Reload             WeaponRangedReload   `yaml:"reload,omitempty"`
-	Availability       int                  `yaml:"availability,omitempty"`
-	LegalityType       LegalityType         `yaml:"legality_type,omitempty"`
-	ItemTags           []ItemTag            `yaml:"tags"`
+	AmmoRemaining      int                  `yaml:"ammo_remaining,omitempty"`
 	Modifications      []WeaponModification `yaml:"modifications"`
 	Modifiers          []Modifier           `yaml:"modifiers"`
-	Cost               int                  `yaml:"cost,omitempty"`
-	RuleSource         RuleSource           `yaml:"rule_source,omitempty"`
-	FileVersion        string               `yaml:"file_version,omitempty"`
+	Spec               WeaponRangedSpec     `yaml:"_"`
+}
+
+func (w *WeaponRanged) Load() string {
+	// w.AmmoRemaining
+	// w.Spec.AmmoCapacity
 }
 
 func (w *WeaponRanged) ToggleFiringMode() string {
-	if len(w.FiringModes) == 0 {
-		return fmt.Sprintf(MessageNoFiringModes, w.Name)
+	if len(w.Spec.FiringModes) == 0 {
+		return fmt.Sprintf(MessageNoFiringModes, w.Spec.Name)
 	}
 
-	for i, v := range w.FiringModes {
+	for i, v := range w.Spec.FiringModes {
 		if v == w.SelectedFiringMode {
-			if i+1 < len(w.FiringModes) {
-				w.SelectedFiringMode = w.FiringModes[i+1]
+			if i+1 < len(w.Spec.FiringModes) {
+				w.SelectedFiringMode = w.Spec.FiringModes[i+1]
 			} else {
-				w.SelectedFiringMode = w.FiringModes[0]
+				w.SelectedFiringMode = w.Spec.FiringModes[0]
 			}
 			break
 		}
 	}
 
-	return fmt.Sprintf(MessageFiringModeChanged, w.Name, w.SelectedFiringMode)
+	return fmt.Sprintf(MessageFiringModeChanged, w.Spec.Name, w.SelectedFiringMode)
 }
 
-var CoreWeaponRanged = []WeaponRanged{
+var CoreWeaponRanged = []WeaponRangedSpec{
 	{
 		ID:           "shuriken",
 		Name:         "Shuriken",

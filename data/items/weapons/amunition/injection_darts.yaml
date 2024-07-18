@@ -4,5 +4,6 @@ description: Injection darts are used to deliver drugs or toxins to a target. Th
 availability: 4
 legality: Restricted
 cost: 75
+tags: []
 modifiers: []
 rule_source: SR5:Core

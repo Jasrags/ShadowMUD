@@ -116,6 +116,9 @@ type ConditionDamage struct {
 	Stun     int `yaml:"stun"`
 }
 
+type CharacterSpec struct {
+}
+
 type Character struct {
 	// Personal Data
 	ID              string          `yaml:"id"`
@@ -163,7 +166,7 @@ type Character struct {
 	Currancy        map[string]int            `yaml:"currancy"`
 	RangedWeapons   map[string]WeaponRanged   `yaml:"ranged_weapons"`
 	MeleeWeapons    map[string]WeaponMelee    `yaml:"melee_weapons"`
-	Armor           map[string]string         `yaml:"armor"`
+	Armor           []Armor                   `yaml:"armor"`
 	Cyberware       map[string]Cyberware      `yaml:"cyberware"`
 	Bioware         map[string]Bioware        `yaml:"bioware"`
 	Cyberdecks      map[string]string         `yaml:"cyberdecks"`
@@ -171,6 +174,10 @@ type Character struct {
 	Vehicals        map[string]string         `yaml:"vehicals"`
 	Gear            map[string]string         `yaml:"gear"`
 	AdeptPowers     map[string]string         `yaml:"adept_powers"`
+}
+
+func (c *Character) AddArmor(armor Armor) {
+	c.Armor = append(c.Armor, armor)
 }
 
 // Will need to make this a function that can be called to recalculate

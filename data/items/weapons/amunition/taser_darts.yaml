@@ -4,5 +4,6 @@ description: Taser darts are used to deliver an electrical shock to a target. Th
 availability: 3
 legality: Legal
 cost: 50
+tags: []
 modifiers: []
 rule_source: SR5:Core

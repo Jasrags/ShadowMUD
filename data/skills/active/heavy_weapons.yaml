@@ -1,7 +1,7 @@
 id: heavy_weapons
 name: Heavy Weapons
-is_defaultable: true
 description: The term heavy weapon is designated for all projectile weaponry larger than an assault rifle, such as grenade launchers, machine guns, and assault cannons. This skill is exclusive to handheld and non-vehicle-mounted weaponry—if you’ve got a gun mounted on or in a vehicle, use Gunnery.
+is_defaultable: true
 linked_attribute: Agility
 specializations:
     - Assault Cannons
@@ -10,4 +10,3 @@ specializations:
     - Machine Guns
     - Rocket Launchers
 rule_source: SR5:Core
-file_version: ""

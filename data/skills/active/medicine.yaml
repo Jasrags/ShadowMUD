@@ -1,7 +1,7 @@
 id: medicine
 name: Medicine
-is_defaultable: false
 description: Medicine is used to perform advanced medical procedures such as surgeries. It includes long-term medical support for disease and illness, and the skill can be used to diagnose a character’s medical condition. This skill is used to implant or remove cybernetics and bioware but cannot be used to repair or maintain implanted devices.
+is_defaultable: false
 linked_attribute: Logic
 specializations:
     - Cosmetic Surgery
@@ -11,4 +11,3 @@ specializations:
     - Organ Culture
     - 'Trauma Surgery '
 rule_source: SR5:Core
-file_version: ""

@@ -7,8 +7,8 @@ armor_penatration_modifier: -5
 availability: 6
 legality: Restricted
 cost: 80
+tags: []
 modifiers:
     - type: add
       effect: ElectricDamage
-      value: 0
 rule_source: SR5:Core

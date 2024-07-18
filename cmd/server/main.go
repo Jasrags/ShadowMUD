@@ -37,9 +37,7 @@ func main() {
 	logrus.Info("Starting the server")
 
 	// Load all the data
-	logrus.Info("Loading core data")
-	core.LoadCoreData()
-	logrus.Info("Core data loaded")
+	core.LoadedCoreData.Load()
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)

@@ -6,5 +6,6 @@ armor_penatration_modifier: 2
 availability: 4
 legality: Forbidden
 cost: 70
+tags: []
 modifiers: []
 rule_source: SR5:Core

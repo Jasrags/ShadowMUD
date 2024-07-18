@@ -12,9 +12,8 @@ import (
 )
 
 const (
-	MetatypeDataPath       = "data/metatypes"
-	MetatypeFilename       = MetatypeDataPath + "/%s.yaml"
-	MetatypeFileMinVersion = "0.0.1"
+	MetatypeDataPath = "data/metatypes"
+	MetatypeFilename = MetatypeDataPath + "/%s.yaml"
 
 	RacialTraitLowLightVision                    = "Low-Light Vision"
 	RacialTraitThermographicVision               = "Thermographic Vision"

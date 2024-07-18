@@ -4,5 +4,6 @@ description: These are for assault cannons only, and they’re the only thing as
 availability: 12
 legality: Forbidden
 cost: 400
+tags: []
 modifiers: []
 rule_source: SR5:Core

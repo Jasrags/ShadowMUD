@@ -1,7 +1,7 @@
 id: diving
 name: Diving
-is_defaultable: true
 description: Diving brings together a wide array of actions performed underwater. This skill can be applied when diving, swimming underwater, using complex diving equipment, and holding your breath.
+is_defaultable: true
 linked_attribute: Body
 specializations:
     - Liquid Breathing Apparatus
@@ -14,4 +14,3 @@ specializations:
     - Military
     - Controlled Hyperventilation
 rule_source: SR5:Core
-file_version: ""

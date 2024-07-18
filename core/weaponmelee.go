@@ -1,26 +1,17 @@
 package core
 
-import (
-	"fmt"
-	"os"
-	"strings"
-
-	"github.com/Jasrags/ShadowMUD/core/util"
-	"github.com/sirupsen/logrus"
-)
-
 const (
-	WeaponMeleeDataPath   = "data/items/weapons/melee"
-	WeaponMeleeFilename   = WeaponMeleeDataPath + "/%s.yaml"
-	WeaponMeleeMinVersion = "0.0.1"
+	WeaponMeleeDataPath = "data/items/weapons/melee"
+	WeaponMeleeFilename = WeaponMeleeDataPath + "/%s.yaml"
 )
 
-type WeaponMelee struct {
+type WeaponMeleeSpec struct {
 	ID               string       `yaml:"id"`
 	Name             string       `yaml:"name"`
 	Description      string       `yaml:"description,omitempty"`
 	Accuracy         int          `yaml:"accuracy,omitempty"`
 	Reach            int          `yaml:"reach,omitempty"`
+	Concealability   int          `yaml:"concealability,omitempty"`
 	DamageValue      int          `yaml:"damage_value,omitempty"`
 	DamageType       DamageType   `yaml:"damage_type,omitempty"`
 	ArmorPenatration int          `yaml:"armor_penatration,omitempty"`
@@ -32,7 +23,14 @@ type WeaponMelee struct {
 	RuleSource       RuleSource   `yaml:"rule_source,omitempty"`
 }
 
-var CoreWeaponMelee = []WeaponMelee{
+type WeaponMelee struct {
+	ID        string              `yaml:"id"`
+	ItemTags  []ItemTag           `yaml:"tags"`
+	Modifiers []Modifier          `yaml:"modifiers"`
+	Spec      WeaponAmunitionSpec `yaml:"_"`
+}
+
+var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:           "club",
 		Name:         "Club",
@@ -344,34 +342,4 @@ var CoreWeaponMelee = []WeaponMelee{
 		// Modifier
 		//  Electric attack
 	},
-}
-
-func LoadMeleeWeapons() map[string]WeaponMelee {
-	logrus.Debug("Started loading melee weapons")
-
-	files, errReadDir := os.ReadDir(MeleeWeaponDataPath)
-	if errReadDir != nil {
-		logrus.WithError(errReadDir).Fatal("Could not read melee weapons directory")
-	}
-
-	// Create a map to store the metatypes
-	list := make(map[string]WeaponMelee, len(files))
-
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), ".yaml") {
-			filepath := fmt.Sprintf("%s/%s", MeleeWeaponDataPath, file.Name())
-
-			var v WeaponMelee
-			if err := util.LoadStructFromYAML(filepath, &v); err != nil {
-				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
-			}
-
-			list[v.Name] = v
-		}
-		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded melee weapon file")
-	}
-
-	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading melee weapons")
-
-	return list
 }

@@ -1,10 +1,9 @@
 id: decompiling
 name: Decompiling
-is_defaultable: false
 description: Decompiling is a character’s ability to effectively delete previously compiled sprites.
+is_defaultable: false
 linked_attribute: Resonance
 specializations:
     - Data Sprites
     - Machine Sprites
 rule_source: SR5:Core
-file_version: ""

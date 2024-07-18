@@ -1,7 +1,7 @@
 id: artisan
 name: Artisan
-is_defaultable: false
 description: This skill includes several different forms of artistic impression as well as the handcrafting of fine objects that would otherwise be produced on an assembly line. The world’s top artists and crafters are considered artisans.
+is_defaultable: false
 linked_attribute: Intuition
 specializations:
     - Cooking
@@ -9,4 +9,3 @@ specializations:
     - Drawing
     - Carpentry
 rule_source: SR5:Core
-file_version: ""

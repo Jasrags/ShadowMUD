@@ -4,5 +4,6 @@ description: Regular ammo is the standard ammunition for most firearms. It is a 
 availability: 2
 legality: Restricted
 cost: 20
+tags: []
 modifiers: []
 rule_source: SR5:Core

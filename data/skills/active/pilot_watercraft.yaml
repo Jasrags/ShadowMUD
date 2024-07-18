@@ -1,7 +1,7 @@
 id: pilot_watercraft
 name: Pilot Watercraft
-is_defaultable: false
 description: This skill is used to pilot any waterborne vehicle, whether from inside it or by remote control.
+is_defaultable: false
 linked_attribute: Reaction
 specializations:
     - Hydrofoil
@@ -11,4 +11,3 @@ specializations:
     - Ship
     - Submarine
 rule_source: SR5:Core
-file_version: ""

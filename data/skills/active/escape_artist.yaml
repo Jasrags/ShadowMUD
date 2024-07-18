@@ -1,7 +1,7 @@
 id: escape_artist
 name: Escape Artist
-is_defaultable: true
 description: Escape Artist measures the character’s ability to escape from bindings by using body contortion and manual dexterity.
+is_defaultable: true
 linked_attribute: Agility
 specializations:
     - Cuffs
@@ -9,4 +9,3 @@ specializations:
     - Zip Ties
     - Contortionism
 rule_source: SR5:Core
-file_version: ""

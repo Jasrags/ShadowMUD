@@ -18,9 +18,7 @@ const (
 	QualityTypeNegative   QualityType = "Negative"
 )
 
-type (
-	QualityType string
-)
+type QualityType string
 
 func NewQuality() *Quality {
 	return &Quality{}

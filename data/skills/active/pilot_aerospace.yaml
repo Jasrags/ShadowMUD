@@ -1,7 +1,7 @@
 id: pilot_aerospace
 name: Pilot Aerospace
-is_defaultable: true
 description: Aerospace vehicles include all reduced- and zero-gravity aircraft capable of suborbital or extra-orbital flight.
+is_defaultable: true
 linked_attribute: Reaction
 specializations:
     - Deep Space
@@ -10,4 +10,3 @@ specializations:
     - Semiballistic
     - Suborbital
 rule_source: SR5:Core
-file_version: ""

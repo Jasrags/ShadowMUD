@@ -1,7 +1,7 @@
 id: gymnastics
 name: Gymnastics
-is_defaultable: true
 description: Gymnastics measures your balance, general athleticism, and all-around ability to use your body.
+is_defaultable: true
 linked_attribute: Agility
 specializations:
     - Balance
@@ -11,4 +11,3 @@ specializations:
     - Parkour
     - Rolling
 rule_source: SR5:Core
-file_version: ""
