@@ -5,6 +5,7 @@ armor_rating: 6
 capacity: 6
 availability: 10
 legality_type: Restricted
+modifications: []
 tags:
     - Armor
     - Shield

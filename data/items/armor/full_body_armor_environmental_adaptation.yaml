@@ -1,6 +1,7 @@
 id: full_body_armor_environmental_adaptation
 name: Full Body Armor, Environmental Adaptation
 availability: 3
+modifications: []
 tags:
     - Armor
     - Clothing

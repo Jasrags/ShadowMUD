@@ -2,6 +2,7 @@ id: feedback_clothing
 name: Feedback Clothing
 description: 'This haptic clothing allows for a tactile component to an augmented reality experience. '
 availability: 8
+modifications: []
 tags:
     - Armor
     - Clothing

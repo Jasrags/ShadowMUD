@@ -5,6 +5,7 @@ armor_rating: 9
 capacity: 9
 availability: 10
 legality_type: Restricted
+modifications: []
 tags:
     - Armor
     - Clothing

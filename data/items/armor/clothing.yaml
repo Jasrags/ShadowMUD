@@ -2,6 +2,7 @@ id: clothing
 name: Clothing
 description: Basic clothing.
 legality_type: Legal
+modifications: []
 tags:
     - Clothing
 modifiers: []

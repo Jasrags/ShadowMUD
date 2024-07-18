@@ -7,19 +7,19 @@ const (
 )
 
 type Armor struct {
-	ID            string       `yaml:"id,omitempty"`
-	Name          string       `yaml:"name,omitempty"`
-	Description   string       `yaml:"description,omitempty"`
-	ArmorRating   int          `yaml:"armor_rating,omitempty"`
-	Capacity      int          `yaml:"capacity,omitempty"`
-	Availability  int          `yaml:"availability,omitempty"`
-	LegalityType  LegalityType `yaml:"legality_type,omitempty"`
-	Modifications string       `yaml:"modifications"`
-	ItemTags      []ItemTag    `yaml:"tags"`
-	Modifiers     []Modifier   `yaml:"modifiers"`
-	Cost          int          `yaml:"cost,omitempty"`
-	RuleSource    RuleSource   `yaml:"rule_source,omitempty"`
-	FileVersion   string       `yaml:"file_version,omitempty"`
+	ID            string              `yaml:"id,omitempty"`
+	Name          string              `yaml:"name,omitempty"`
+	Description   string              `yaml:"description,omitempty"`
+	ArmorRating   int                 `yaml:"armor_rating,omitempty"`
+	Capacity      int                 `yaml:"capacity,omitempty"`
+	Availability  int                 `yaml:"availability,omitempty"`
+	LegalityType  LegalityType        `yaml:"legality_type,omitempty"`
+	Modifications []ArmorModification `yaml:"modifications"`
+	ItemTags      []ItemTag           `yaml:"tags"`
+	Modifiers     []Modifier          `yaml:"modifiers"`
+	Cost          int                 `yaml:"cost,omitempty"`
+	RuleSource    RuleSource          `yaml:"rule_source,omitempty"`
+	FileVersion   string              `yaml:"file_version,omitempty"`
 }
 
 var (

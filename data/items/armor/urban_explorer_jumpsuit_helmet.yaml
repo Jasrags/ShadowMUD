@@ -3,6 +3,7 @@ name: Urban Explorer Jumpsuit, Helmet
 armor_rating: 2
 capacity: 2
 legality_type: Legal
+modifications: []
 tags:
     - Armor
     - Clothing

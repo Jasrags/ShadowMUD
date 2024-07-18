@@ -3,6 +3,7 @@ name: (Synth)Leather
 description: Synthetic leather.
 armor_rating: 4
 capacity: 4
+modifications: []
 tags:
     - Armor
     - Clothing
