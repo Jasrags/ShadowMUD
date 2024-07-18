@@ -11,6 +11,7 @@ legality_type: Restricted
 tags:
     - Ranged
     - Throwing
+modifications: []
 modifiers: []
 cost: 25
 rule_source: SR5:Core

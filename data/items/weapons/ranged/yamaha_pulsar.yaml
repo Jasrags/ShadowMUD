@@ -11,6 +11,7 @@ reload: m
 tags:
     - Ranged
     - Taser
+modifications: []
 modifiers:
     - type: add
       effect: ElectricDamage
