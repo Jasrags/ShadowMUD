@@ -1,0 +1,12 @@
+id: hacking
+name: Hacking
+is_defaultable: false
+description: Hacking is used to discover and exploit security flaws in computers and other electronics.
+linked_attribute: Logic
+specializations:
+    - Devices
+    - Files
+    - Hosts
+    - Personas
+rule_source: SR5:Core
+file_version: ""

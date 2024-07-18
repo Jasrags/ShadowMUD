@@ -1,0 +1,13 @@
+id: impersonation
+name: Impersonation
+is_defaultable: true
+description: Impersonation is the ability to assume the identity of another person, including voice and physical mannerisms. The skill is limited by the physical abilities of the character. A dwarf might be able to impersonate a troll over a commlink, but the illusion shatters when he is face to face with his target.
+linked_attribute: Charisma
+specializations:
+    - Dwarf
+    - Elf
+    - Human
+    - Ork
+    - Troll)
+rule_source: SR5:Core
+file_version: ""

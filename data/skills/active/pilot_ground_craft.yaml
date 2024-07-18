@@ -1,7 +1,13 @@
-name: Pilot (Ground Craft)
-description: Need to get where you’re not supposed to be? This skill allows you to remain inconspicuous in various situations. 
+id: pilot_ground_craft
+name: Pilot Ground Craft
+is_defaultable: false
+description: This skill is used to pilot any ground-based vehicle, excluding legged vehicles. This skill applies whether the pilot is in the vehicle or controlling the vehicle via remote access.
 linked_attribute: Reaction
-is_defaultable: true
-specializations: [Bike, Hovercraft, Remote Operation, Tracked, Wheeled]
+specializations:
+    - Bike
+    - Hovercraft
+    - Remote Operation
+    - Tracked
+    - Wheeled
 rule_source: SR5:Core
-file_version: 0.0.1
+file_version: ""

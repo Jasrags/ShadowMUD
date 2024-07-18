@@ -1,0 +1,13 @@
+id: aeronautics_mechanics
+name: Aeronautics Mechanics
+is_defaultable: false
+description: Aeronautics mechanics have the ability to repair a variety of aerospace vehicles, provided the proper tools and parts are available.
+linked_attribute: Logic
+specializations:
+    - Fixed-Wing
+    - Rotary-Wing
+    - VTOL
+    - Jet Engines
+    - Propeller Engines
+rule_source: ""
+file_version: ""

@@ -1,0 +1,9 @@
+id: language
+name: Language
+is_defaultable: true
+description: Language is the ability to converse in a specific language through written and verbal means. Characters who speak multiple languages must purchase a separate language skill for each language.
+linked_attribute: Intuition
+specializations:
+    - English, Japanese, Sperethiel
+rule_source: SR5:Core
+file_version: ""

@@ -1,0 +1,13 @@
+id: cybercombat
+name: Cybercombat
+is_defaultable: false
+description: Cybercombat is the skill used by hackers to engage in combat on the Matrix.
+linked_attribute: Logic
+specializations:
+    - Brute Force
+    - Data Spike
+    - Disarm Security
+    - Erase Mark
+    - Set Data Bomb
+rule_source: SR5:Core
+file_version: ""

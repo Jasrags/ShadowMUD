@@ -1,0 +1,8 @@
+id: pilot_exotic_vehicle
+name: Pilot Exotic Vehicle
+is_defaultable: true
+description: Characters must take this skill one time for each specific exotic vehicle. Characters may control the vehicle remotely with this skill where possible.
+linked_attribute: Reaction
+specializations: []
+rule_source: SR5:Core
+file_version: ""

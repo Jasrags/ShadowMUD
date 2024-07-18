@@ -1,0 +1,12 @@
+id: pilot_walker
+name: Pilot Walker
+is_defaultable: true
+description: Any vehicle that walks on two or more legs is piloted through this skill. Characters may control the walker physically or remotely.
+linked_attribute: Reaction
+specializations:
+    - Biped
+    - Multiped
+    - Quadruped
+    - Remote
+rule_source: SR5:Core
+file_version: ""

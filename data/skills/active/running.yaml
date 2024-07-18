@@ -1,0 +1,13 @@
+id: running
+name: Running
+is_defaultable: true
+description: Running, as you may guess, is about how much ground you can cover quickly.
+linked_attribute: Strength
+specializations:
+    - Distance
+    - Sprinting
+    - Desert
+    - Urban
+    - Wilderness
+rule_source: SR5:Core
+file_version: ""

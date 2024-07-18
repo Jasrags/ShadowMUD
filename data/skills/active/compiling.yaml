@@ -1,0 +1,10 @@
+id: compiling
+name: Compiling
+is_defaultable: false
+description: Compiling involves the ability to translate the complex 0s and 1s of machine source language and the rhythms of the resonance into sprites.
+linked_attribute: Resonance
+specializations:
+    - Data Sprites
+    - Machine Sprites
+rule_source: SR5:Core
+file_version: ""

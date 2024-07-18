@@ -1,0 +1,13 @@
+id: chemistry
+name: Chemistry
+is_defaultable: false
+description: Chemistry permits the character to create chemical reactions and develop chemical compounds ranging from drugs, to perfumes, to biopolymers like NuSkin. Chemistry can also be used to analyze chemical compounds to determine what they are.
+linked_attribute: Logic
+specializations:
+    - Analytical
+    - Biochemistry
+    - Inorganic
+    - Organic
+    - Physical
+rule_source: SR5:Core
+file_version: ""
