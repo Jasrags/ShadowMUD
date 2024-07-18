@@ -40,11 +40,12 @@ type WeaponRanged struct {
 	Modifiers          []Modifier         `yaml:"modifiers"`
 	Cost               int                `yaml:"cost,omitempty"`
 	RuleSource         RuleSource         `yaml:"rule_source,omitempty"`
+	FileVersion        string             `yaml:"file_version,omitempty"`
 }
 
 func (w *WeaponRanged) ToggleFiringMode() string {
 	if len(w.FiringModes) == 0 {
-		return fmt.Sprintf("[%s] No firing modes available", w.Name)
+		return fmt.Sprintf(MessageNoFiringModes, w.Name)
 	}
 
 	for i, v := range w.FiringModes {
@@ -58,7 +59,7 @@ func (w *WeaponRanged) ToggleFiringMode() string {
 		}
 	}
 
-	return fmt.Sprintf("[%s] Firing mode changed to %s", w.Name, w.SelectedFiringMode)
+	return fmt.Sprintf(MessageFiringModeChanged, w.Name, w.SelectedFiringMode)
 }
 
 var CoreWeaponRanged = []WeaponRanged{

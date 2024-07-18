@@ -1,0 +1,11 @@
+id: sync_leather
+name: (Synth)Leather
+description: Synthetic leather.
+armor_rating: 4
+capacity: 4
+tags:
+    - Armor
+    - Clothing
+modifiers: []
+cost: 200
+rule_source: SR5:Core

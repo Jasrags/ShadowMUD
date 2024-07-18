@@ -1,0 +1,13 @@
+id: chameleon_suit
+name: Chameleon Suit
+description: This suit is made of a special material that changes color to match the surroundings. It is designed to help the wearer blend in with the environment and avoid detection.
+armor_rating: 9
+capacity: 9
+availability: 10
+legality_type: Restricted
+tags:
+    - Armor
+    - Clothing
+modifiers: []
+cost: 1700
+rule_source: SR5:Core

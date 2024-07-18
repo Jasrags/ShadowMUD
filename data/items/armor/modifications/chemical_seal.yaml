@@ -1,0 +1,9 @@
+id: chemical_seal
+name: Chemical Seal
+description: It provides complete protection against contact and inhalation vector chemicals, but can only be used for a total of an hour (the limit of the air supply) at a time.
+cost: 3000
+capacity_cost: 6
+availability: 12
+legality: Restricted
+tags: []
+rule_source: SR5:Core

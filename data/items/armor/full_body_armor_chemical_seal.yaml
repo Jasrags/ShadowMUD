@@ -1,0 +1,9 @@
+id: full_body_armor_chemical_seal
+name: Full Body Armor, Chemical Seal
+availability: 6
+tags:
+    - Armor
+    - Clothing
+modifiers: []
+cost: 6000
+rule_source: SR5:Core

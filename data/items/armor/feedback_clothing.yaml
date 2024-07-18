@@ -1,0 +1,10 @@
+id: feedback_clothing
+name: Feedback Clothing
+description: 'This haptic clothing allows for a tactile component to an augmented reality experience. '
+availability: 8
+tags:
+    - Armor
+    - Clothing
+modifiers: []
+cost: 500
+rule_source: SR5:Core

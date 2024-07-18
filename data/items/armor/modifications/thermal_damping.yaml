@@ -1,0 +1,9 @@
+id: thermal_damping
+name: Thermal Damping
+description: Designed to reduce your thermal signature, these inner layers capture or bleed heat, so the outer layers maintain a surface temperature equal to the surrounding air.
+cost: 500
+capacity_cost: 6
+availability: 10
+legality: Restricted
+tags: []
+rule_source: SR5:Core

@@ -1,0 +1,9 @@
+id: shock_frills
+name: Shock Frills
+description: These strips of “fur” are electrically charged when activated, standing on end and inflicting Electricity damage to anyone that touches you.
+cost: 250
+capacity_cost: 2
+availability: 6
+legality: Restricted
+tags: []
+rule_source: SR5:Core

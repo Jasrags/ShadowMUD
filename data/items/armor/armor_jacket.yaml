@@ -1,0 +1,12 @@
+id: armor_jacket
+name: Armor Jacket
+description: The most popular armor solution on the streets comes in all styles imaginable. It offers good protection without catching too much attention. But don’t think of wearing one to a dinner party.
+armor_rating: 12
+capacity: 12
+availability: 2
+tags:
+    - Armor
+    - Clothing
+modifiers: []
+cost: 1000
+rule_source: SR5:Core

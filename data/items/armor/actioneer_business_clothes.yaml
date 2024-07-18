@@ -1,0 +1,12 @@
+id: actioneer_business_clothes
+name: Actioneer Business Clothes
+description: These are the top-of-the-line in business wear, made by Actioneer. They are made of the finest materials and are designed to be stylish and functional. They are available in a variety of styles and colors, and are always in fashion.
+armor_rating: 8
+capacity: 8
+availability: 8
+tags:
+    - Armor
+    - Clothing
+modifiers: []
+cost: 1500
+rule_source: SR5:Core

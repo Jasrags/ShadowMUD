@@ -198,4 +198,9 @@ const (
 	ItemTagRocket                 ItemTag = "Rocket"
 	ItemTagMissile                ItemTag = "Missile"
 	ItemTagChainsaw               ItemTag = "Chainsaw"
+	ItemTagClothing               ItemTag = "Clothing"
+	ItemTagArmor                  ItemTag = "Armor"
+	ItemTagHelmet                 ItemTag = "Helmet"
+	ItemTagCoat                   ItemTag = "Coat"
+	ItemTagShield                 ItemTag = "Shield"
 )

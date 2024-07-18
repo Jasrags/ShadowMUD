@@ -1,0 +1,9 @@
+id: full_body_armor_environmental_adaptation
+name: Full Body Armor, Environmental Adaptation
+availability: 3
+tags:
+    - Armor
+    - Clothing
+modifiers: []
+cost: 1000
+rule_source: SR5:Core

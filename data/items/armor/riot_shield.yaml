@@ -1,0 +1,13 @@
+id: riot_shield
+name: Riot Shield
+description: A riot shield is a large, hand-held shield that is designed to protect the user from projectiles and other attacks. It is made of a lightweight material that is resistant to bullets and other projectiles.
+armor_rating: 6
+capacity: 6
+availability: 10
+legality_type: Restricted
+tags:
+    - Armor
+    - Shield
+modifiers: []
+cost: 1000
+rule_source: SR5:Core

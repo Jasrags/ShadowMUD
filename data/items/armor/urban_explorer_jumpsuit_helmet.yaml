@@ -1,0 +1,12 @@
+id: urban_explorer_jumpsuit_helmet
+name: Urban Explorer Jumpsuit, Helmet
+armor_rating: 2
+capacity: 2
+legality_type: Legal
+tags:
+    - Armor
+    - Clothing
+    - Helmet
+modifiers: []
+cost: 100
+rule_source: SR5:Core

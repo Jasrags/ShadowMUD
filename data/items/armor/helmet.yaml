@@ -1,0 +1,13 @@
+id: helmet
+name: Helmet
+description: A helmet provides protection for the head.
+armor_rating: 2
+capacity: 2
+availability: 2
+legality_type: Legal
+tags:
+    - Armor
+    - Helmet
+modifiers: []
+cost: 100
+rule_source: SR5:Core

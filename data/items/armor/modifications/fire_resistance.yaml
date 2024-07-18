@@ -1,0 +1,9 @@
+id: fire_resistance
+name: Fire Resistance
+description: Fire-retardant, nonflammable materials protect the wearer against Fire damage.
+cost: 250
+capacity_cost: 6
+availability: 6
+legality: Legal
+tags: []
+rule_source: SR5:Core

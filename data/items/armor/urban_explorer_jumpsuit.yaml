@@ -1,0 +1,13 @@
+id: urban_explorer_jumpsuit
+name: Urban Explorer Jumpsuit
+description: This jumpsuit is designed for urban exploration. It is made of a durable material that provides good protection against the elements and is designed to be comfortable to wear for long periods of time.
+armor_rating: 9
+capacity: 9
+availability: 8
+legality_type: Legal
+tags:
+    - Armor
+    - Clothing
+modifiers: []
+cost: 650
+rule_source: SR5:Core

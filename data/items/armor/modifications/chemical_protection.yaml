@@ -1,0 +1,9 @@
+id: chemical_protection
+name: Chemical Protection
+description: Water-resistant, non-porous, impermeable materials, and a coating of neutralizing agents protect the wearer against contact-vector chemical attacks.
+cost: 250
+capacity_cost: 1
+availability: 6
+legality: Legal
+tags: []
+rule_source: SR5:Core

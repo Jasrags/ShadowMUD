@@ -1,0 +1,9 @@
+id: clothing
+name: Clothing
+description: Basic clothing.
+legality_type: Legal
+tags:
+    - Clothing
+modifiers: []
+cost: 20
+rule_source: SR5:Core

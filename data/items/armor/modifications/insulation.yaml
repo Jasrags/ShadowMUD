@@ -1,0 +1,9 @@
+id: insulation
+name: Insulation
+description: Thermal fibers and heat-retentive materials protect the wearer against Cold damage.
+cost: 250
+capacity_cost: 6
+availability: 6
+legality: Legal
+tags: []
+rule_source: SR5:Core

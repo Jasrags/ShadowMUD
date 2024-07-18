@@ -1,0 +1,13 @@
+id: ballistic_shield
+name: Ballistic Shield
+description: A ballistic shield is a portable, hand-held shield that is designed to protect the user from gunfire. It is made of a lightweight material that is resistant to bullets and other projectiles.
+armor_rating: 6
+capacity: 6
+availability: 12
+legality_type: Restricted
+tags:
+    - Armor
+    - Shield
+modifiers: []
+cost: 1200
+rule_source: SR5:Core

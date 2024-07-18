@@ -1,0 +1,14 @@
+id: lined_coat
+name: Lined Coat
+description: A lined coat is a long coat that has been lined with a layer of ballistic cloth. It provides good protection against most small arms fire and is a popular choice for shadowrunners who want to blend in with the crowd.
+armor_rating: 9
+capacity: 9
+availability: 4
+legality_type: Legal
+tags:
+    - Armor
+    - Clothing
+    - Coat
+modifiers: []
+cost: 900
+rule_source: SR5:Core

@@ -17,6 +17,7 @@ func TestSaveCoreWeaponRanged(t *testing.T) {
 		}
 	}
 }
+
 func TestToggleFiringMode(t *testing.T) {
 	dt := []struct {
 		Name            string

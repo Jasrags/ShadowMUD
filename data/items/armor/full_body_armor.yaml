@@ -1,0 +1,13 @@
+id: full_body_armor
+name: Full Body Armor
+description: This is a full body suit of armor that provides the wearer with the maximum amount of protection. It is designed to protect the wearer from head to toe and is made of the most advanced materials available.
+armor_rating: 15
+capacity: 15
+availability: 14
+legality_type: Restricted
+tags:
+    - Armor
+    - Clothing
+modifiers: []
+cost: 2000
+rule_source: SR5:Core

@@ -1,0 +1,12 @@
+id: armor_clothing
+name: Armor Clothing
+description: Lightweight ballistic fiber weave makes these garments almost impossible to detect as armor. It doesn’t provide as much protection as real armor, but it’s available in a wide variety of styles.
+armor_rating: 6
+capacity: 6
+availability: 2
+tags:
+    - Armor
+    - Clothing
+modifiers: []
+cost: 450
+rule_source: SR5:Core

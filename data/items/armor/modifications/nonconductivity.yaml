@@ -1,0 +1,9 @@
+id: nonconductivity
+name: Nonconductivity
+description: Electrical insulation and non-conductive materials protect the wearer against Electricity damage.
+cost: 250
+capacity_cost: 6
+availability: 6
+legality: Legal
+tags: []
+rule_source: SR5:Core

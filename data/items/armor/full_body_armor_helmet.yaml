@@ -1,0 +1,13 @@
+id: full_body_armor_helmet
+name: Full Body Armor, Helmet
+armor_rating: 3
+capacity: 6
+availability: 14
+legality_type: Restricted
+tags:
+    - Armor
+    - Clothing
+    - Helmet
+modifiers: []
+cost: 500
+rule_source: SR5:Core
