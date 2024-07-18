@@ -1,0 +1,11 @@
+id: suppressor
+name: Suppressor
+description: A suppressor is a device that attaches to the barrel of a firearm and reduces the noise and muzzle flash produced by the weapon. The suppressor is usually made of metal or plastic and contains baffles that slow and cool the escaping gases from the barrel.
+mount_points:
+    - Barrel
+cost: 500
+availability: 9
+legality: Forbidden
+tags: []
+modifiers: []
+rule_source: SR5:Core

@@ -204,3 +204,13 @@ const (
 	ItemTagCoat                   ItemTag = "Coat"
 	ItemTagShield                 ItemTag = "Shield"
 )
+
+type WeaponFiringMode string
+
+const (
+	WeaponFiringModeSingleShot    WeaponFiringMode = "Single-Shot"
+	WeaponFiringModeSemiAutomatic WeaponFiringMode = "Semi-Automatic"
+	WeaponFiringModeBurstFire     WeaponFiringMode = "Burst Fire"
+	WeaponFiringModeLongBurst     WeaponFiringMode = "Long Burst"
+	WeaponFiringModeFullAuto      WeaponFiringMode = "Full Auto"
+)

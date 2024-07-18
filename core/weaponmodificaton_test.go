@@ -10,8 +10,8 @@ import (
 )
 
 func TestSaveCoreWeaponModifications(t *testing.T) {
-	for _, v := range core.CoreArmor {
-		if err := util.SaveStructToYAML(fmt.Sprintf("../"+core.ArmorFilename, v.ID), &v); err != nil {
+	for _, v := range core.CoreWeaponModifications {
+		if err := util.SaveStructToYAML(fmt.Sprintf("../"+core.WeaponModificationFilename, v.ID), &v); err != nil {
 			t.Errorf("Error saving %s: %s", v.ID, err)
 		}
 	}

@@ -1,0 +1,10 @@
+id: quick_draw_holster
+name: Quick-Draw Holster
+description: A quick-draw holster is a holster that is designed to allow the wearer to draw a weapon quickly and easily. The holster is usually made of leather or nylon and has a snap or Velcro closure to keep the weapon secure.
+mount_points: []
+cost: 175
+availability: 4
+legality: Legal
+tags: []
+modifiers: []
+rule_source: SR5:Core

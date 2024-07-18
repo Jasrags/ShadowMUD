@@ -1,0 +1,13 @@
+id: concealable_holster
+name: Concealable Holster
+description: A holster that is designed to be easily concealed under clothing.
+mount_points: []
+cost: 150
+availability: 2
+legality: Legal
+tags: []
+modifiers:
+    - type: Concealability
+      effect: Add
+      value: -1
+rule_source: SR5:Core

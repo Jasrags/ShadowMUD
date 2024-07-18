@@ -1,0 +1,10 @@
+id: speed_loader
+name: Speed Loader
+description: A speed loader is a device that attaches to the cylinder of a revolver and allows the shooter to reload the weapon quickly and easily. The speed loader is usually made of metal or plastic and contains a spring-loaded mechanism that pushes the rounds into the cylinder when the loader is twisted.
+mount_points: []
+cost: 25
+availability: 2
+legality: Legal
+tags: []
+modifiers: []
+rule_source: SR5:Core

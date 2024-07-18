@@ -1,0 +1,14 @@
+id: bipod
+name: Bipod
+description: A bipod is a two-legged support that attaches to the barrel of a firearm, allowing the shooter to rest the weapon on the ground or another surface to improve stability.
+mount_points:
+    - Under-Barrel
+cost: 200
+availability: 2
+legality: Legal
+tags: []
+modifiers:
+    - type: RecoilCompensation
+      effect: Add
+      value: 2
+rule_source: SR5:Core

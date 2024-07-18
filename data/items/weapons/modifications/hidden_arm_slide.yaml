@@ -1,0 +1,10 @@
+id: hidden_arm_slide
+name: Hidden Arm Slide
+description: A hidden arm slide is a concealed holster that allows the wearer to draw a weapon from under a sleeve or pant leg.
+mount_points: []
+cost: 350
+availability: 4
+legality: Restricted
+tags: []
+modifiers: []
+rule_source: SR5:Core

@@ -1,0 +1,11 @@
+id: tripod
+name: Tripod
+description: A tripod is a three-legged support that attaches to the barrel of a firearm, allowing the shooter to rest the weapon on the ground or another surface to improve stability.
+mount_points:
+    - Under-Barrel
+cost: 500
+availability: 4
+legality: Legal
+tags: []
+modifiers: []
+rule_source: SR5:Core

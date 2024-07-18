@@ -1,0 +1,11 @@
+id: imaging_scope
+name: Imaging Scope
+description: An imaging scope is a telescopic sight that uses a digital camera to provide a magnified image of the target. The image is displayed on a screen in the eyepiece of the scope, allowing the shooter to see the target in low-light conditions or through smoke or fog.
+mount_points:
+    - Top
+cost: 300
+availability: 2
+legality: Legal
+tags: []
+modifiers: []
+rule_source: SR5:Core

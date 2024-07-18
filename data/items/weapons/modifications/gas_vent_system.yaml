@@ -1,0 +1,14 @@
+id: gas_vent_system
+name: Gas Vent System
+description: Gas-vent recoil compensation systems are barrel-mounted accessories that vent a weapon’s barrel gases at a specific vector to counter muzzle climb. Once installed, a gas-vent cannot be removed.
+mount_points:
+    - Barrel
+cost: 200
+availability: 4
+legality: Restricted
+tags: []
+modifiers:
+    - type: RecoilCompensation
+      effect: Add
+      value: 2
+rule_source: SR5:Core

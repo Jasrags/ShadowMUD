@@ -1,0 +1,12 @@
+id: laser_sight
+name: Laser Sight
+description: A laser sight is a small, battery-powered laser that attaches to the barrel of a firearm. The laser projects a red or green dot on the target, allowing the shooter to aim the weapon more accurately.
+mount_points:
+    - Top
+    - Under-Barrel
+cost: 125
+availability: 2
+legality: Legal
+tags: []
+modifiers: []
+rule_source: SR5:Core

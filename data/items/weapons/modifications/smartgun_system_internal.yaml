@@ -1,0 +1,11 @@
+id: smartgun_system_internal
+name: Smartgun System, Internal
+description: A smartgun system is a computerized aiming system that is built into a firearm and assists the shooter in aiming the weapon. The system uses sensors and cameras to track the target and adjust the aim of the weapon to compensate for movement and environmental conditions.
+mount_points:
+    - Internal
+cost: 2
+availability: 6
+legality: Restricted
+tags: []
+modifiers: []
+rule_source: SR5:Core

@@ -1,0 +1,11 @@
+id: gyro_mount
+name: Gyro Mount
+description: This heavy upper-body harness features an attached, articulated, motorized gyro-stabilized arm that mounts an assault rifle or a heavy weapon.
+mount_points:
+    - Under-Barrel
+cost: 1400
+availability: 7
+legality: Legal
+tags: []
+modifiers: []
+rule_source: SR5:Core

@@ -1,5 +1,15 @@
 package core
 
+import (
+	"fmt"
+	"os"
+	"strings"
+	"sync"
+
+	"github.com/Jasrags/ShadowMUD/core/util"
+	"github.com/sirupsen/logrus"
+)
+
 const (
 	WeaponMeleeDataPath   = "data/items/weapons/melee"
 	WeaponMeleeFilename   = WeaponMeleeDataPath + "/%s.yaml"
@@ -335,4 +345,36 @@ var CoreWeaponMelee = []WeaponMelee{
 		// Modifier
 		//  Electric attack
 	},
+}
+
+func LoadMeleeWeapons(wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	logrus.Debug("Started loading melee weapons")
+
+	files, errReadDir := os.ReadDir(MeleeWeaponDataPath)
+	if errReadDir != nil {
+		logrus.WithError(errReadDir).Fatal("Could not read melee weapons directory")
+	}
+
+	// Create a map to store the metatypes
+	meleeWeapons := make(map[string]WeaponMelee, len(files))
+
+	for _, file := range files {
+		if strings.HasSuffix(file.Name(), ".yaml") {
+			filepath := fmt.Sprintf("%s/%s", MeleeWeaponDataPath, file.Name())
+
+			var meleeWeapon WeaponMelee
+			if err := util.LoadStructFromYAML(filepath, &meleeWeapon); err != nil {
+				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
+			}
+
+			meleeWeapons[meleeWeapon.Name] = meleeWeapon
+		}
+		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded melee weapon file")
+	}
+
+	logrus.WithFields(logrus.Fields{"count": len(meleeWeapons)}).Info("Done loading melee weapons")
+
+	WeaponsMelee = meleeWeapons
 }

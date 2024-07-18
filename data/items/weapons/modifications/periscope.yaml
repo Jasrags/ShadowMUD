@@ -1,0 +1,11 @@
+id: periscope
+name: Periscope
+description: A periscope is a device that allows the user to see around corners or over obstacles without exposing themselves to enemy fire. The periscope consists of a tube with mirrors at each end that reflect light from the target to the eyepiece of the periscope.
+mount_points:
+    - Top
+cost: 70
+availability: 3
+legality: Legal
+tags: []
+modifiers: []
+rule_source: SR5:Core

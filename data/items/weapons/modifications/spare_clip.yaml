@@ -1,0 +1,10 @@
+id: spare_clip
+name: Spare Clip
+description: A spare clip comes unloaded but can hold the maximum rounds for the weapon.
+mount_points: []
+cost: 5
+availability: 4
+legality: Legal
+tags: []
+modifiers: []
+rule_source: SR5:Core

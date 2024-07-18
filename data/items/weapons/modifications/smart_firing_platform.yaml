@@ -1,0 +1,11 @@
+id: smart_firing_platform
+name: Smart Firing Platform
+description: A smart firing platform is a computerized system that attaches to a firearm and assists the shooter in aiming the weapon. The platform uses sensors and cameras to track the target and adjust the aim of the weapon to compensate for movement and environmental conditions.
+mount_points:
+    - Under-Barrel
+cost: 2500
+availability: 12
+legality: Forbidden
+tags: []
+modifiers: []
+rule_source: SR5:Core

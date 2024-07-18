@@ -1,0 +1,10 @@
+id: shock_pad
+name: Shock Pad
+description: A shock pad is a device that attaches to the grip of a firearm and delivers an electric shock to the shooter if the weapon is taken from them. The shock pad is designed to prevent unauthorized use of the weapon and can be activated or deactivated with a switch on the grip.
+mount_points: []
+cost: 50
+availability: 2
+legality: Legal
+tags: []
+modifiers: []
+rule_source: SR5:Core
