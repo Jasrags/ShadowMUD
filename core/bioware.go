@@ -35,6 +35,12 @@ type Bioware struct {
 
 var CoreBioware = []Bioware{}
 
+// TODO: Load the data from the yaml files
+func LoadBioware() map[string]Bioware {
+	data := make(map[string]Bioware)
+	return data
+}
+
 // BASIC
 // Type 	Device 	Essence 	Avail 	Cost 	Source
 // Basic 	Adrenaline Pump (R 1-3) 	Rating * 0.75 	(Rating * 6)F 	Rating * 55,000¥ 	Core

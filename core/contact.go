@@ -16,3 +16,11 @@ type Contact struct {
 	RuleSource  string      `yaml:"rule_source"`
 	FileVersion string      `yaml:"file_version"`
 }
+
+var CoreContacts = []Contact{}
+
+// TODO: Load the data from the yaml files
+func LoadContacts() map[string]Contact {
+	data := make(map[string]Contact)
+	return data
+}

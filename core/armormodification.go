@@ -117,3 +117,9 @@ var CoreArmorModifications = []ArmorModification{
 		// Add the rating to your limit on any Sneaking test against thermographic vision or thermal sensors.
 	},
 }
+
+// TODO: Load the data from the yaml files
+func LoadArmorModificatons() map[string]ArmorModification {
+	data := make(map[string]ArmorModification)
+	return data
+}

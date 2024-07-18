@@ -387,3 +387,9 @@ var CoreWeaponRanged = []WeaponRanged{
 // |-----------------------------|-----|---------|----|-------|------|------|-------|---------|-----------|
 // | Aztechnology Striker        | 5   | Missile | SS | –     | 2 (ml) | 10F  | 1,200¥ | Core    |
 // | Onotari Interceptor         | 4 (6) | Missile | SS | –     | 2 (ml) | 18F  | 14,000¥ | Core    |
+
+// TODO: Load the data from the yaml files
+func LoadRangedWeapons() map[string]WeaponRanged {
+	data := make(map[string]WeaponRanged)
+	return data
+}

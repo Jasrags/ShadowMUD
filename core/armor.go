@@ -227,3 +227,9 @@ var (
 		},
 	}
 )
+
+// TODO: Load the data from the yaml files
+func LoadArmor() map[string]Armor {
+	data := make(map[string]Armor)
+	return data
+}

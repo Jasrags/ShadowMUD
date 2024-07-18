@@ -267,3 +267,9 @@ var CoreWeaponModifications = []WeaponModification{
 		RuleSource:   RuleSourceSR5Core,
 	},
 }
+
+// TODO: Load the data from the yaml files
+func LoadWeaponModifications() map[string]WeaponModification {
+	data := make(map[string]WeaponModification)
+	return data
+}

@@ -101,3 +101,9 @@ var CoreSkillGroups = []SkillGroup{
 		RuleSource: RuleSourceSR5Core,
 	},
 }
+
+// TODO: LoadSkillGroups loads the skill groups from the data files.
+func LoadSkillGroups() map[string]SkillGroup {
+	data := make(map[string]SkillGroup)
+	return data
+}

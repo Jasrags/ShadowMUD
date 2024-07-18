@@ -145,3 +145,9 @@ var CoreWeaponAmunition = []WeaponAmunition{
 		RuleSource:       RuleSourceSR5Core,
 	},
 }
+
+// TODO: Load the data from the yaml files
+func LoadWeaponAmunition() map[string]WeaponAmunition {
+	data := make(map[string]WeaponAmunition)
+	return data
+}
