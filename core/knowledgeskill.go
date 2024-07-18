@@ -64,3 +64,5 @@ func LoadKnowledgeSkill(name string) (*KnowledgeSkill, error) {
 
 	return &v, nil
 }
+
+var CoreKnowledgeSkills = []KnowledgeSkill{}
