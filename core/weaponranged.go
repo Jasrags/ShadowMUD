@@ -57,12 +57,13 @@ type WeaponRanged struct {
 	AmmoRemaining      int                  `yaml:"ammo_remaining,omitempty"`
 	Modifications      []WeaponModification `yaml:"modifications"`
 	Modifiers          []Modifier           `yaml:"modifiers"`
-	Spec               WeaponRangedSpec     `yaml:"_"`
+	Spec               WeaponRangedSpec     `yaml:"-"`
 }
 
 func (w *WeaponRanged) Load() string {
 	// w.AmmoRemaining
 	// w.Spec.AmmoCapacity
+	return ""
 }
 
 func (w *WeaponRanged) ToggleFiringMode() string {

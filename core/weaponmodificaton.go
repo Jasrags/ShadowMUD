@@ -36,7 +36,7 @@ type WeaponModification struct {
 	Rating    int                    `yaml:"rating,omitempty"`
 	ItemTags  []ItemTag              `yaml:"tags"`
 	Modifiers []Modifier             `yaml:"modifiers"`
-	Spec      WeaponModificationSpec `yaml:"_"`
+	Spec      WeaponModificationSpec `yaml:"-"`
 }
 
 var CoreWeaponModifications = []WeaponModificationSpec{

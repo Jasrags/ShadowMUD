@@ -327,7 +327,7 @@ func (c *Character) RemoveCyberware(id string) {
 func (c *Character) RecalculateCyberware() {
 	// Apply essence modifiers
 	for _, cw := range c.Cyberware {
-		c.Attributes.Essence.Mods += cw.EssenceCost.Value
+		c.Attributes.Essence.Mods += cw.Spec.EssenceCost.Value
 	}
 	// Apply cyberware modifiers
 	for _, cyberware := range c.Cyberware {
@@ -346,7 +346,7 @@ func (c *Character) RecalculateCyberware() {
 
 func (c *Character) RecalculateBioware() {
 	for _, bw := range c.Bioware {
-		c.Attributes.Essence.Mods += bw.EssenceCost
+		c.Attributes.Essence.Mods += bw.Spec.EssenceCost
 	}
 }
 

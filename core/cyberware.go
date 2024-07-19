@@ -2,18 +2,13 @@ package core
 
 import (
 	"fmt"
-	"os"
-	"strings"
-
-	"github.com/Jasrags/ShadowMUD/core/util"
 
 	"github.com/sirupsen/logrus"
 )
 
 const (
-	CyberwareDataPath       = "data/items/cyberware"
-	CyberwareFilename       = CyberwareDataPath + "/%s.yaml"
-	CyberwareFileMinVersion = "0.0.1"
+	CyberwareDataPath = "data/items/cyberware"
+	CyberwareFilename = CyberwareDataPath + "/%s.yaml"
 )
 
 var (
@@ -77,13 +72,7 @@ func GetCyberwareGradeModifiers(grade CyberwareGrade) (float64, int, float64, er
 	return essenceCostMultiplier, availMod, costMultiplier, nil
 }
 
-type CyberwareModifier struct {
-	Type   string `yaml:"type"`
-	Effect string `yaml:"effect"`
-	Value  int    `yaml:"value"`
-}
-
-type Cyberware struct {
+type CyberwareSpec struct {
 	ID            string                   `yaml:"id,omitempty"`
 	Name          string                   `yaml:"name"`
 	Description   string                   `yaml:"description"`
@@ -95,42 +84,65 @@ type Cyberware struct {
 	ToggleAction  ActionType               `yaml:"toggle_action,omitempty"`
 	IsActive      bool                     `yaml:"is_active,omitempty"`
 	Modifications []CyberwareModifications `yaml:"modifications"`
-	Modifiers     []CyberwareModifier      `yaml:"modifiers"`
+	Modifiers     []Modifier               `yaml:"modifiers"`
 	Cost          AttributesInfo           `yaml:"cost"`
 	Availability  int                      `yaml:"availability"`
 	Legality      LegalityType             `yaml:"legality"`
 	Notes         string                   `yaml:"notes"`
 	RuleSource    RuleSource               `yaml:"rule_source"`
-	FileVersion   string                   `yaml:"file_version"`
+}
+
+type Cyberware struct {
+	ID            string                   `yaml:"id,omitempty"`
+	Rating        int                      `yaml:"rating,omitempty"`
+	Modifications []CyberwareModifications `yaml:"modifications"`
+	Modifiers     []Modifier               `yaml:"modifiers"`
+	Spec          CyberwareSpec            `yaml:"-"`
 }
 
 func (c *Cyberware) Recalculate() {
-	c.Capacity.Reset()
+	c.Spec.Capacity.Reset()
 
-	essenceCostMultiplier, _, _, _ := GetCyberwareGradeModifiers(c.Grade)
+	essenceCostMultiplier, _, _, _ := GetCyberwareGradeModifiers(c.Spec.Grade)
 	for _, mod := range c.Modifications {
-		c.Capacity.Mods += mod.CapacityCost
-		c.EssenceCost.Mods += mod.EssenceCost * essenceCostMultiplier
+		c.Spec.Capacity.Mods += mod.CapacityCost
+		c.Spec.EssenceCost.Mods += mod.EssenceCost * essenceCostMultiplier
 	}
-	c.EssenceCost.Reset()
+	c.Spec.EssenceCost.Reset()
 	for _, mod := range c.Modifications {
-		c.EssenceCost.Mods += mod.EssenceCost
+		c.Spec.EssenceCost.Mods += mod.EssenceCost
 	}
 }
 
-type CyberwareModifications struct {
-	ID           string     `yaml:"id,omitempty"`
-	Name         string     `yaml:"name"`
-	Description  string     `yaml:"description"`
-	EssenceCost  float64    `yaml:"essence_cost"`
-	CapacityCost int        `yaml:"capacity,omitempty"`
-	RuleSource   RuleSource `yaml:"rule_source"`
-}
-
-func NewCyberware() *Cyberware {
-	return &Cyberware{
-		Modifiers: make([]CyberwareModifier, 0),
-	}
+var CoreCyberware = []Cyberware{
+	{
+		ID:     "wired_reflexes_r1",
+		Rating: 1,
+		Spec: CyberwareSpec{
+			Name:        "Wired Reflexes R1",
+			Description: "Wired reflexes increase the user's reaction time, allowing them to react more quickly to threats.",
+			EssenceCost: AttributesInfoF{
+				Base: 2.0,
+			},
+			Capacity: AttributesInfo{
+				Base: 0,
+			},
+			Rating:        1,
+			CyberwarePart: CyberwarePartBody,
+			Grade:         CyberwareGradeStandard,
+			ToggleAction:  ActionFree,
+			IsActive:      false,
+			Modifications: []CyberwareModifications{},
+			Modifiers:     []Modifier{},
+			Cost: AttributesInfo{
+				Base: 39000,
+			},
+			Availability: 8,
+			Legality:     LegalityTypeLegal,
+			Notes:        "",
+			RuleSource:   RuleSourceSR5Core,
+		},
+	},
 }
 
 // Part 	Device 	            Essence 	Capacity 	Avail 	Cost 	Source
@@ -153,41 +165,3 @@ func NewCyberware() *Cyberware {
 // Body 	Wired Reflexes R1 	2 	- 	8R 	39,000¥ 	Core
 // Body 	Wired Reflexes R2 	3 	- 	12R 	149,000¥ 	Core
 // Body 	Wired Reflexes R3 	5 	- 	20R 	217,000¥ 	Core
-
-func LoadCyberware() map[string]Cyberware {
-	logrus.Info("Started loading cyberware")
-
-	files, errReadDir := os.ReadDir(CyberwareDataPath)
-	if errReadDir != nil {
-		logrus.WithError(errReadDir).Fatal("Could not read cyberware directory")
-	}
-
-	list := make(map[string]Cyberware, len(files))
-
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), ".yaml") {
-			filepath := fmt.Sprintf("%s/%s", CyberwareDataPath, file.Name())
-
-			var v Cyberware
-			if err := util.LoadStructFromYAML(filepath, &v); err != nil {
-				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
-			}
-
-			list[v.Name] = v
-		}
-		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded metatype file")
-	}
-
-	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading metatypes")
-
-	return list
-}
-
-func LoadCyberwareFile(name string) (*Cyberware, error) {
-	var v Cyberware
-	if err := util.LoadStructFromYAML(fmt.Sprintf(CyberwareFilename, name), &v); err != nil {
-		return nil, err
-	}
-
-	return &v, nil
-}

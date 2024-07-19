@@ -1,9 +1,8 @@
 package core
 
 const (
-	BiowareDataPath       = "data/items/bioware"
-	BiowareFilename       = BiowareDataPath + "/%s.yaml"
-	BiowareFileMinVersion = "0.0.1"
+	BiowareDataPath = "data/items/bioware"
+	BiowareFilename = BiowareDataPath + "/%s.yaml"
 )
 
 type BiowareType string
@@ -13,32 +12,53 @@ const (
 	BiowareTypeCultured BiowareType = "Cultured"
 )
 
-type Bioware struct {
-	ID            string                   `yaml:"id,omitempty"`
-	Name          string                   `yaml:"name,omitempty"`
-	Description   string                   `yaml:"description,omitempty"`
-	BiowareType   BiowareType              `yaml:"bioware_type,omitempty"`
-	EssenceCost   float64                  `yaml:"essence_cost,omitempty"`
-	Capacity      AttributesInfo           `yaml:"capacity,omitempty"`
-	Rating        int                      `yaml:"rating,omitempty,omitempty"`
-	ToggleAction  ActionType               `yaml:"toggle_action,omitempty,omitempty"`
-	IsActive      bool                     `yaml:"is_active,omitempty"`
-	Modifications []CyberwareModifications `yaml:"modifications"`
-	Modifiers     []CyberwareModifier      `yaml:"modifiers"`
-	Cost          int                      `yaml:"cost,omitempty"`
-	Availability  int                      `yaml:"availability,omitempty"`
-	Legality      LegalityType             `yaml:"legality,omitempty"`
-	Notes         string                   `yaml:"notes,omitempty"`
-	RuleSource    RuleSource               `yaml:"rule_source,omitempty"`
-	FileVersion   string                   `yaml:"file_version,omitempty"`
+type BiowareSpec struct {
+	ID           string         `yaml:"id,omitempty"`
+	Name         string         `yaml:"name,omitempty"`
+	Description  string         `yaml:"description,omitempty"`
+	BiowareType  BiowareType    `yaml:"bioware_type,omitempty"`
+	EssenceCost  float64        `yaml:"essence_cost,omitempty"`
+	Capacity     AttributesInfo `yaml:"capacity,omitempty"`
+	Rating       int            `yaml:"rating,omitempty,omitempty"`
+	ToggleAction ActionType     `yaml:"toggle_action,omitempty,omitempty"`
+	IsActive     bool           `yaml:"is_active,omitempty"`
+	Modifiers    []Modifier     `yaml:"modifiers"`
+	Cost         int            `yaml:"cost,omitempty"`
+	Availability int            `yaml:"availability,omitempty"`
+	Legality     LegalityType   `yaml:"legality,omitempty"`
+	Notes        string         `yaml:"notes,omitempty"`
+	RuleSource   RuleSource     `yaml:"rule_source,omitempty"`
 }
 
-var CoreBioware = []Bioware{}
+type Bioware struct {
+	ID        string      `yaml:"id,omitempty"`
+	Rating    int         `yaml:"rating,omitempty,omitempty"`
+	Modifiers []Modifier  `yaml:"modifiers"`
+	Spec      BiowareSpec `yaml:"-"`
+}
 
-// TODO: Load the data from the yaml files
-func LoadBioware() map[string]Bioware {
-	data := make(map[string]Bioware)
-	return data
+var CoreBioware = []Bioware{
+	{
+		ID:        "adrenaline_pump",
+		Rating:    1,
+		Modifiers: []Modifier{},
+		Spec: BiowareSpec{
+			ID:           "adrenaline_pump",
+			Name:         "Adrenaline Pump",
+			Description:  "Adrenaline Pump Description",
+			BiowareType:  BiowareTypeBasic,
+			EssenceCost:  0.75, // Rating * 0.75
+			Capacity:     AttributesInfo{},
+			ToggleAction: ActionFree,
+			IsActive:     false,
+			Modifiers:    []Modifier{},
+			Cost:         55000, // Rating * 55,000¥
+			Availability: 0,     // (Rating * 6)F
+			Legality:     LegalityTypeLegal,
+			Notes:        "",
+			RuleSource:   RuleSourceSR5Core,
+		},
+	},
 }
 
 // BASIC

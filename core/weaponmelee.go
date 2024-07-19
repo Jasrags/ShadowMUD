@@ -27,7 +27,7 @@ type WeaponMelee struct {
 	ID        string              `yaml:"id"`
 	ItemTags  []ItemTag           `yaml:"tags"`
 	Modifiers []Modifier          `yaml:"modifiers"`
-	Spec      WeaponAmunitionSpec `yaml:"_"`
+	Spec      WeaponAmunitionSpec `yaml:"-"`
 }
 
 var CoreWeaponMelee = []WeaponMeleeSpec{

@@ -18,7 +18,7 @@ type KnowledgeSkill struct {
 	ID                     string             `yaml:"id,omitempty"`
 	SelectedSpecialization string             `yaml:"selected_specialization,omitempty"`
 	Rating                 int                `yaml:"rating,omitempty"`
-	Spec                   KnowledgeSkillSpec `yaml:"_"`
+	Spec                   KnowledgeSkillSpec `yaml:"-"`
 }
 
 var CoreKnowledgeSkills = []KnowledgeSkillSpec{

@@ -21,14 +21,14 @@ type ArmorSpec struct {
 	RuleSource    RuleSource          `yaml:"rule_source,omitempty"`
 }
 
-func (as ArmorSpec) GetInstance() Armor {
-	return Armor{
-		ID:            as.ID,
-		ArmorRating:   as.ArmorRating,
-		Modifications: as.Modifications,
-		Modifiers:     as.Modifiers,
-	}
-}
+// func (as ArmorSpec) GetInstance() Armor {
+// 	return Armor{
+// 		ID:            as.ID,
+// 		ArmorRating:   as.ArmorRating,
+// 		Modifications: as.Modifications,
+// 		Modifiers:     as.Modifiers,
+// 	}
+// }
 
 type Armor struct {
 	ID            string              `yaml:"id,omitempty"`

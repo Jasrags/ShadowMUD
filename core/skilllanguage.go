@@ -16,7 +16,7 @@ type LanguageSkillSpec struct {
 type LanguageSkill struct {
 	ID     string            `yaml:"id,omitempty"`
 	Rating int               `yaml:"rating,omitempty"`
-	Spec   LanguageSkillSpec `yaml:"_"`
+	Spec   LanguageSkillSpec `yaml:"-"`
 }
 
 var (
