@@ -37,12 +37,12 @@ type WeaponCategory string
 
 const (
 	// Ranged
-	WeaponCategoryPistol        WeaponCategory = "Pistol"
-	WeaponCategorySubmachineGun WeaponCategory = "Submachine Gun"
-	WeaponCategoryRifle         WeaponCategory = "Rifle"
-	WeaponCategoryShotgun       WeaponCategory = "Shotgun"
-	WeaponCategoryMachineGun    WeaponCategory = "Machine Gun"
-	WeaponCategoryExotic        WeaponCategory = "Exotic Firearms"
+	WeaponCategoryPistol         WeaponCategory = "Pistol"
+	WeaponCategorySubmachineGun  WeaponCategory = "Submachine Gun"
+	WeaponCategoryRifle          WeaponCategory = "Rifle"
+	WeaponCategoryShotgun        WeaponCategory = "Shotgun"
+	WeaponCategoryMachineGun     WeaponCategory = "Machine Gun"
+	WeaponCategoryExoticFirearms WeaponCategory = "Exotic Firearms"
 	// Melee
 	WeaponCategoryClub   WeaponCategory = "Club"
 	WeaponCategoryStaff  WeaponCategory = "Staff"
@@ -128,83 +128,6 @@ type Weapon struct {
 // 	return nil
 // }
 
-// // var testWeapons = []Weapon{
-// // 	{
-// // 		Name:             "Combat Axe",
-// // 		Type:             WeaponTypeMelee,
-// // 		Category:         WeaponCategoryBlades,
-// // 		Accuracy:         4,
-// // 		Reach:            2,
-// // 		DamageValue:      5, //(STR+5)P
-// // 		DamageType:       DamageTypePhysical,
-// // 		ArmorPenatration: -4,
-// // 		Availability:     12,
-// // 		Legality:         LegalityTypeRestricted,
-// // 		Cost:             4000,
-// // 		RuleSource:       "SR5:Core",
-// // 		Tags:             []WeaponTag{WeaponTagMelee, WeaponTagBlades, WeaponTagTwoHanded},
-// // 	},
-// // 	{
-// // 		Name:             "Shiawase Arms Blazer",
-// // 		Accuracy:         6,
-// // 		DamageValue:      7,
-// // 		DamageType:       DamageTypePhysical,
-// // 		ArmorPenatration: 0,
-// // 		// Modes:            []WeaponFiringMode{WeaponFiringModeSemiAutomatic},
-// // 		// Recoil:           0,
-// // 		// AmmoType:         "Regular",
-// // 		// AmmoCapacity:     11,
-// // 		Availability: 4,
-// // 		Legality:     LegalityTypeRestricted,
-// // 		Cost:         320,
-// // 		RuleSource:   "SR5:Core",
-// // 		Tags:         []WeaponTag{WeaponTagRanged, WeaponTagFirearm, WeaponTagFlamethrower},
-// // 	},
-// // }
-
-// // type WeaponFiringMode int
-
-// // const (
-// // 	WeaponFiringModeSingleShot WeaponFiringMode = iota
-// // 	WeaponFiringModeSemiAutomatic
-// // 	WeaponFiringModeBurstFire
-// // 	WeaponFiringModeLongBurst
-// // 	WeaponFiringModeFullAuto
-// // 	WeaponFiringModeSuppressiveFire
-// // )
-
-// func LoadMeleeWeapons(wg *sync.WaitGroup) {
-// 	defer wg.Done()
-
-// 	logrus.Debug("Started loading melee weapons")
-
-// 	files, errReadDir := os.ReadDir(MeleeWeaponDataPath)
-// 	if errReadDir != nil {
-// 		logrus.WithError(errReadDir).Fatal("Could not read melee weapons directory")
-// 	}
-
-// 	// Create a map to store the metatypes
-// 	meleeWeapons := make(map[string]WeaponMelee, len(files))
-
-// 	for _, file := range files {
-// 		if strings.HasSuffix(file.Name(), ".yaml") {
-// 			filepath := fmt.Sprintf("%s/%s", MeleeWeaponDataPath, file.Name())
-
-// 			var meleeWeapon WeaponMelee
-// 			if err := util.LoadStructFromYAML(filepath, &meleeWeapon); err != nil {
-// 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
-// 			}
-
-// 			meleeWeapons[meleeWeapon.Name] = meleeWeapon
-// 		}
-// 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Info("Loaded melee weapon file")
-// 	}
-
-// 	logrus.WithFields(logrus.Fields{"count": len(meleeWeapons)}).Info("Done loading melee weapons")
-
-// 	WeaponsMelee = meleeWeapons
-// }
-
 var CoreWeapons = []WeaponSpec{
 	//Melee
 	{
@@ -250,20 +173,21 @@ var CoreWeapons = []WeaponSpec{
 		//  Readying the extendable baton is a Free Action instead of a Simple Action.
 	},
 	{
-		ID:           "sap",
-		Name:         "Sap",
-		Type:         WeaponTypeMelee,
-		Group:        WeaponGroupClubs,
-		Category:     WeaponCategoryClub,
-		Description:  "A small, weighted club.",
-		Accuracy:     5,
-		DamageValue:  2,
-		DamageType:   DamageTypePhysical,
-		Availability: 2,
-		Legality:     LegalityTypeLegal,
-		Cost:         30,
-		RuleSource:   RuleSourceSR5Core,
-		Tags:         []ItemTag{ItemTagMelee, ItemTagClub},
+		ID:             "sap",
+		Name:           "Sap",
+		Type:           WeaponTypeMelee,
+		Group:          WeaponGroupClubs,
+		Category:       WeaponCategoryClub,
+		Description:    "A small, weighted club.",
+		Concealability: -2,
+		Accuracy:       5,
+		DamageValue:    2,
+		DamageType:     DamageTypePhysical,
+		Availability:   2,
+		Legality:       LegalityTypeLegal,
+		Cost:           30,
+		RuleSource:     RuleSourceSR5Core,
+		Tags:           []ItemTag{ItemTagMelee, ItemTagClub},
 		// Concealability
 		//  Modifier +2
 	},
@@ -301,6 +225,12 @@ var CoreWeapons = []WeaponSpec{
 		Cost:             750,
 		RuleSource:       RuleSourceSR5Core,
 		Tags:             []ItemTag{ItemTagMelee, ItemTagBaton},
+		Modifiers: []Modifier{
+			{
+				Type:   ModifierTypeElectric,
+				Effect: ModifierEffectAttack,
+			},
+		},
 		// Wireless
 		//  The stun baton recharges by induction, regaining one charge per full hour of wireless-enabled time.
 		// Modifier
@@ -472,7 +402,6 @@ var CoreWeapons = []WeaponSpec{
 		Name:             "Monofilament Chainsaw",
 		Type:             WeaponTypeMelee,
 		Group:            WeaponGroupExotic,
-		Category:         WeaponCategoryExotic,
 		Description:      "A chainsaw with a monofilament blade.",
 		Accuracy:         3,
 		Reach:            1,
@@ -491,7 +420,6 @@ var CoreWeapons = []WeaponSpec{
 		Name:             "Monofilament Whip",
 		Type:             WeaponTypeMelee,
 		Group:            WeaponGroupExotic,
-		Category:         WeaponCategoryExotic,
 		Description:      "A whip with a monofilament blade.",
 		Accuracy:         5,
 		Reach:            2,

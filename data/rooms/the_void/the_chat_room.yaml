@@ -1,0 +1,7 @@
+id: the_chat_room
+name: The Chat Room
+short_description: You are lounging in a quiet cosy parlour, warmed by a gentle magical fire which twinkles happily in a warm fireplace.  There are no doors out.  Clearly the owner of this room needs none.
+description: You are lounging in a quiet cosy parlour, warmed by a gentle magical fire which twinkles happily in a warm fireplace.  There are no doors out.  Clearly the owner of this room needs none.
+exits:
+    north: the_void
+zone: the_void

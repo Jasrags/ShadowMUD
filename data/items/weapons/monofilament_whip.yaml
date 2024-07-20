@@ -3,7 +3,6 @@ name: Monofilament Whip
 description: A whip with a monofilament blade.
 type: Melee
 group: Exotic
-category: Exotic Firearms
 accuracy: 5
 reach: 2
 damage_value: 12

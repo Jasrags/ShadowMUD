@@ -1,0 +1,8 @@
+id: the_void
+name: The Void
+short_description: You step out into ......
+description: You don't think that you are not floating in nothing.
+exits:
+    north: limbo
+    south: the_chat_room
+zone: the_void

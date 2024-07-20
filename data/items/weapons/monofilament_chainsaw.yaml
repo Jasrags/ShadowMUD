@@ -3,7 +3,6 @@ name: Monofilament Chainsaw
 description: A chainsaw with a monofilament blade.
 type: Melee
 group: Exotic
-category: Exotic Firearms
 accuracy: 3
 reach: 1
 damage_value: 8

@@ -22,6 +22,11 @@ const (
 	ModifierTypeArmorPenetration ModifierType = "ArmorPenetration"
 	ModifierTypeDamageValue      ModifierType = "DamageValue"
 	ModifierTypeDamageType       ModifierType = "DamageType"
+	ModifierTypeAccuracy         ModifierType = "Accuracy"
+	ModifierTypeRange            ModifierType = "Range"
+	ModifierTypeCost             ModifierType = "Cost"
+	ModifierTypeAvailability     ModifierType = "Availability"
+	ModifierTypeElectric         ModifierType = "Electric"
 )
 
 type ModifierEffect string
@@ -32,6 +37,7 @@ const (
 	ModifierEffectMultiply ModifierEffect = "Multiply"
 	ModifierEffectDivide   ModifierEffect = "Divide"
 	ModifierEffectSet      ModifierEffect = "Set"
+	ModifierEffectAttack   ModifierEffect = "Attack"
 )
 
 type Modifier struct {
