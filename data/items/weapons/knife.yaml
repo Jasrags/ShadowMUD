@@ -1,0 +1,19 @@
+id: knife
+name: Knife
+description: A small knife.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 5
+damage_value: 1
+damage_type: Physical
+armor_penatration: -1
+legality: Legal
+tags:
+    - Melee
+    - Blade
+    - Knife
+modifications: []
+modifiers: []
+cost: 10
+rule_source: SR5:Core

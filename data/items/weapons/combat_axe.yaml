@@ -1,0 +1,21 @@
+id: combat_axe
+name: Combat Axe
+description: A large axe designed for combat.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 4
+reach: 2
+damage_value: 5
+damage_type: Physical
+armor_penatration: -4
+availability: 12
+legality: Restricted
+tags:
+    - Melee
+    - Blade
+    - Axe
+modifications: []
+modifiers: []
+cost: 4000
+rule_source: SR5:Core

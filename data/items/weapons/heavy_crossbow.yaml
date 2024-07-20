@@ -1,0 +1,23 @@
+id: heavy_crossbow
+name: Heavy Crossbow
+description: A crossbow is a type of ranged weapon based on the bow and consisting of a horizontal bow-like assembly mounted on a frame which is handheld in a similar fashion to the stock of a gun. It shoots arrow-like projectiles called bolts or quarrels.
+type: Ranged
+group: Ballistic Projectiles
+accuracy: 5
+damage_value: 10
+damage_type: Physical
+armor_penatration: -3
+reload: m
+firing_modes:
+    - Semi-Automatic
+ammo_capacity: 4
+availability: 8
+legality: Restricted
+tags:
+    - Ranged
+    - Crossbow
+    - Ballistic
+modifications: []
+modifiers: []
+cost: 1000
+rule_source: SR5:Core

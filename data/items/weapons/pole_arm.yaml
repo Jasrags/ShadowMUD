@@ -1,0 +1,21 @@
+id: pole_arm
+name: Pole Arm
+description: A pole arm is a large weapon with a blade on the end.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 5
+reach: 3
+damage_value: 3
+damage_type: Physical
+armor_penatration: -2
+availability: 6
+legality: Restricted
+tags:
+    - Melee
+    - Blade
+    - Polearm
+modifications: []
+modifiers: []
+cost: 1000
+rule_source: SR5:Core

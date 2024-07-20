@@ -8,6 +8,7 @@ const (
 type WeaponMeleeSpec struct {
 	ID               string       `yaml:"id"`
 	Name             string       `yaml:"name"`
+	Type             WeaponType   `yaml:"type"`
 	Description      string       `yaml:"description,omitempty"`
 	Accuracy         int          `yaml:"accuracy,omitempty"`
 	Reach            int          `yaml:"reach,omitempty"`
@@ -34,6 +35,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:           "club",
 		Name:         "Club",
+		Type:         WeaponTypeRanged,
 		Description:  "The weapon they named the skill after.",
 		Accuracy:     4,
 		Reach:        1,
@@ -48,6 +50,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:           "extendable_baton",
 		Name:         "Extendable Baton",
+		Type:         WeaponTypeRanged,
 		Description:  "A baton that extends to a full length.",
 		Accuracy:     5,
 		Reach:        1,
@@ -70,6 +73,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:           "sap",
 		Name:         "Sap",
+		Type:         WeaponTypeRanged,
 		Description:  "A small, weighted club.",
 		Accuracy:     5,
 		DamageValue:  2,
@@ -85,6 +89,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:           "staff",
 		Name:         "Staff",
+		Type:         WeaponTypeRanged,
 		Description:  "A long stick.",
 		Accuracy:     6,
 		Reach:        2,
@@ -99,6 +104,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "stun_baton",
 		Name:             "Stun Baton",
+		Type:             WeaponTypeRanged,
 		Description:      "A baton that delivers an electrical shock.",
 		Accuracy:         4,
 		Reach:            1,
@@ -118,6 +124,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:           "telescoping_staff",
 		Name:         "Telescoping Staff",
+		Type:         WeaponTypeRanged,
 		Description:  "A staff that extends to a full length.",
 		Accuracy:     4,
 		Reach:        2,
@@ -133,6 +140,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "combat_axe",
 		Name:             "Combat Axe",
+		Type:             WeaponTypeRanged,
 		Description:      "A large axe designed for combat.",
 		Accuracy:         4,
 		Reach:            2,
@@ -148,6 +156,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "combat_knife",
 		Name:             "Combat Knife",
+		Type:             WeaponTypeRanged,
 		Description:      "A knife designed for combat.",
 		Accuracy:         6,
 		DamageValue:      2,
@@ -162,6 +171,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "forearm_snap_blades",
 		Name:             "Forearm Snap-Blades",
+		Type:             WeaponTypeRanged,
 		Description:      "Blades that extend from the forearm.",
 		Accuracy:         4,
 		DamageValue:      2,
@@ -178,6 +188,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "katana",
 		Name:             "Katana",
+		Type:             WeaponTypeRanged,
 		Description:      "A traditional Japanese sword.",
 		Accuracy:         7,
 		Reach:            1,
@@ -193,6 +204,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "knife",
 		Name:             "Knife",
+		Type:             WeaponTypeRanged,
 		Description:      "A small knife.",
 		Accuracy:         5,
 		DamageValue:      1,
@@ -206,6 +218,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "pole_arm",
 		Name:             "Pole Arm",
+		Type:             WeaponTypeRanged,
 		Description:      "A pole arm is a large weapon with a blade on the end.",
 		Accuracy:         5,
 		Reach:            3,
@@ -221,6 +234,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "survival_knife",
 		Name:             "Survival Knife",
+		Type:             WeaponTypeRanged,
 		Description:      `A survival knife is a large knife with a serrated edge. It is designed for use in the wilderness, and is often used by military personnel and survivalists.`,
 		Accuracy:         5,
 		DamageValue:      2,
@@ -236,6 +250,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "sword",
 		Name:             "Sword",
+		Type:             WeaponTypeRanged,
 		Description:      "A sword is a long, sharp blade.",
 		Accuracy:         6,
 		Reach:            1,
@@ -252,6 +267,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "monofilament_chainsaw",
 		Name:             "Monofilament Chainsaw",
+		Type:             WeaponTypeRanged,
 		Description:      "A chainsaw with a monofilament blade.",
 		Accuracy:         3,
 		Reach:            1,
@@ -268,6 +284,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:               "monofilament_whip",
 		Name:             "Monofilament Whip",
+		Type:             WeaponTypeRanged,
 		Description:      "A whip with a monofilament blade.",
 		Accuracy:         5,
 		Reach:            2,
@@ -294,6 +311,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:          "knucks",
 		Name:        "Knucks",
+		Type:        WeaponTypeRanged,
 		Description: "These may be traditional fist-load weapons like brass knuckles, or modern Hardliner Gloves with a thin layer of densiplast located the knuckles and the edge of the hand. Either way they substantially boost the impact of a punch, making it potentially deadly.",
 		// Accuracy:    0, // Physical
 		DamageValue:  1,
@@ -309,6 +327,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:          "plasteel_toe_boots",
 		Name:        "Plasteel Toe Boots",
+		Type:        WeaponTypeRanged,
 		Description: "These boots have a reinforced toe made of plasteel, making them a formidable weapon in a kick.",
 		// Accuracy:    0, // Physical
 		DamageValue:  1,
@@ -324,6 +343,7 @@ var CoreWeaponMelee = []WeaponMeleeSpec{
 	{
 		ID:          "shock_gloves",
 		Name:        "Shock Gloves",
+		Type:        WeaponTypeRanged,
 		Description: "These gloves are lined with a layer of conductive material that delivers an electric shock to the target.",
 		// Accuracy:    0, // Physical
 		DamageValue:      8,

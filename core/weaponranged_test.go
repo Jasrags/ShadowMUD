@@ -66,48 +66,49 @@ func TestToggleFiringMode(t *testing.T) {
 		})
 	}
 }
-func TestLoad(t *testing.T) {
-	td := []struct {
-		Name string
-	}{
-		{Name: "Test"},
-	}
 
-	for _, tt := range td {
-		t.Run(tt.Name, func(t *testing.T) {
-		})
-	}
-	w := &core.WeaponRanged{
-		AmmoRemaining: 10,
-		Spec: core.WeaponRangedSpec{
-			AmmoCapacity: 20,
-		},
-	}
+// func TestLoad(t *testing.T) {
+// 	td := []struct {
+// 		Name string
+// 	}{
+// 		{Name: "Test"},
+// 	}
 
-	result := w.Load()
-	expected := "Ammo remaining: 10, Ammo capacity: 20"
-	assert.Equal(t, expected, result)
-}
+// 	for _, tt := range td {
+// 		t.Run(tt.Name, func(t *testing.T) {
+// 		})
+// 	}
+// 	w := &core.WeaponRanged{
+// 		AmmoRemaining: 10,
+// 		Spec: core.WeaponRangedSpec{
+// 			AmmoCapacity: 20,
+// 		},
+// 	}
 
-func TestLoadEmptyAmmo(t *testing.T) {
-	w := &core.WeaponRanged{
-		AmmoRemaining: 0,
-		Spec: core.WeaponRangedSpec{
-			AmmoCapacity: 20,
-		},
-	}
+// 	result := w.Load()
+// 	expected := "Ammo remaining: 10, Ammo capacity: 20"
+// 	assert.Equal(t, expected, result)
+// }
 
-	result := w.Load()
-	expected := "Ammo remaining: 0, Ammo capacity: 20"
-	assert.Equal(t, expected, result)
-}
+// func TestLoadEmptyAmmo(t *testing.T) {
+// 	w := &core.WeaponRanged{
+// 		AmmoRemaining: 0,
+// 		Spec: core.WeaponRangedSpec{
+// 			AmmoCapacity: 20,
+// 		},
+// 	}
 
-func TestLoadNoSpec(t *testing.T) {
-	w := &core.WeaponRanged{
-		AmmoRemaining: 10,
-	}
+// 	result := w.Load()
+// 	expected := "Ammo remaining: 0, Ammo capacity: 20"
+// 	assert.Equal(t, expected, result)
+// }
 
-	result := w.Load()
-	expected := "Ammo remaining: 10, Ammo capacity: 0"
-	assert.Equal(t, expected, result)
-}
+// func TestLoadNoSpec(t *testing.T) {
+// 	w := &core.WeaponRanged{
+// 		AmmoRemaining: 10,
+// 	}
+
+// 	result := w.Load()
+// 	expected := "Ammo remaining: 10, Ammo capacity: 0"
+// 	assert.Equal(t, expected, result)
+// }

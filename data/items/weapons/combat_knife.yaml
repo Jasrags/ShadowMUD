@@ -1,0 +1,19 @@
+id: combat_knife
+name: Combat Knife
+description: A knife designed for combat.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 6
+damage_value: 2
+damage_type: Physical
+armor_penatration: -3
+availability: 4
+legality: Legal
+tags:
+    - Melee
+    - Blade
+modifications: []
+modifiers: []
+cost: 300
+rule_source: SR5:Core

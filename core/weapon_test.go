@@ -1,12 +1,17 @@
 package core_test
 
-// func TestSaveCoreWeapon(t *testing.T) {
-// 	// d, _ := os.Getwd()
-// 	// /Users/jrags/Code/Jasrags/ShadowMUD/core
+import (
+	"fmt"
+	"testing"
 
-// 	for _, v := range core.CoreWeaponAmunition {
-// 		if err := util.SaveStructToYAML(fmt.Sprintf("../"+core.MeleeWeaponAmunitionFilename, v.ID), &v); err != nil {
-// 			t.Errorf("Error saving %s: %s", v.ID, err)
-// 		}
-// 	}
-// }
+	"github.com/Jasrags/ShadowMUD/core"
+	"github.com/Jasrags/ShadowMUD/core/util"
+)
+
+func TestSaveCoreWeapon(t *testing.T) {
+	for _, v := range core.CoreWeapons {
+		if err := util.SaveStructToYAML(fmt.Sprintf("../"+core.WeaponFilename, v.ID), &v); err != nil {
+			t.Errorf("Error saving %s: %s", v.ID, err)
+		}
+	}
+}

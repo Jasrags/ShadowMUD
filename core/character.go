@@ -94,6 +94,10 @@ func (ai *AttributesInfoF) Recalculate() {
 }
 
 type Equipment struct {
+	Head            *Armor        `yaml:"head,omitempty"`
+	Body            *Armor        `yaml:"body,omitempty"`
+	PrimaryWeapon   *WeaponRanged `yaml:"primary_weapon,omitempty"`
+	SecondaryWeapon *WeaponRanged `yaml:"secondary_weapon,omitempty"`
 	// Weapons   map[string]Weapon    `yaml:"weapons"`
 	// Armor     map[string]Armor     `yaml:"armor"`
 	// Cyberware map[string]Cyberware `yaml:"cyberware"`
@@ -114,9 +118,6 @@ at their favorite shadowrunner bar.
 type ConditionDamage struct {
 	Physical int `yaml:"physical"`
 	Stun     int `yaml:"stun"`
-}
-
-type CharacterSpec struct {
 }
 
 type Character struct {
@@ -176,8 +177,8 @@ type Character struct {
 	AdeptPowers     map[string]string         `yaml:"adept_powers"`
 }
 
-func (c *Character) AddArmor(armor Armor) {
-	c.Armor = append(c.Armor, armor)
+func (c *Character) GetMetatypeName() string {
+	return c.Metatype.Name
 }
 
 // Will need to make this a function that can be called to recalculate
@@ -339,7 +340,6 @@ func (c *Character) RecalculateCyberware() {
 					c.Attributes.Reaction.Mods += modifier.Value
 				}
 			}
-
 		}
 	}
 }

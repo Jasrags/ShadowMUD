@@ -1,0 +1,23 @@
+id: yamaha_pulsar
+name: Yamaha Pulsar
+type: Ranged
+group: Firearms
+category: Pistol
+sub_category: Hold-Out Pistol
+accuracy: 5
+damage_value: 7
+damage_type: Stun
+armor_penatration: -5
+reload: m
+firing_modes:
+    - Semi-Automatic
+ammo_capacity: 4
+tags:
+    - Ranged
+    - Taser
+modifications: []
+modifiers:
+    - type: add
+      effect: ElectricDamage
+cost: 180
+rule_source: SR5:Core

@@ -39,7 +39,6 @@ type WeaponRangedSpec struct {
 	ArmorPenatration int                  `yaml:"armor_penatration,omitempty"`
 	FiringModes      []WeaponFiringMode   `yaml:"firing_modes"`
 	Recoil           int                  `yaml:"recoil,omitempty"`
-	AmmoType         string               `yaml:"ammo_type,omitempty"`
 	AmmoCapacity     int                  `yaml:"ammo_capacity,omitempty"`
 	Reload           WeaponRangedReload   `yaml:"reload,omitempty"`
 	Availability     int                  `yaml:"availability,omitempty"`
@@ -54,16 +53,11 @@ type WeaponRangedSpec struct {
 type WeaponRanged struct {
 	ID                 string               `yaml:"id,omitempty"`
 	SelectedFiringMode WeaponFiringMode     `yaml:"selected_firing_mode,omitempty"`
+	AmmoType           *WeaponAmunitionSpec `yaml:"ammo_type,omitempty"`
 	AmmoRemaining      int                  `yaml:"ammo_remaining,omitempty"`
 	Modifications      []WeaponModification `yaml:"modifications"`
 	Modifiers          []Modifier           `yaml:"modifiers"`
 	Spec               WeaponRangedSpec     `yaml:"-"`
-}
-
-func (w *WeaponRanged) Load() string {
-	// w.AmmoRemaining
-	// w.Spec.AmmoCapacity
-	return ""
 }
 
 func (w *WeaponRanged) ToggleFiringMode() string {

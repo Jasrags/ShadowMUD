@@ -1,0 +1,24 @@
+id: streetline_special
+name: Streetline Special
+description: The Streetline Special is a hold-out pistol that is popular with shadowrunners and criminals. It is a small, easily concealed weapon.
+type: Ranged
+group: Firearms
+category: Pistol
+sub_category: Hold-Out Pistol
+accuracy: 4
+damage_value: 6
+damage_type: Physical
+reload: c
+firing_modes:
+    - Semi-Automatic
+ammo_capacity: 6
+availability: 4
+legality: Restricted
+tags:
+    - Ranged
+    - Pistol
+    - Hold-Out Pistol
+modifications: []
+modifiers: []
+cost: 120
+rule_source: SR5:Core

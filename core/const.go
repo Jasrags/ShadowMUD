@@ -137,41 +137,6 @@ const (
 	DamageTypeStun     DamageType = "Stun"
 )
 
-type ModifierType string
-
-const (
-	ModifierTypeBody           ModifierType = "Body"
-	ModifierTypeAgility        ModifierType = "Agility"
-	ModifierTypeReaction       ModifierType = "Reaction"
-	ModifierTypeStrength       ModifierType = "Strength"
-	ModifierTypeWillpower      ModifierType = "Willpower"
-	ModifierTypeCharisma       ModifierType = "Charisma"
-	ModifierTypeLogic          ModifierType = "Logic"
-	ModifierTypeIntuition      ModifierType = "Intuition"
-	ModifierTypeMagic          ModifierType = "Magic"
-	ModifierTypeInitiative     ModifierType = "Initiative"
-	ModifierTypeInitiativeDice ModifierType = "InitiativeDice"
-	ModifierTypeSocialLimit    ModifierType = "SocialLimit"
-	ModifierTypePhysicalLimit  ModifierType = "PhysicalLimit"
-	ModifierTypeMentalLimit    ModifierType = "MentalLimit"
-)
-
-type ModifierEffect string
-
-const (
-	ModifierEffectAdd      ModifierEffect = "Add"
-	ModifierEffectSubtract ModifierEffect = "Subtract"
-	ModifierEffectMultiply ModifierEffect = "Multiply"
-	ModifierEffectDivide   ModifierEffect = "Divide"
-	ModifierEffectSet      ModifierEffect = "Set"
-)
-
-type Modifier struct {
-	Type   string `yaml:"type,omitempty"`
-	Effect string `yaml:"effect,omitempty"`
-	Value  int    `yaml:"value,omitempty"`
-}
-
 type ItemTag string
 
 const (

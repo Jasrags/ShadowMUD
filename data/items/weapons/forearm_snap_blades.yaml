@@ -1,0 +1,19 @@
+id: forearm_snap_blades
+name: Forearm Snap-Blades
+description: Blades that extend from the forearm.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 4
+damage_value: 2
+damage_type: Physical
+armor_penatration: -2
+availability: 7
+legality: Restricted
+tags:
+    - Melee
+    - Blade
+modifications: []
+modifiers: []
+cost: 200
+rule_source: SR5:Core

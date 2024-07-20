@@ -1,0 +1,16 @@
+id: knucks
+name: Knucks
+description: These may be traditional fist-load weapons like brass knuckles, or modern Hardliner Gloves with a thin layer of densiplast located the knuckles and the edge of the hand. Either way they substantially boost the impact of a punch, making it potentially deadly.
+type: Melee
+group: Misc
+damage_value: 1
+damage_type: Physical
+availability: 2
+legality: Restricted
+tags:
+    - Melee
+    - Miscellaneous
+modifications: []
+modifiers: []
+cost: 100
+rule_source: SR5:Core

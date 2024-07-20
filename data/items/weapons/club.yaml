@@ -1,0 +1,19 @@
+id: club
+name: Club
+description: The weapon they named the skill after.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 4
+reach: 1
+damage_value: 2
+damage_type: Physical
+availability: 4
+legality: Legal
+tags:
+    - Melee
+    - Club
+modifications: []
+modifiers: []
+cost: 30
+rule_source: SR5:Core

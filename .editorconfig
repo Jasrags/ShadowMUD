@@ -14,3 +14,6 @@ insert_final_newline = false
 [{Makefile,**.mk}]
 # Use tabs for indentation (Makefiles require tabs)
 indent_style = tab
+
+[*.{md,mkdn}]
+trim_trailing_whitespace = false

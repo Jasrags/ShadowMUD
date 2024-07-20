@@ -1,0 +1,19 @@
+id: survival_knife
+name: Survival Knife
+description: A survival knife is a large knife with a serrated edge. It is designed for use in the wilderness, and is often used by military personnel and survivalists.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 5
+damage_value: 2
+damage_type: Physical
+armor_penatration: -1
+legality: Legal
+tags:
+    - Melee
+    - Blade
+    - Knife
+modifications: []
+modifiers: []
+cost: 100
+rule_source: SR5:Core

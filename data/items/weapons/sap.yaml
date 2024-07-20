@@ -1,0 +1,18 @@
+id: sap
+name: Sap
+description: A small, weighted club.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 5
+damage_value: 2
+damage_type: Physical
+availability: 2
+legality: Legal
+tags:
+    - Melee
+    - Club
+modifications: []
+modifiers: []
+cost: 30
+rule_source: SR5:Core

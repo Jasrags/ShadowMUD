@@ -1,0 +1,19 @@
+id: extendable_baton
+name: Extendable Baton
+description: A baton that extends to a full length.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 5
+reach: 1
+damage_value: 2
+damage_type: Physical
+availability: 4
+legality: Legal
+tags:
+    - Melee
+    - Baton
+modifications: []
+modifiers: []
+cost: 100
+rule_source: SR5:Core

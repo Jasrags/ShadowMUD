@@ -1,0 +1,21 @@
+id: katana
+name: Katana
+description: A traditional Japanese sword.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 7
+reach: 1
+damage_value: 3
+damage_type: Physical
+armor_penatration: -3
+availability: 9
+legality: Restricted
+tags:
+    - Melee
+    - Blade
+    - Katana
+modifications: []
+modifiers: []
+cost: 1000
+rule_source: SR5:Core

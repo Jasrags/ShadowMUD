@@ -1,0 +1,19 @@
+id: shuriken
+name: Shuriken
+description: A shuriken is a small, star-shaped piece of metal with sharpened edges, designed for throwing. It is also known as a “throwing star” or “ninja star.”
+type: Ranged
+group: Throwing Weapons
+damage_value: 1
+damage_type: Physical
+recoil: -1
+firing_modes:
+    - Single-Shot
+availability: 4
+legality: Restricted
+tags:
+    - Ranged
+    - Throwing
+modifications: []
+modifiers: []
+cost: 25
+rule_source: SR5:Core

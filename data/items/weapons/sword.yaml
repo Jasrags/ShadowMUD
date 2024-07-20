@@ -1,0 +1,21 @@
+id: sword
+name: Sword
+description: A sword is a long, sharp blade.
+type: Melee
+group: Clubs
+category: Club
+accuracy: 6
+reach: 1
+damage_value: 3
+damage_type: Physical
+armor_penatration: -2
+availability: 5
+legality: Restricted
+tags:
+    - Melee
+    - Blade
+    - Sword
+modifications: []
+modifiers: []
+cost: 500
+rule_source: SR5:Core
