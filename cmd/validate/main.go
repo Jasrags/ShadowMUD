@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/Jasrags/ShadowMUD/config"
-	"github.com/Jasrags/ShadowMUD/core/util"
+	"github.com/Jasrags/ShadowMUD/utils"
 
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	var serverConfig config.Server
-	util.LoadStructFromYAML("data/config/server.yaml", &serverConfig)
+	utils.LoadStructFromYAML("data/config/server.yaml", &serverConfig)
 
 	logrusLevel, err := logrus.ParseLevel(serverConfig.LogLevel)
 	if err != nil {
@@ -39,14 +39,14 @@ func ValidateMetatypeFiles() error {
 	// for k, v := range metatypes {
 	// 	if v.ID == "" {
 	// 		logrus.WithFields(logrus.Fields{"key": k, "name": v.Name}).Error("Metatype does not have an ID, using Name as ID")
-	// 		v.ID = util.FormatFilename(v.Name)
+	// 		v.ID = utils.FormatFilename(v.Name)
 	// 	}
 
-	// 	v.ID = util.FormatFilename(k)
+	// 	v.ID = utils.FormatFilename(k)
 	// 	fileName := fmt.Sprintf(core.MetatypeFilename, v.ID)
 
 	// 	logrus.WithFields(logrus.Fields{"id": v.ID, "file_name": fileName}).Info("Validating metatype")
-	// 	// if err := util.SaveStructToYAML(fmt.Sprintf(core.MetatypeFilename, v.ID), v); err != nil {
+	// 	// if err := utils.SaveStructToYAML(fmt.Sprintf(core.MetatypeFilename, v.ID), v); err != nil {
 	// 	// 	logrus.WithError(err).WithFields(logrus.Fields{"id": v.ID, "file_name": fileName}).Error("Unable to save metatype")
 	// 	// }
 	// }
@@ -62,14 +62,14 @@ func ValidateLanguageSkillFiles() error {
 	// 	for k, v := range skills {
 	// 		if v.ID == "" {
 	// 			logrus.WithFields(logrus.Fields{"key": k, "name": v.Name}).Error("Language skill does not have an ID, using Name as ID")
-	// 			v.ID = util.FormatFilename(v.Name)
+	// 			v.ID = utils.FormatFilename(v.Name)
 	// 		}
 
-	// 		v.ID = util.FormatFilename(k)
+	// 		v.ID = utils.FormatFilename(k)
 	// 		fileName := fmt.Sprintf(core.LanguageSkillFilename, v.ID)
 
 	// 		logrus.WithFields(logrus.Fields{"id": v.ID, "file_name": fileName}).Info("Validating language skill")
-	// 		if err := util.SaveStructToYAML(fmt.Sprintf(core.LanguageSkillFilename, v.ID), v); err != nil {
+	// 		if err := utils.SaveStructToYAML(fmt.Sprintf(core.LanguageSkillFilename, v.ID), v); err != nil {
 	// 			logrus.WithError(err).WithFields(logrus.Fields{"id": v.ID, "file_name": fileName}).Error("Unable to save language skill")
 	// 		}
 	// 	}

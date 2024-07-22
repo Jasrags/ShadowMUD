@@ -1,0 +1,6 @@
+host: localhost
+port: 33333
+log_level: DEBUG
+data_directories:
+    base_dir: _data
+    test_dir: test/_data

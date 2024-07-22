@@ -124,3 +124,21 @@ There is a foregrip attached to the underside of it.
 It contains 38 rounds of normal ammunition, and can hold 40 rounds.
 You have no training in Police Procedures, but you guess that a Colt M-23 is highly illegal.
 A Colt M-23 is in excellent condition.
+
+
+Inside a Yamaha Rapier
+
+You feel ready to take on the world in this thing.
+Around you is North Fifth and Gray Street Northeast
+   Here on the northeast sector of Seattle, it appears as if the gods of
+architecture are in fierce competition, trying to create the largest, most
+ungodly eyesores imaginable.  Traffic on the street level is thick at all
+hours, with commuters and wage slaves running all about at the intersection,
+stoplights changing per prompt of the GridGuide systems.  An array of security
+cameras stand on top of the stoplight system, recording traffic violations and
+sending them to Lone Star Security's traffic department.
+Obvious exits:
+North - North Fifth Street
+East  - Gray Street Northeast
+South - North Fifth Street
+A Lone Star police officer stands here to keep the peace.
