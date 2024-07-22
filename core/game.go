@@ -37,6 +37,7 @@ type (
 
 type gameModel struct {
 	*World
+	id        string
 	width     int
 	height    int
 	char      common.Character
@@ -48,7 +49,7 @@ type gameModel struct {
 	err       error
 }
 
-func NewGameModel(s ssh.Session) tea.Model {
+func NewGameModel(s ssh.Session) gameModel {
 	renderer := bubbletea.MakeRenderer(s)
 	// Styles
 	txtStyle := renderer.NewStyle().Foreground(lipgloss.Color("10"))
@@ -72,6 +73,7 @@ func NewGameModel(s ssh.Session) tea.Model {
 	// 	m.styles["quit"].Render("Press q to quit."))
 
 	return gameModel{
+
 		styles: map[string]lipgloss.Style{
 			"text":       txtStyle,
 			"quit":       quitStyle,

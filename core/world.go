@@ -5,10 +5,12 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
 	"github.com/Jasrags/ShadowMUD/config"
+	"github.com/google/uuid"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/ssh"
@@ -23,7 +25,8 @@ import (
 type World struct {
 	*ssh.Server
 	config config.Server
-	progs  []*tea.Program
+	// progs     []*tea.Program
+	syncProgs sync.Map
 }
 
 func NewWorld(serverConfig config.Server) *World {
@@ -76,21 +79,29 @@ func (w *World) Start() {
 }
 
 func (w *World) ProgramHandler(s ssh.Session) *tea.Program {
+	id := uuid.New().String()
+	logrus.WithFields(logrus.Fields{"id": id, "user": s.User(), "remote_addr": s.RemoteAddr()}).Info("Creating new program")
+
 	// m := NewInitialModel(s)
 	m := NewGameModel(s)
-	// model := initialModel()
-	// model.app = a
-	// model.id = s.User()
+	m.World = w
+	m.id = id
 
 	p := tea.NewProgram(m, bubbletea.MakeOptions(s)...)
-	w.progs = append(w.progs, p)
+	// w.progs = append(w.progs, p)
+	w.syncProgs.Store(m.id, p)
 
 	return p
 }
 
 // send dispatches a message to all running programs.
 func (w *World) send(msg tea.Msg) {
-	for _, p := range w.progs {
+	// for _, p := range w.progs {
+	// 	go p.Send(msg)
+	// }
+	w.syncProgs.Range(func(key, value interface{}) bool {
+		p := value.(*tea.Program)
 		go p.Send(msg)
-	}
+		return true
+	})
 }

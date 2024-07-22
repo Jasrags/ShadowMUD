@@ -35,6 +35,7 @@ func NewInitialModel(s ssh.Session) tea.Model {
 // Just a generic tea.Model to demo terminal information of ssh.
 type initialModel struct {
 	*World
+	id        string
 	term      string
 	profile   string
 	width     int
