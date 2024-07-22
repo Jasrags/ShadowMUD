@@ -34,7 +34,13 @@ func NewWorld(serverConfig config.Server) *World {
 		config: serverConfig,
 	}
 
+	idleTimeout, errParseDuration := time.ParseDuration(w.config.IdleTimeout)
+	if errParseDuration != nil {
+		logrus.WithError(errParseDuration).Error("Could not parse idle timeout")
+	}
+
 	s, err := wish.NewServer(
+		wish.WithIdleTimeout(idleTimeout),
 		wish.WithAddress(net.JoinHostPort(serverConfig.Host, serverConfig.Port)),
 		wish.WithHostKeyPath(".ssh/id_ed25519"),
 		wish.WithMiddleware(
@@ -87,8 +93,10 @@ func (w *World) ProgramHandler(s ssh.Session) *tea.Program {
 	m.World = w
 	m.id = id
 
-	p := tea.NewProgram(m, bubbletea.MakeOptions(s)...)
-	// w.progs = append(w.progs, p)
+	opts := bubbletea.MakeOptions(s)
+	opts = append(opts, tea.WithAltScreen(), tea.WithMouseCellMotion())
+
+	p := tea.NewProgram(m, opts...)
 	w.syncProgs.Store(m.id, p)
 
 	return p

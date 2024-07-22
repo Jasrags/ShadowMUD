@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Jasrags/ShadowMUD/common"
+	"github.com/sirupsen/logrus"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -31,6 +32,7 @@ var (
 type (
 	errMsg     error
 	contentMsg struct {
+		from    string
 		content string
 	}
 )
@@ -72,8 +74,12 @@ func NewGameModel(s ssh.Session) gameModel {
 	// 	fmt.Sprintf("Description: %s", m.char.Room.Spec.Description),
 	// 	m.styles["quit"].Render("Press q to quit."))
 
-	return gameModel{
+	var sb strings.Builder
+	if _, err := sb.WriteString(txtStyle.Render("Welcome to ShadowMUD\n")); err != nil {
+		logrus.WithError(err).Error("Could not write to string builder")
+	}
 
+	return gameModel{
 		styles: map[string]lipgloss.Style{
 			"text":       txtStyle,
 			"quit":       quitStyle,
@@ -89,7 +95,7 @@ func NewGameModel(s ssh.Session) gameModel {
 				Spec: &common.CoreRooms[0],
 			},
 		},
-		content: []string{"Welcome to ShadowMUD"},
+		content: []string{txtStyle.Render("Welcome to ShadowMUD")},
 	}
 }
 
@@ -105,9 +111,12 @@ func (m gameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "q":
+		switch msg.Type {
+		case tea.KeyCtrlC, tea.KeyEsc:
 			return m, tea.Quit
+		case tea.KeyEnter:
+			m.World.send(contentMsg{content: m.textInput.Value()})
+			m.textInput.SetValue("")
 		}
 
 	case contentMsg:
