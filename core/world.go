@@ -9,13 +9,14 @@ import (
 	"time"
 
 	"github.com/Jasrags/ShadowMUD/config"
-	"github.com/Jasrags/ShadowMUD/model"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/ssh"
 	"github.com/charmbracelet/wish"
 	"github.com/charmbracelet/wish/activeterm"
 	"github.com/charmbracelet/wish/bubbletea"
 	"github.com/charmbracelet/wish/logging"
+	"github.com/muesli/termenv"
 	"github.com/sirupsen/logrus"
 )
 
@@ -26,15 +27,15 @@ type World struct {
 }
 
 func NewWorld(serverConfig config.Server) *World {
+	w := &World{
+		config: serverConfig,
+	}
+
 	s, err := wish.NewServer(
 		wish.WithAddress(net.JoinHostPort(serverConfig.Host, serverConfig.Port)),
 		wish.WithHostKeyPath(".ssh/id_ed25519"),
 		wish.WithMiddleware(
-			// bubbletea.MiddlewareWithProgramHandler(a.ProgramHandler, termenv.ANSI256),
-			bubbletea.Middleware(func(s ssh.Session) (tea.Model, []tea.ProgramOption) {
-				// return model.NewInitialModel(s), []tea.ProgramOption{tea.WithAltScreen()}
-				return model.NewGameModel(s), []tea.ProgramOption{tea.WithAltScreen()}
-			}),
+			bubbletea.MiddlewareWithProgramHandler(w.ProgramHandler, termenv.ANSI256),
 			activeterm.Middleware(),
 			logging.Middleware(),
 		),
@@ -43,10 +44,9 @@ func NewWorld(serverConfig config.Server) *World {
 		logrus.WithError(err).Error("Could not create server")
 	}
 
-	return &World{
-		Server: s,
-		config: serverConfig,
-	}
+	w.Server = s
+
+	return w
 }
 
 func (w *World) Start() {
@@ -75,16 +75,18 @@ func (w *World) Start() {
 	logrus.Info("Stopping the server")
 }
 
-// func (w *World) ProgramHandler(s ssh.Session) *tea.Program {
-// 	// model := initialModel()
-// 	// model.app = a
-// 	// model.id = s.User()
+func (w *World) ProgramHandler(s ssh.Session) *tea.Program {
+	// m := NewInitialModel(s)
+	m := NewGameModel(s)
+	// model := initialModel()
+	// model.app = a
+	// model.id = s.User()
 
-// 	// p := tea.NewProgram(model, bubbletea.MakeOptions(s)...)
-// 	// a.progs = append(a.progs, p)
+	p := tea.NewProgram(m, bubbletea.MakeOptions(s)...)
+	w.progs = append(w.progs, p)
 
-// 	// return p
-// }
+	return p
+}
 
 // send dispatches a message to all running programs.
 func (w *World) send(msg tea.Msg) {

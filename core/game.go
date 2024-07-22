@@ -1,4 +1,4 @@
-package model
+package core
 
 import (
 	"fmt"
@@ -36,6 +36,7 @@ type (
 )
 
 type gameModel struct {
+	*World
 	width     int
 	height    int
 	char      common.Character

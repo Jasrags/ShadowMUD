@@ -9,6 +9,7 @@ require (
 	github.com/charmbracelet/ssh v0.0.0-20240604154955-a40c6a0d028f
 	github.com/charmbracelet/wish v1.4.0
 	github.com/google/uuid v1.6.0
+	github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
@@ -38,7 +39,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
-	github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
