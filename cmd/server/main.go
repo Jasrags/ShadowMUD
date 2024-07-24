@@ -1,19 +1,15 @@
 package main
 
-import (
-	"github.com/Jasrags/ShadowMUD/config"
-	"github.com/Jasrags/ShadowMUD/core"
-	"github.com/Jasrags/ShadowMUD/utils"
-)
-
-const (
-	ConfigFilepath = "_data/config/server.yaml"
-)
+import "github.com/Jasrags/ShadowMUD/core"
 
 func main() {
-	var serverConfig config.Server
-	utils.LoadStructFromYAML(ConfigFilepath, &serverConfig)
-
-	w := core.NewWorld(serverConfig)
+	w := core.NewWorld()
 	w.Start()
+
+	// for {
+	// 	var input string
+	// 	fmt.Printf("Enter text: ")
+	// 	fmt.Scanln(&input)
+	// 	fmt.Println(input)
+	// }
 }

@@ -2,10 +2,15 @@ package common
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"math"
+	"strings"
 
 	"github.com/Jasrags/ShadowMUD/utils"
+	"github.com/gliderlabs/ssh"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/term"
 )
 
 const (
@@ -92,7 +97,76 @@ type ConditionDamage struct {
 	Stun     int `yaml:"stun"`
 }
 
+func NewCharacter(s ssh.Session) *Character {
+	pty, ptyWindow, isActive := s.Pty()
+	if !isActive {
+		logrus.Error("Session is not active")
+	}
+
+	return &Character{
+		Session: s,
+		Pty:     pty,
+		Window:  ptyWindow,
+		Term:    term.NewTerminal(s, ""),
+	}
+}
+
+func (c *Character) Authenticate() bool {
+	io.WriteString(c.Session, "Username: ")
+	username, errReadLine := c.Term.ReadLine()
+	if errReadLine != nil {
+		logrus.WithError(errReadLine).Error("Error reading username")
+		return false
+	}
+	username = strings.TrimSpace(username)
+	logrus.WithField("username", username).Info("Received username")
+
+	passwordBytes, err := c.Term.ReadPassword("Password: ")
+	if err != nil {
+		log.Println("Error reading password:", err)
+		return false
+	}
+	password := strings.TrimSpace(string(passwordBytes))
+	logrus.WithField("password", password).Info("Received password")
+
+	// Validate credentials
+	if pass, ok := utils.Users[username]; ok && strings.EqualFold(pass, password) {
+		logrus.Info("Authentication successful")
+
+		return true
+	}
+
+	return false
+}
+
+func (c *Character) Load() {
+	c.ID = "ce9f9d47-0a99-4ded-9e9a-30dc3b73f038"
+	c.Name = "Test"
+	roomSpec := &CoreRooms[0]
+	c.Room = Room{
+		ID:   roomSpec.ID,
+		Spec: roomSpec,
+	}
+}
+
+func (c *Character) GameLoop() error {
+	for {
+		io.WriteString(c.Session, ">")
+		line, err := c.Term.ReadLine()
+		if err != nil {
+			return err
+		}
+		logrus.WithField("line", line).Info("Received line")
+		io.WriteString(c.Session, "You typed: "+line+"\n")
+	}
+}
+
 type Character struct {
+	Session ssh.Session       `yaml:"-"`
+	Pty     ssh.Pty           `yaml:"-"`
+	Window  <-chan ssh.Window `yaml:"-"`
+	Term    *term.Terminal    `yaml:"-"`
+
 	// Personal Data
 	ID       string   `yaml:"id"`
 	Name     string   `yaml:"name"`

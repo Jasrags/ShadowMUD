@@ -1,12 +1,16 @@
 package config
 
+import "time"
+
 type Server struct {
 	Host           string `yaml:"host"`
 	Port           string `yaml:"port"`
 	LogLevel       string `yaml:"log_level"`
 	MaxConnections int    `yaml:"max_connections"`
-	IdleTimeout    string `yaml:"idle_timeout"`
-	DataFiles      struct {
+	Timeouts       struct {
+		Idle time.Duration `yaml:"idle"`
+	}
+	DataFiles struct {
 		Version          string `yaml:"version"`
 		BaseDir          string `yaml:"base_dir"`
 		TestDir          string `yaml:"test_dir"`
