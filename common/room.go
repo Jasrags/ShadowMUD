@@ -9,19 +9,28 @@ import (
 )
 
 const (
-	RoomsDataPath = "data/rooms"
+	RoomsDataPath = "_data/rooms"
 	RoomFilename  = RoomsDataPath + "/%s/%s.yaml"
 )
+
+type Exits map[string]Exit
+
+type Exit struct {
+	Direction string `yaml:"direction"`
+	RoomID    string `yaml:"room_id"`
+	Hidden    bool   `yaml:"hidden"`
+	// Lock      bool   `yaml:"lock"
+}
 
 type Rooms map[string]*Room
 
 type RoomSpec struct {
-	ID               string            `yaml:"id,omitempty"`
-	ZoneID           string            `yaml:"zone_id,omitempty"`
-	Name             string            `yaml:"name,omitempty"`
-	ShortDescription string            `yaml:"short_description,omitempty"`
-	Description      string            `yaml:"description,omitempty"`
-	Exits            map[string]string `yaml:"exits,omitempty"`
+	ID               string `yaml:"id"`
+	ZoneID           string `yaml:"zone_id"`
+	Name             string `yaml:"name"`
+	ShortDescription string `yaml:"short_description"`
+	Description      string `yaml:"description"`
+	Exits            Exits  `yaml:"exits"`
 }
 
 func NewRoom(spec *RoomSpec) *Room {
@@ -82,10 +91,10 @@ func (r *Room) DisplayRoom(c *Character) {
 	color.New(color.FgGreen).Fprintln(c.Session, "Exits:")
 	if len(r.Spec.Exits) == 0 {
 		color.New(color.FgGreen).Fprintln(c.Session, "\tNone")
-	} else {
-		for k, v := range r.Spec.Exits {
-			color.New(color.FgGreen).Fprintf(c.Session, "\t%s - %s", k, v)
-		}
+		// } else {
+		// for k, v := range r.Spec.Exits {
+		// color.New(color.FgGreen).Fprintf(c.Session, "\t%s - %s", k, v)
+		// }
 	}
 }
 
@@ -96,9 +105,9 @@ var CoreRooms = []RoomSpec{
 		ZoneID:           "the_void",
 		ShortDescription: "You step out into ......",
 		Description:      "You don't think that you are not floating in nothing.",
-		Exits: map[string]string{
-			"north": "limbo",
-			"south": "the_chat_room",
+		Exits: Exits{
+			"north": {Direction: "north", RoomID: "the_void:limbo"},
+			"south": {Direction: "south", RoomID: "the_void:the_chat_room"},
 		},
 	},
 	{
@@ -107,8 +116,9 @@ var CoreRooms = []RoomSpec{
 		ZoneID:           "the_void",
 		ShortDescription: "You are floating in a formless void, detached from all sensation of physical matter, surrounded by swirling glowing light, which fades into the relative darkness around you without any trace of edges or shadow.",
 		Description:      "There is a \"No Tipping\" notice pinned to the darkness.",
-		Exits: map[string]string{
-			"south": "the_void",
+		Exits: Exits{
+			"south": {Direction: "south", RoomID: "the_void:the_void"},
+			"down":  {Direction: "down", RoomID: "seattle:empty"},
 		},
 	},
 	{
@@ -117,8 +127,8 @@ var CoreRooms = []RoomSpec{
 		ZoneID:           "the_void",
 		ShortDescription: "You are lounging in a quiet cosy parlour, warmed by a gentle magical fire which twinkles happily in a warm fireplace.  There are no doors out.  Clearly the owner of this room needs none.",
 		Description:      "You are lounging in a quiet cosy parlour, warmed by a gentle magical fire which twinkles happily in a warm fireplace.  There are no doors out.  Clearly the owner of this room needs none.",
-		Exits: map[string]string{
-			"north": "the_void",
+		Exits: Exits{
+			"north": {Direction: "north", RoomID: "the_void:the_void"},
 		},
 	},
 }

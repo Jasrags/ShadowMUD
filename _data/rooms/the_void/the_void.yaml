@@ -1,8 +1,14 @@
 id: the_void
+zone_id: the_void
 name: The Void
 short_description: You step out into ......
 description: You don't think that you are not floating in nothing.
 exits:
-    north: limbo
-    south: the_chat_room
-zone_id: the_void
+    north:
+        direction: north
+        room_id: the_void:limbo
+        hidden: false
+    south:
+        direction: south
+        room_id: the_void:the_chat_room
+        hidden: false
