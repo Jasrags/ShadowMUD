@@ -10,7 +10,7 @@ import (
 
 func TestSaveCoreRooms(t *testing.T) {
 	for _, v := range common.CoreRooms {
-		if err := utils.SaveStructToYAML(fmt.Sprintf("../"+common.RoomFilename, v.Zone, v.ID), &v); err != nil {
+		if err := utils.SaveStructToYAML(fmt.Sprintf("../"+common.RoomFilename, v.ZoneID, v.ID), &v); err != nil {
 			t.Errorf("Error saving %s: %s", v.ID, err)
 		}
 	}

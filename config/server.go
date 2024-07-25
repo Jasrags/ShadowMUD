@@ -10,17 +10,12 @@ type Server struct {
 	Timeouts       struct {
 		Idle time.Duration `yaml:"idle"`
 	}
-	DataFiles struct {
-		Version          string `yaml:"version"`
-		BaseDir          string `yaml:"base_dir"`
-		TestDir          string `yaml:"test_dir"`
-		CharacerFilesDir string `yaml:"character_files_dir"`
-
-		// Characters         string `yaml:"characters"`
-		// Config             string `yaml:"config"`
-		// Contacts           string `yaml:"contacts"`
-		// Armor              string `yaml:"armor"`
-		// ArmorModifications string `yaml:"armor_modifications"`
-	} `yaml:"data_directories"`
+	Data struct {
+		BaseDir       string `yaml:"base_dir"`
+		TestDir       string `yaml:"test_dir"`
+		CharactersDir string `yaml:"characters_dir"`
+		ZonesDir      string `yaml:"zones_dir"`
+		RoomsDir      string `yaml:"rooms_dir"`
+	} `yaml:"data"`
 	BannedNames []string `yaml:"banned_names"`
 }

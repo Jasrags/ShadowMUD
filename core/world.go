@@ -1,14 +1,16 @@
 package core
 
 import (
-	"io"
+	"fmt"
 	"net"
-	"sync"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/Jasrags/ShadowMUD/common"
 	"github.com/Jasrags/ShadowMUD/config"
 	"github.com/Jasrags/ShadowMUD/utils"
+	"github.com/fatih/color"
 
 	"github.com/gliderlabs/ssh"
 	"github.com/sirupsen/logrus"
@@ -20,7 +22,9 @@ const (
 
 type World struct {
 	config     config.Server
-	characters sync.Map
+	characters common.Charcters
+	zones      common.Zones
+	rooms      common.Rooms
 }
 
 func NewWorld() *World {
@@ -40,6 +44,8 @@ func NewWorld() *World {
 
 	w := &World{
 		config: serverConfig,
+		zones:  make(common.Zones),
+		rooms:  make(common.Rooms),
 	}
 
 	return w
@@ -50,104 +56,19 @@ func (w *World) Start() {
 	ssh.Handle(w.Handler)
 
 	server := &ssh.Server{
-		BannerHandler: w.BannerHandler,
-		// PasswordHandler: w.PasswordHandler,
+		BannerHandler:            w.BannerHandler,
 		Handler:                  w.Handler,
 		ConnectionFailedCallback: w.ConnectionFailedCallback,
 		Addr:                     net.JoinHostPort(w.config.Host, w.config.Port),
-		IdleTimeout:              time.Second * 10,
+		IdleTimeout:              w.config.Timeouts.Idle,
 	}
+
+	// Load data
+	w.LoadData()
 
 	if err := server.ListenAndServe(); err != nil {
 		logrus.WithError(err).Error("Could not start server")
 	}
-
-	// srv, err := wish.NewServer(
-	// 	wish.WithAddress(net.JoinHostPort(w.config.Host, w.config.Port)),
-	// 	wish.WithHostKeyPath(".ssh/id_ed25519"),
-	// 	ssh.AllocatePty(),
-
-	// 	wish.WithMiddleware(
-	// 		func(next ssh.Handler) ssh.Handler {
-	// 			return func(s ssh.Session) {
-
-	// 				pty, _, _ := s.Pty()
-	// 				renderer := bubbletea.MakeRenderer(s)
-	// 				// textStyle := renderer.NewStyle().Foreground(lipgloss.Color("10"))
-
-	// 				color.New(color.FgBlue).Fprintln(s, "blue color!")
-
-	// 				bg := "light"
-	// 				if renderer.HasDarkBackground() {
-	// 					bg = "dark"
-	// 				}
-
-	// wish.Printf(s, lipgloss.JoinVertical(
-	// 	lipgloss.Top,
-	// 	textStyle.Render("Hello, world!\r\n"),
-	// 	fmt.Sprintf("Term: %s\r\n", pty.Term),
-	// 	fmt.Sprintf("PTY: %s\r\n", pty.Slave.Name()),
-	// 	fmt.Sprintf("FD: %d\r\n", pty.Slave.Fd()),
-	// 	fmt.Sprintf("Background: %v\r\n", bg),
-	// ))
-
-	// wish.Printf(s, color.Green("Hello, world!\r\n").String())
-	// wish.Printf(s, textStyle.Render("Hello, world!\r\n"))
-	// wish.Printf(s, "Hello, world!\r\n")
-	// wish.Printf(s, "Term: %s\r\n", pty.Term)
-	// wish.Printf(s, "PTY: %s\r\n", pty.Slave.Name())
-	// wish.Printf(s, "FD: %d\r\n", pty.Slave.Fd())
-	// wish.Printf(s, "Background: %v\r\n", bg)
-
-	// wish.Printf(s, textStyle.Render("Hello, world!\r\n"))
-
-	// next(s)
-	// }
-	// 		},
-
-	// 		activeterm.Middleware(),
-	// 		logging.Middleware(),
-	// 	),
-	// )
-	// if err != nil {
-	// 	log.Error("Could not start server", "error", err)
-	// }
-
-	// done := make(chan os.Signal, 1)
-	// signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-
-	// go func() {
-	// 	log.Info("Starting SSH server", "host", w.config.Host, "port", w.config.Port)
-	// 	if err = srv.ListenAndServe(); err != nil && !errors.Is(err, ssh.ErrServerClosed) {
-	// 		log.Error("Could not start server", "error", err)
-	// 		done <- nil
-	// 	}
-	// }()
-
-	// <-done
-
-	// ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	// defer func() { cancel() }()
-	// log.Info("Stopping SSH server")
-	// if err := srv.Shutdown(ctx); err != nil && !errors.Is(err, ssh.ErrServerClosed) {
-	// 	log.Error("Could not stop server", "error", err)
-	// }
-
-	// listener, errListen := net.Listen("tcp", net.JoinHostPort(w.config.Host, w.config.Port))
-	// if errListen != nil {
-	// 	logrus.WithError(errListen).Panic("Could not start server")
-	// }
-	// defer listener.Close()
-
-	// for {
-	// 	conn, errAccept := listener.Accept()
-	// 	if errAccept != nil {
-	// 		logrus.WithError(errAccept).Error("Error accepting connection")
-	// 	}
-
-	// 	// Handle the connection in a new goroutine
-	// 	go w.handleConnection(conn)
-	// }
 }
 
 func (w *World) ConnectionFailedCallback(conn net.Conn, err error) {
@@ -157,7 +78,8 @@ func (w *World) ConnectionFailedCallback(conn net.Conn, err error) {
 
 func (w *World) BannerHandler(ctx ssh.Context) string {
 	logrus.Debug("Sending banner")
-	return "Welcome to my SSH server, friend!\r\n"
+	return color.New(color.FgHiGreen).Sprintln("Welcome to my SSH server, friend!")
+	// return "Welcome to my SSH server, friend!\r\n"
 }
 
 func (w *World) HandleTimeout(s ssh.Session) {
@@ -182,93 +104,97 @@ func (w *World) Handler(s ssh.Session) {
 
 	c := common.NewCharacter(s)
 	if ok := c.Authenticate(); !ok {
-		io.WriteString(s, "Authentication failed\r\n")
+		color.New(color.FgHiRed).Fprintln(s, "Username or Password is incorrect")
 		return
 	}
 
 	c.Load()
 
-	w.characters.Store(c.ID, c)
+	w.characters[c.ID] = c
 	defer func() {
-		w.characters.Delete(c.ID)
+		delete(w.characters, c.ID)
 	}()
 
 	if err := c.GameLoop(); err != nil {
 		logrus.WithError(err).Error("Error in game loop")
 	}
-
-	// t := term.NewTerminal(s, "")
-
-	// io.WriteString(s, "Hello world\r\n")
-	// io.WriteString(s, fmt.Sprintf("Term: %s\r\n", pty.Term))
-	// io.WriteString(s, fmt.Sprintf("Height: %d\r\n", pty.Window.Height))
-	// io.WriteString(s, fmt.Sprintf("Width: %d\r\n", pty.Window.Width))
-
-	// io.WriteString(s, "Username: ")
-	// username, errReadLine := t.ReadLine()
-	// if errReadLine != nil {
-	// 	logrus.WithError(errReadLine).Error("Error reading username")
-	// 	return
-	// }
-	// username = strings.TrimSpace(username)
-	// logrus.WithField("username", username).Info("Received username")
-
-	// passwordBytes, err := t.ReadPassword("Password: ")
-	// if err != nil {
-	// 	log.Println("Error reading password:", err)
-	// 	return
-	// }
-	// password := strings.TrimSpace(string(passwordBytes))
-	// logrus.WithField("password", password).Info("Received password")
-
-	// // Validate credentials
-	// if pass, ok := users[username]; ok && strings.EqualFold(pass, password) {
-	// 	logrus.Info("Authentication successful")
-	// }
-
-	// for {
-	// 	io.WriteString(s, ">")
-	// 	line, err := t.ReadLine()
-	// 	if err != nil {
-	// 		break
-	// 	}
-	// 	logrus.WithField("line", line).Info("Received line")
-	// }
 }
 
-// func (w *World) authenticate(reader *bufio.Reader, writer *bufio.Writer) (bool, string) {
-// 	logrus.Debug("Authenticating user")
+func (w *World) LoadData() {
+	w.LoadZones()
+	w.LoadRooms()
+	w.BuildRooms()
+}
 
-// 	// Prompt for username
-// 	writer.WriteString("Username: ")
-// 	writer.Flush()
-// 	username, errReadUsername := reader.ReadString('\n')
-// 	if errReadUsername != nil {
-// 		logrus.WithError(errReadUsername).Error("Error reading username")
-// 		return false, ""
-// 	}
-// 	username = strings.TrimSpace(username)
-// 	logrus.WithField("username", username).Debug("Received username")
+func (w *World) LoadZones() {
+	logrus.Info("Loading zones")
+	rootpath := w.config.Data.BaseDir + w.config.Data.ZonesDir
 
-// 	w.DisableEcho(writer)
+	if err := filepath.Walk(rootpath, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			return nil
+		}
 
-// 	// Prompt for password
-// 	writer.WriteString("Password: ")
-// 	writer.Flush()
-// 	password, errReadPassword := reader.ReadString('\n')
-// 	if errReadPassword != nil {
-// 		logrus.WithError(errReadPassword).Error("Error reading password")
-// 		return false, ""
-// 	}
-// 	password = strings.TrimPrefix(strings.TrimSpace(password), "\xff\xfd\x01")
-// 	logrus.WithField("password", password).Debug("Received password")
+		if filepath.Ext(path) == ".yaml" {
+			var spec common.ZoneSpec
+			if err := utils.LoadStructFromYAML(path, &spec); err != nil {
+				logrus.WithError(err).WithFields(logrus.Fields{"path": path}).Error("Failed to load zone")
+				return err
+			}
 
-// 	w.EnableEcho(writer)
+			// Load the zone
+			v := common.NewZone(&spec)
+			w.zones[v.ID] = v
+			logrus.WithFields(logrus.Fields{"path": path, "id": v.ID}).Debug("Found zone")
+		}
 
-// 	// Validate credentials
-// 	if pass, ok := users[username]; ok && strings.EqualFold(pass, password) {
-// 		return true, username
-// 	}
+		return nil
+	}); err != nil {
+		logrus.WithError(err).Error("file walk error")
+	}
 
-// 	return false, ""
-// }
+	logrus.Infof("Finished loading %d zones", len(w.zones))
+}
+
+func (w *World) LoadRooms() {
+	logrus.Info("Loading rooms")
+
+	rootpath := w.config.Data.BaseDir + w.config.Data.RoomsDir
+
+	if err := filepath.Walk(rootpath, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			return nil
+		}
+
+		if filepath.Ext(path) == ".yaml" {
+			var spec common.RoomSpec
+			if err := utils.LoadStructFromYAML(path, &spec); err != nil {
+				logrus.WithError(err).WithFields(logrus.Fields{"path": path}).Error("Failed to load room")
+				return err
+			}
+
+			// Load our rooms
+			v := common.NewRoom(&spec)
+			logrus.WithFields(logrus.Fields{"zone_id": v.Spec.ZoneID, "path": path, "id": v.ID}).Debug("Found room")
+			w.rooms[fmt.Sprintf("%s:%s", v.Spec.ZoneID, v.ID)] = v
+
+		}
+
+		return nil
+	}); err != nil {
+		logrus.WithError(err).Error("file walk error")
+	}
+
+	logrus.Infof("Finished loading %d rooms", len(w.rooms))
+}
+
+func (w *World) BuildRooms() {
+	logrus.Info("Building rooms")
+	for _, r := range w.rooms {
+		logrus.WithFields(logrus.Fields{"zone_id": r.Spec.ZoneID, "room_id": r.ID}).Debug("Building room")
+		// Add this room to the zone's room list
+		w.zones[r.Spec.ZoneID].Rooms[r.ID] = r
+		// Set the room's zone
+		r.Zone = w.zones[r.Spec.ZoneID]
+	}
+}

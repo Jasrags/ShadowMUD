@@ -5,4 +5,4 @@ description: You don't think that you are not floating in nothing.
 exits:
     north: limbo
     south: the_chat_room
-zone: the_void
+zone_id: the_void

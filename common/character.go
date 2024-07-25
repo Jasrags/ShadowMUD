@@ -8,7 +8,10 @@ import (
 	"strings"
 
 	"github.com/Jasrags/ShadowMUD/utils"
+
+	"github.com/fatih/color"
 	"github.com/gliderlabs/ssh"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/term"
 )
@@ -111,8 +114,12 @@ func NewCharacter(s ssh.Session) *Character {
 	}
 }
 
+// TODO: keep track of auth attempts and lock out after a certain number
+// TODO: Add a list of restricted usernames that will always fail authentication
+// TODO: Hook up an actual authentication system to validate a hashed password from the data files
 func (c *Character) Authenticate() bool {
-	io.WriteString(c.Session, "Username: ")
+	// Collect username
+	color.New(color.FgHiWhite).Fprint(c.Session, "Username: ")
 	username, errReadLine := c.Term.ReadLine()
 	if errReadLine != nil {
 		logrus.WithError(errReadLine).Error("Error reading username")
@@ -121,7 +128,8 @@ func (c *Character) Authenticate() bool {
 	username = strings.TrimSpace(username)
 	logrus.WithField("username", username).Info("Received username")
 
-	passwordBytes, err := c.Term.ReadPassword("Password: ")
+	// Collect password without echoing
+	passwordBytes, err := c.Term.ReadPassword(color.New(color.FgHiWhite).Sprint("Password: "))
 	if err != nil {
 		log.Println("Error reading password:", err)
 		return false
@@ -131,27 +139,63 @@ func (c *Character) Authenticate() bool {
 
 	// Validate credentials
 	if pass, ok := utils.Users[username]; ok && strings.EqualFold(pass, password) {
-		logrus.Info("Authentication successful")
+		logrus.WithFields(logrus.Fields{"username": username}).Info("Authentication successful")
 
 		return true
 	}
 
+	logrus.WithFields(logrus.Fields{"username": username}).Error("Authentication unsuccessful")
 	return false
 }
 
+// After auth for an exisiting character start loading up the data from the files and load the character into the game
 func (c *Character) Load() {
-	c.ID = "ce9f9d47-0a99-4ded-9e9a-30dc3b73f038"
+	logrus.Debug("Loading character")
+	uuid, _ := uuid.NewRandom()
+	c.ID = uuid.String()
 	c.Name = "Test"
 	roomSpec := &CoreRooms[0]
 	c.Room = Room{
-		ID:   roomSpec.ID,
-		Spec: roomSpec,
+		ID:         roomSpec.ID,
+		Spec:       roomSpec,
+		Characters: map[string]*Character{},
 	}
+	c.Room.AddCharacter(c)
+}
+
+// TODO: Cycle through the list of available commands when we have more than one
+func (c *Character) AutoCompleteCallback(line string, pos int, key rune) (string, int, bool) {
+	logrus.WithFields(logrus.Fields{"line": line, "pos": pos, "key": key, "key_string": string(key)}).Debug("AutoCompleteCallback")
+
+	if len(line) > 0 {
+		results := []string{}
+		text := strings.ToLower(strings.TrimSpace(line + string(key))) // Get the command name from the line
+		command := strings.Fields(line)[0]
+
+		// Get the list of available commands
+		commands := []string{"meleeattack", "rolldice", "getcomposure", "getjudgeintentions", "getmemory", "getliftcarry", "getmovement", "addcyberware", "removecyberware", "recalculatecyberware", "recalculatebioware"}
+
+		// Check if the command name matches any of the available commands
+		for _, cmd := range commands {
+			if strings.HasPrefix(cmd, command) {
+				results = append(results, cmd)
+			}
+		}
+
+		logrus.WithFields(logrus.Fields{"text": text, "results": results}).Debug("Results")
+		if len(results) == 1 {
+			return results[0], len(results[0]), true
+		}
+	}
+
+	return "", pos, false // Return the current result as the auto-completed text
 }
 
 func (c *Character) GameLoop() error {
+	c.Term.AutoCompleteCallback = c.AutoCompleteCallback
 	for {
-		io.WriteString(c.Session, ">")
+		color.New(color.FgWhite).Fprint(c.Session, ">")
+		// io.WriteString(c.Session, ">")
 		line, err := c.Term.ReadLine()
 		if err != nil {
 			return err
@@ -160,6 +204,8 @@ func (c *Character) GameLoop() error {
 		io.WriteString(c.Session, "You typed: "+line+"\n")
 	}
 }
+
+type Charcters map[string]*Character
 
 type Character struct {
 	Session ssh.Session       `yaml:"-"`
@@ -467,7 +513,7 @@ func (c *Character) Save() error {
 // It populates the global `Metatypes` map with the loaded metatypes.
 // The function takes a `sync.WaitGroup` pointer as a parameter to indicate completion.
 // It is expected to be called as a goroutine.
-func LoadCharacter(id string) Character {
+func LoadCharacter(id string) *Character {
 	logrus.WithFields(logrus.Fields{"id": id}).Info("Started loading character")
 
 	var char Character
@@ -482,7 +528,7 @@ func LoadCharacter(id string) Character {
 
 	logrus.WithFields(logrus.Fields{"id": id}).Info("Loaded character file")
 
-	return char
+	return &char
 }
 
 /*

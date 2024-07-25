@@ -1,9 +1,13 @@
 package common
 
+import "sync"
+
 const (
 	ZonesDataPath = "data/zones"
 	ZoneFilename  = ZonesDataPath + "/%s.yaml"
 )
+
+type Zones map[string]*Zone
 
 type ZoneSpec struct {
 	ID          string     `yaml:"id"`
@@ -12,9 +16,19 @@ type ZoneSpec struct {
 	RuleSource  RuleSource `yaml:"rule_source"`
 }
 
+func NewZone(spec *ZoneSpec) *Zone {
+	return &Zone{
+		ID:    spec.ID,
+		Spec:  spec,
+		Rooms: make(Rooms),
+	}
+}
+
 type Zone struct {
-	ID   string    `yaml:"id"`
-	Spec *ZoneSpec `yaml:"-"`
+	sync.Mutex
+	ID    string    `yaml:"id"`
+	Spec  *ZoneSpec `yaml:"-"`
+	Rooms Rooms     `yaml:"-"`
 }
 
 var CoreZones = []ZoneSpec{
@@ -26,7 +40,7 @@ var CoreZones = []ZoneSpec{
 	{
 		ID:          "seattle",
 		Name:        "Seattle",
-		Description: "Seattle is a city in the UCAS, located in the Pacific Northwest. It is the largest city in the UCAS and the largest metroplex in the world. Seattle is a major hub for trade, commerce, and culture, and is home to a number of megacorporations, including Ares Macrotechnology, Aztechnology, and NeoNET.",
+		Description: "Seattle is a city in the UCAS, located in the Pacific Northwest. It is the largest city in the UCAS and the largest metroplex in the world. Seattle is a major hub for trade, commerce, and cult ure, and is home to a number of megacorporations, including Ares Macrotechnology, Aztechnology, and NeoNET.",
 		RuleSource:  RuleSourceSR5Core,
 	},
 }

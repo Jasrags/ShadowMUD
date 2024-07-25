@@ -4,4 +4,5 @@ short_description: You are floating in a formless void, detached from all sensat
 description: There is a "No Tipping" notice pinned to the darkness.
 exits:
     south: the_void
-zone: the_void
+    down: seattle:empty
+zone_id: the_void

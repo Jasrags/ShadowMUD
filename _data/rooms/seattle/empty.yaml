@@ -1,0 +1,5 @@
+id: empty
+name: A totally empty room
+short_description: You are in a totally empty room.
+description: There is nothing here.
+zone_id: seattle
