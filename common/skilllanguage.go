@@ -1,23 +1,23 @@
 package common
 
 const (
-	LanguageSkillDataPath = "data/skills/languages"
-	LanguageSkillFilename = LanguageSkillDataPath + "/%s.yaml"
+	LanguageSkillsFilepath = "_data/skills/languages"
 )
 
-type LanguageSkillSpec struct {
-	ID         string     `yaml:"id,omitempty"`
-	Name       string     `yaml:"name"`
-	IsCommon   bool       `yaml:"is_common"`
-	Rating     int        `yaml:"rating,omitempty"`
-	RuleSource RuleSource `yaml:"rule_source"`
-}
-
-type LanguageSkill struct {
-	ID     string            `yaml:"id,omitempty"`
-	Rating int               `yaml:"rating,omitempty"`
-	Spec   LanguageSkillSpec `yaml:"-"`
-}
+type (
+	LanguageSkillSpec struct {
+		ID         string     `yaml:"id,omitempty"`
+		Name       string     `yaml:"name"`
+		IsCommon   bool       `yaml:"is_common"`
+		Rating     int        `yaml:"rating,omitempty"`
+		RuleSource RuleSource `yaml:"rule_source"`
+	}
+	LanguageSkill struct {
+		ID     string            `yaml:"id,omitempty"`
+		Rating int               `yaml:"rating,omitempty"`
+		Spec   LanguageSkillSpec `yaml:"-"`
+	}
+)
 
 var (
 	CoreLanguageSkills = []LanguageSkillSpec{

@@ -16,13 +16,11 @@ const (
 )
 
 var (
-	// w   *World
 	cfg *config.Server
 )
 
 func main() {
 	utils.LoadStructFromYAML(ConfigFilepath, &cfg)
-
 	logrus.WithField("config", cfg).Info("Loaded server configuration")
 
 	// set up logging
@@ -32,11 +30,11 @@ func main() {
 		logrusLevel = logrus.InfoLevel
 	}
 	logrus.SetLevel(logrusLevel)
-
 	logrus.WithField("log_level", logrusLevel).Info("Logger level set")
 
 	w := NewWorld(cfg)
-	// load data (zones, rooms, items, etc...)
+	// Load data
+	w.LoadData()
 
 	// Start the server
 	server := &ssh.Server{
@@ -47,7 +45,6 @@ func main() {
 
 	// handle connections
 	ssh.Handle(w.Handler)
-
 	if err := server.ListenAndServe(); err != nil {
 		logrus.WithError(err).Error("Could not start server")
 	}

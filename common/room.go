@@ -5,29 +5,36 @@ import (
 )
 
 const (
-	RoomsDataPath = "_data/rooms"
-	RoomFilename  = RoomsDataPath + "/%s/%s.yaml"
+	RoomsFilepath = "_data/rooms"
 )
 
-type Exits map[string]Exit
+type (
+	Exits map[string]Exit
+	Exit  struct {
+		Direction string `yaml:"direction"`
+		RoomID    string `yaml:"room_id"`
+		Hidden    bool   `yaml:"hidden"`
+		// Lock      bool   `yaml:"lock"
+	}
 
-type Exit struct {
-	Direction string `yaml:"direction"`
-	RoomID    string `yaml:"room_id"`
-	Hidden    bool   `yaml:"hidden"`
-	// Lock      bool   `yaml:"lock"
-}
-
-type Rooms map[string]*Room
-
-type RoomSpec struct {
-	ID               string `yaml:"id"`
-	ZoneID           string `yaml:"zone_id"`
-	Name             string `yaml:"name"`
-	ShortDescription string `yaml:"short_description"`
-	Description      string `yaml:"description"`
-	Exits            Exits  `yaml:"exits"`
-}
+	RoomSpec struct {
+		ID               string `yaml:"id"`
+		ZoneID           string `yaml:"zone_id"`
+		Name             string `yaml:"name"`
+		ShortDescription string `yaml:"short_description"`
+		Description      string `yaml:"description"`
+		Exits            Exits  `yaml:"exits"`
+	}
+	Rooms map[string]*Room
+	Room  struct {
+		sync.Mutex
+		ID              string     `yaml:"id,omitempty"`
+		Spec            *RoomSpec  `yaml:"-"`
+		Characters      Characters `yaml:"-"`
+		CharactersCount int        `yaml:"-"`
+		Zone            *Zone      `yaml:"-"`
+	}
+)
 
 func (r RoomSpec) Filepath() string {
 	return ""
@@ -43,15 +50,6 @@ func NewRoom(spec *RoomSpec) *Room {
 		Spec:       spec,
 		Characters: make(Characters),
 	}
-}
-
-type Room struct {
-	sync.Mutex
-	ID              string     `yaml:"id,omitempty"`
-	Spec            *RoomSpec  `yaml:"-"`
-	Characters      Characters `yaml:"-"`
-	CharactersCount int        `yaml:"-"`
-	Zone            *Zone      `yaml:"-"`
 }
 
 // func (r *Room) AddCharacter(c *Character) {

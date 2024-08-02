@@ -16,20 +16,17 @@ import (
 	"github.com/gliderlabs/ssh"
 )
 
-// const (
-// 	ConfigFilepath = "_data/config/server.yaml"
-// )
-
 type World struct {
-	lock     sync.Mutex
-	config   *config.Server
-	users    map[string]*common.User
-	sessions map[string]*ssh.Session
+	lock      sync.Mutex
+	cfg       *config.Server
+	users     map[string]*common.User
+	sessions  map[string]*ssh.Session
+	metatypes common.Metatypes
 }
 
 func NewWorld(cfg *config.Server) *World {
 	w := &World{
-		config:   cfg,
+		cfg:      cfg,
 		users:    make(map[string]*common.User),
 		sessions: make(map[string]*ssh.Session),
 	}
@@ -41,40 +38,60 @@ const (
 	StatePromptLoginUser
 	StatePromptRegisterUser
 	StatePromptMainMenu
+	StateEnterGame
+	StatePromptCreateCharacter
+	StatePromptListCharacters
+	StatePromptDeleteCharacter
+	StatePromptChangePassword
 	StateMOTD
 	StateGameLoop
 	StateQuit
 )
 
 var (
-	// sigChan = make(chan os.Signal, 2)
-	usernamePrompt             = "{{Username: }}::#ffffff|bold"
-	passwordPrompt             = "{{Password: }}::#ffffff|bold"
-	passwordConfirmPrompt      = "{{Confirm password: }}::#ffffff|bold"
-	invalidLoginMsg            = "{{You have entered an invalid username or password.}}::#ff8700\n"
-	loginSuccessfulMsg         = "{{Login successful.}}::#00ff00\n"
-	loginUserBannedMsg         = "{{You are banned until %s.}}::#ff8700\n"
-	registrationClosedMsg      = "{{Registration is currently closed.}}::#ff8700\n"
-	registrationUsernameBanned = "{{Username %s is not allowed.}}::#ff8700\n"
-	loginClosedMsg             = "{{Login is currently closed.}}::#ff8700\n"
-	passwordMismatchMsg        = "{{Passwords do not match.}}::#ff8700\n"
-	passwordMinLengthMsg       = "{{Password must be at least %d characters.}}::#ff8700\n"
-	passwordMaxLengthMsg       = "{{Password must be at most %d characters.}}::#ff8700\n"
-	userCreatedMsg             = "{{User %s has been created.}}::#00ff00\n"
-	newUsernamePrompt          = "{{Enter your desired username: }}::#ffffff|bold"
-	confirmUsernamePrompt      = "{{Confirm username %s}}::#ffffff|bold {{(y/n)}}::#00ff00|bold{{:}}::#ffffff|bold"
-	declinedUsernameMsg        = "{{Username %s was not confirmed.}}::#ff8700\n"
-	menuOptionEnterGame        = "{{1.}}::#00ff00 Enter game [%s]\n"
-	menuOptionCreateCharacter  = "{{2.}}::#00ff00 Create character (%d/%d)\n"
-	menuOptionListCharacters   = "{{3.}}::#00ff00 List characters\n"
-	menuOptionDeleteCharacter  = "{{4.}}::#00ff00 Delete character\n"
-	menuOptionChangePassword   = "{{5.}}::#00ff00 Change password\n"
-	menuOptionQuit             = "{{0.}}::#00ff00 Quit\n"
-	menuPrompt                 = "{{Enter the number of the option you would like to select: }}::#ffffff|bold"
-	menuInvalidChoice          = "Invalid choice: %s\n"
-	gameLoopPrompt             = "{{> }}::#ffffff|bold"
-	inputEchoMsg               = "{{You typed:}}::#ffffff|bold %s\n"
+	usernamePrompt                  = "{{Username: }}::#ffffff|bold"
+	passwordPrompt                  = "{{Password: }}::#ffffff|bold"
+	passwordConfirmPrompt           = "{{Confirm password: }}::#ffffff|bold"
+	invalidLoginMsg                 = "{{You have entered an invalid username or password.}}::#ff8700\n"
+	loginSuccessfulMsg              = "{{Login successful.}}::#00ff00\n"
+	loginUserBannedMsg              = "{{You are banned until %s.}}::#ff8700\n"
+	registrationClosedMsg           = "{{Registration is currently closed.}}::#ff8700\n"
+	registrationUsernameBanned      = "{{Username %s is not allowed.}}::#ff8700\n"
+	loginClosedMsg                  = "{{Login is currently closed.}}::#ff8700\n"
+	passwordMismatchMsg             = "{{Passwords do not match.}}::#ff8700\n"
+	passwordMinLengthMsg            = "{{Password must be at least %d characters.}}::#ff8700\n"
+	passwordMaxLengthMsg            = "{{Password must be at most %d characters.}}::#ff8700\n"
+	userCreatedMsg                  = "{{User %s has been created.}}::#00ff00\n"
+	newUsernamePrompt               = "{{Enter your desired username: }}::#ffffff|bold"
+	confirmUsernamePrompt           = "{{Confirm username %s}}::#ffffff|bold {{(y/n)}}::#00ff00|bold{{:}}::#ffffff|bold"
+	declinedUsernameMsg             = "{{Username %s was not confirmed.}}::#ff8700\n"
+	mainMenuTitle                   = "\n{{Main Menu}}::#00ff00|bold\n"
+	menuOptionEnterGame             = "{{1.}}::#00ff00 Enter game [%s]\n"
+	menuOptionCreateCharacter       = "{{2.}}::#00ff00 Create character (%d/%d)\n"
+	menuOptionListCharacters        = "{{3.}}::#00ff00 List characters\n"
+	menuOptionDeleteCharacter       = "{{4.}}::#00ff00 Delete character\n"
+	menuOptionChangePassword        = "{{5.}}::#00ff00 Change password\n"
+	menuOptionQuit                  = "{{0.}}::#00ff00 Quit\n"
+	menuPrompt                      = "{{Enter the number of the option you would like to select: }}::#ffffff|bold"
+	menuInvalidChoice               = "Invalid choice: %s\n"
+	gameLoopPrompt                  = "{{> }}::#ffffff|bold"
+	inputEchoMsg                    = "{{You typed:}}::#ffffff|bold %s\n"
+	createCharacterMenuTitle        = "\n{{Character Creation}}::#00ff00|bold\n"
+	createCharacterMenuOptionPregen = "{{1.}}::#00ff00 Choose an pre-generated character\n"
+	createCharacterMenuOptionCustom = "{{2.}}::#00ff00 Create an custom character\n"
+	createCharacterMenuOptionLearn  = "{{3.}}::#00ff00 Learn more about Shadowrun characters\n"
+	createCharacterMenuOptionReturn = "{{4.}}::#00ff00 Return to the main menu\n"
+	noCharactersCreatedMsg          = "\n{{You have no characters created, let's make one now!}}::#ff8700\n"
+	characterListOption             = "{{%d.}}::#00ff00 %s\n"
 )
+
+func (w *World) LoadData() {
+	logrus.Info("Started loading data")
+
+	w.metatypes = common.LoadMetatypes()
+
+	logrus.Info("Finished loading data")
+}
 
 // Handle incoming SSH sessions
 func (w *World) Handler(s ssh.Session) {
@@ -94,13 +111,39 @@ func (w *World) Handler(s ssh.Session) {
 			state = w.PromptRegisterUser(u)
 		case StatePromptMainMenu:
 			state = w.PromptMainMenu(u)
+		case StateEnterGame:
+			state = w.EnterGame(u)
+			// TODO: If character has not been selected, prompt for character selection
+			// TODO: Enter game loop
+		case StatePromptCreateCharacter:
+			state = w.PromptCreateCharacter(u)
+			// TODO: Prompt for using archtype or creating a new character
+		case StatePromptListCharacters:
+			state = w.PromptListCharacters(u)
+			// TODO: List out all the characters for the user with short details
+		case StatePromptDeleteCharacter:
+			state = w.PromptDeleteCharacter(u)
+			// TODO: List out all the characters for the user
+			// TODO: Prompt for the character to delete
+			// TODO: Confirm the deletion
+			// TODO: Delete the character
+		case StatePromptChangePassword:
+			state = w.PromptChangePassword(u)
+			// TODO: Prompt for new password
+			// TODO: Prompt for confirm password
+			// TODO: Confirm the new passwords match
+			// TODO: Hash the new password
+			// TODO: Save the new password
 		case StateMOTD:
 			state = w.MOTD(u)
 		case StateGameLoop:
 			state = w.GameLoop(u)
 		case StateQuit:
-			// TOOD: Save user state
-			// TODO: Exit the loop
+			u.Save()
+			io.WriteString(u.Session, cfmt.Sprint("Goodbye!\n"))
+			w.RemoveSession(u.ID)
+			w.RemoveUser(u.Username)
+			u.Session.Close()
 			return
 		default:
 			logrus.WithField("state", state).Error("Invalid state")
@@ -154,7 +197,7 @@ func (w *World) PromptLoginUser(u *common.User) int {
 	logrus.WithFields(logrus.Fields{"username": username}).Debug("Received password")
 
 	// is login enabled?
-	if !w.config.LoginEnabled {
+	if !w.cfg.LoginEnabled {
 		io.WriteString(u.Session, cfmt.Sprint(loginClosedMsg))
 
 		return StatePromptLoginUser
@@ -166,6 +209,8 @@ func (w *World) PromptLoginUser(u *common.User) int {
 
 		return StatePromptLoginUser
 	}
+
+	logrus.WithFields(logrus.Fields{"username": u.Username, "id": u.ID}).Debug("Loaded user")
 
 	// Is the user banned?
 	for _, ban := range u.Bans {
@@ -215,7 +260,7 @@ func (w *World) PromptLoginUser(u *common.User) int {
 func (w *World) PromptRegisterUser(u *common.User) int {
 	// Do we have registration disabled?
 	// TODO: Fix this loop
-	if !w.config.RegistrationEnabled {
+	if !w.cfg.RegistrationEnabled {
 		io.WriteString(u.Session, cfmt.Sprint(registrationClosedMsg))
 
 		return StatePromptLoginUser
@@ -232,7 +277,7 @@ func (w *World) PromptRegisterUser(u *common.User) int {
 	logrus.WithField("username", username).Info("Received new username")
 
 	// TODO: check if username is already taken
-	for _, bannedName := range w.config.BannedNames {
+	for _, bannedName := range w.cfg.BannedNames {
 		if strings.EqualFold(username, bannedName) {
 			io.WriteString(u.Session, cfmt.Sprintf(registrationUsernameBanned, username))
 
@@ -278,21 +323,21 @@ func (w *World) PromptRegisterUser(u *common.User) int {
 
 	// Is the password in the min/max lengths?
 	passwordLen := len(password)
-	if passwordLen < w.config.PasswordMinLength {
-		io.WriteString(u.Session, cfmt.Sprintf(passwordMinLengthMsg, w.config.PasswordMinLength))
+	if passwordLen < w.cfg.PasswordMinLength {
+		io.WriteString(u.Session, cfmt.Sprintf(passwordMinLengthMsg, w.cfg.PasswordMinLength))
 
 		return StatePromptRegisterUser
 	}
 
 	// TODO: make this use config.PasswordMaxLength
-	if passwordLen > w.config.PasswordMaxLength {
-		io.WriteString(u.Session, cfmt.Sprintf(passwordMaxLengthMsg, w.config.PasswordMaxLength))
+	if passwordLen > w.cfg.PasswordMaxLength {
+		io.WriteString(u.Session, cfmt.Sprintf(passwordMaxLengthMsg, w.cfg.PasswordMaxLength))
 
 		return StatePromptRegisterUser
 	}
 
 	// Hash the password with bcrypt
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), w.config.PasswordBcryptCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), w.cfg.PasswordBcryptCost)
 	if err != nil {
 		logrus.WithError(err).Error("Error hashing password")
 		return StatePromptRegisterUser
@@ -316,8 +361,9 @@ func (w *World) PromptRegisterUser(u *common.User) int {
 }
 
 func (w *World) PromptMainMenu(u *common.User) int {
+	io.WriteString(u.Session, cfmt.Sprintf(mainMenuTitle))
 	io.WriteString(u.Session, cfmt.Sprintf(menuOptionEnterGame, "Character Name"))
-	io.WriteString(u.Session, cfmt.Sprintf(menuOptionCreateCharacter, 1, 3))
+	io.WriteString(u.Session, cfmt.Sprintf(menuOptionCreateCharacter, len(u.Characters), w.cfg.UserCharacterMaxCount))
 	io.WriteString(u.Session, cfmt.Sprintf(menuOptionListCharacters))
 	io.WriteString(u.Session, cfmt.Sprintf(menuOptionDeleteCharacter))
 	io.WriteString(u.Session, cfmt.Sprintf(menuOptionChangePassword))
@@ -328,7 +374,7 @@ func (w *World) PromptMainMenu(u *common.User) int {
 	if errReadLine != nil {
 		logrus.WithError(errReadLine).Error("Error reading menu choice")
 
-		return StatePromptRegisterUser
+		return StatePromptMainMenu
 	}
 
 	menuChoice = strings.ToLower(strings.TrimSpace(menuChoice))
@@ -336,26 +382,116 @@ func (w *World) PromptMainMenu(u *common.User) int {
 
 	switch menuChoice {
 	case "1":
-		return StateGameLoop
+		return StateEnterGame
 	case "2":
-		// Create character
-		return StatePromptMainMenu
+		return StatePromptCreateCharacter
 	case "3":
-		// List characters
-		return StatePromptMainMenu
+		return StatePromptListCharacters
 	case "4":
-		// Delete character
-		return StatePromptMainMenu
+		return StatePromptListCharacters
 	case "5":
-		// Change password
-		return StatePromptMainMenu
+		return StatePromptChangePassword
 	case "0":
-		// Quit
 		return StateQuit
 	default:
 		io.WriteString(u.Session, cfmt.Sprintf(menuInvalidChoice, menuChoice))
 		return StatePromptMainMenu
 	}
+}
+
+func (w *World) EnterGame(u *common.User) int {
+	if len(u.Characters) == 0 {
+		io.WriteString(u.Session, cfmt.Sprintf(noCharactersCreatedMsg))
+
+		return StatePromptCreateCharacter
+	}
+
+	i := 1
+	for _, c := range u.Characters {
+		io.WriteString(u.Session, cfmt.Sprintf(characterListOption, i+1, c.Name))
+		i++
+	}
+
+	choice, errReadLine := u.Term.ReadLine()
+	if errReadLine != nil {
+		logrus.WithError(errReadLine).Error("Error reading menu choice")
+
+		return StatePromptCreateCharacter
+	}
+
+	choice = strings.ToLower(strings.TrimSpace(choice))
+	logrus.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
+
+	return StatePromptMainMenu
+}
+
+func (w *World) PromptCreateCharacter(u *common.User) int {
+	if len(u.Characters) >= w.cfg.UserCharacterMaxCount {
+		io.WriteString(u.Session, cfmt.Sprintf("{{You have reached the maximum number of characters allowed.}}::#ff8700\n"))
+		return StatePromptMainMenu
+	}
+
+	// TODO: Add a blurb about the character creation process
+	io.WriteString(u.Session, cfmt.Sprintf(createCharacterMenuTitle))
+	io.WriteString(u.Session, cfmt.Sprintf(createCharacterMenuOptionPregen))
+	io.WriteString(u.Session, cfmt.Sprintf(createCharacterMenuOptionCustom))
+	io.WriteString(u.Session, cfmt.Sprintf(createCharacterMenuOptionLearn))
+	io.WriteString(u.Session, cfmt.Sprintf(createCharacterMenuOptionReturn))
+	io.WriteString(u.Session, cfmt.Sprint(menuPrompt))
+
+	choice, errReadLine := u.Term.ReadLine()
+	if errReadLine != nil {
+		logrus.WithError(errReadLine).Error("Error reading menu choice")
+
+		return StatePromptMainMenu
+	}
+
+	choice = strings.ToLower(strings.TrimSpace(choice))
+	logrus.WithFields(logrus.Fields{"choice": choice}).Info("Received menu choice")
+
+	switch choice {
+	case "1":
+		// TODO list our pre-generated characters
+		return StatePromptCreateCharacter
+	case "2":
+		// TODO: Prompt for custom character creation
+		return StatePromptCreateCharacter
+	case "3":
+		// TODO: Show longer description about shadowrun characters, archtypes, etc...
+		return StatePromptCreateCharacter
+	case "4":
+		return StatePromptMainMenu
+	default:
+		io.WriteString(u.Session, cfmt.Sprintf(menuInvalidChoice, choice))
+		return StatePromptCreateCharacter
+	}
+
+	// io.WriteString(u.Session, cfmt.Sprintf("{{Enter the name of your new character: }}::#ffffff|bold"))
+	// name, err := u.Term.ReadLine()
+	// if err != nil {
+	// 	logrus.WithError(err).Error("Error reading character name")
+	// 	return StatePromptCreateCharacter
+	// }
+	// logrus.WithFields(logrus.Fields{"name": name}).Info("Received character name")
+
+	// TODO: Check that the name is not banned
+	// TODO: Check that the name is not already taken
+}
+
+func (w *World) PromptListCharacters(u *common.User) int {
+	return StatePromptMainMenu
+}
+
+func (w *World) PromptDeleteCharacter(u *common.User) int {
+	return StatePromptMainMenu
+}
+
+func (w *World) PromptChangePassword(u *common.User) int {
+	return StatePromptMainMenu
+}
+
+func (w *World) MenuCreateCharacter(u *common.User) int {
+	return StatePromptMainMenu
 }
 
 func (w *World) MOTD(u *common.User) int {

@@ -1,5 +1,6 @@
 id: elf
 name: Elf
+description: Elves are tall and slender metatypes, known for their grace and their ability to see in the dark.
 body:
     min: 1
     max: 6

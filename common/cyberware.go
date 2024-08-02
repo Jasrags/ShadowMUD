@@ -7,27 +7,14 @@ import (
 )
 
 const (
-	CyberwareDataPath = "data/items/cyberware"
-	CyberwareFilename = CyberwareDataPath + "/%s.yaml"
-)
+	CyberwareFilepath = "_data/items/cyberware"
 
-var (
-	ErrUnknownCyberwareGrade = fmt.Errorf("unknown cyberware grade")
-)
-
-type CyberwareGrade string
-
-const (
 	CyberwareGradeStandard  CyberwareGrade = "Standard"
 	CyberwareGradeAlphaware CyberwareGrade = "Alphaware"
 	CyberwareGradeBetaware  CyberwareGrade = "Betaware"
 	CyberwareGradeDeltaware CyberwareGrade = "Deltaware"
 	CyberwareGradeUsed      CyberwareGrade = "Used"
-)
 
-type CyberwarePart string
-
-const (
 	CyberwarePartBody            CyberwarePart = "Body"
 	CyberwarePartHead            CyberwarePart = "Head"
 	CyberwarePartLimb            CyberwarePart = "Limb"
@@ -35,6 +22,41 @@ const (
 	CyberwarePartWeapon          CyberwarePart = "Weapon"
 	CyberwarePartEye             CyberwarePart = "Eye"
 	CyberwarePartEar             CyberwarePart = "Ear"
+)
+
+type (
+	CyberwareGrade string
+	CyberwarePart  string
+	CyberwareSpec  struct {
+		ID            string                   `yaml:"id,omitempty"`
+		Name          string                   `yaml:"name"`
+		Description   string                   `yaml:"description"`
+		EssenceCost   AttributesInfoF          `yaml:"essence_cost"`
+		Capacity      AttributesInfo           `yaml:"capacity"`
+		Rating        int                      `yaml:"rating,omitempty"`
+		CyberwarePart CyberwarePart            `yaml:"cyberware_part"`
+		Grade         CyberwareGrade           `yaml:"grade,omitempty"`
+		ToggleAction  ActionType               `yaml:"toggle_action,omitempty"`
+		IsActive      bool                     `yaml:"is_active,omitempty"`
+		Modifications []CyberwareModifications `yaml:"modifications"`
+		Modifiers     []Modifier               `yaml:"modifiers"`
+		Cost          AttributesInfo           `yaml:"cost"`
+		Availability  int                      `yaml:"availability"`
+		Legality      LegalityType             `yaml:"legality"`
+		Notes         string                   `yaml:"notes"`
+		RuleSource    RuleSource               `yaml:"rule_source"`
+	}
+	Cyberware struct {
+		ID            string                   `yaml:"id,omitempty"`
+		Rating        int                      `yaml:"rating,omitempty"`
+		Modifications []CyberwareModifications `yaml:"modifications"`
+		Modifiers     []Modifier               `yaml:"modifiers"`
+		Spec          CyberwareSpec            `yaml:"-"`
+	}
+)
+
+var (
+	ErrUnknownCyberwareGrade = fmt.Errorf("unknown cyberware grade")
 )
 
 func GetCyberwareGradeModifiers(grade CyberwareGrade) (float64, int, float64, error) {
@@ -70,34 +92,6 @@ func GetCyberwareGradeModifiers(grade CyberwareGrade) (float64, int, float64, er
 	}
 
 	return essenceCostMultiplier, availMod, costMultiplier, nil
-}
-
-type CyberwareSpec struct {
-	ID            string                   `yaml:"id,omitempty"`
-	Name          string                   `yaml:"name"`
-	Description   string                   `yaml:"description"`
-	EssenceCost   AttributesInfoF          `yaml:"essence_cost"`
-	Capacity      AttributesInfo           `yaml:"capacity"`
-	Rating        int                      `yaml:"rating,omitempty"`
-	CyberwarePart CyberwarePart            `yaml:"cyberware_part"`
-	Grade         CyberwareGrade           `yaml:"grade,omitempty"`
-	ToggleAction  ActionType               `yaml:"toggle_action,omitempty"`
-	IsActive      bool                     `yaml:"is_active,omitempty"`
-	Modifications []CyberwareModifications `yaml:"modifications"`
-	Modifiers     []Modifier               `yaml:"modifiers"`
-	Cost          AttributesInfo           `yaml:"cost"`
-	Availability  int                      `yaml:"availability"`
-	Legality      LegalityType             `yaml:"legality"`
-	Notes         string                   `yaml:"notes"`
-	RuleSource    RuleSource               `yaml:"rule_source"`
-}
-
-type Cyberware struct {
-	ID            string                   `yaml:"id,omitempty"`
-	Rating        int                      `yaml:"rating,omitempty"`
-	Modifications []CyberwareModifications `yaml:"modifications"`
-	Modifiers     []Modifier               `yaml:"modifiers"`
-	Spec          CyberwareSpec            `yaml:"-"`
 }
 
 func (c *Cyberware) Recalculate() {

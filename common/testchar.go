@@ -1,10 +1,29 @@
 package common
 
-type TestAttribute struct {
-	Base  int
-	Mods  int
-	Value int
-}
+type (
+	TestAttribute struct {
+		Base  int
+		Mods  int
+		Value int
+	}
+	TestChar struct {
+		Body      TestAttribute
+		Agility   TestAttribute
+		Reaction  TestAttribute
+		Strength  TestAttribute
+		Willpower TestAttribute
+		Logic     TestAttribute
+		Intuition TestAttribute
+		Charisma  TestAttribute
+		Essence   float32
+		Skills    []TestSkill
+	}
+	TestSkill struct {
+		Name      string
+		Attribute string
+		Rank      int
+	}
+)
 
 func (ta *TestAttribute) Reset() {
 	ta.Value = 0
@@ -12,19 +31,6 @@ func (ta *TestAttribute) Reset() {
 }
 func (ta *TestAttribute) Recalculate() {
 	ta.Value = ta.Base + ta.Mods
-}
-
-type TestChar struct {
-	Body      TestAttribute
-	Agility   TestAttribute
-	Reaction  TestAttribute
-	Strength  TestAttribute
-	Willpower TestAttribute
-	Logic     TestAttribute
-	Intuition TestAttribute
-	Charisma  TestAttribute
-	Essence   float32
-	Skills    []TestSkill
 }
 
 func (tc *TestChar) Recalculate() {
@@ -53,12 +59,6 @@ func (tc *TestChar) Recalculate() {
 	tc.Intuition.Recalculate()
 	tc.Charisma.Recalculate()
 
-}
-
-type TestSkill struct {
-	Name      string
-	Attribute string
-	Rank      int
 }
 
 // var (

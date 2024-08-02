@@ -1,25 +1,32 @@
 package common
 
 const (
-	ArmorDataPath       = "data/items/armor"
-	ArmorFilename       = ArmorDataPath + "/%s.yaml"
-	ArmorFileMinVersion = "0.0.1"
+	ArmorFilepath = "_data/items/armor"
 )
 
-type ArmorSpec struct {
-	ID            string              `yaml:"id,omitempty"`
-	Name          string              `yaml:"name,omitempty"`
-	Description   string              `yaml:"description,omitempty"`
-	ArmorRating   int                 `yaml:"armor_rating,omitempty"`
-	Capacity      int                 `yaml:"capacity,omitempty"`
-	Availability  int                 `yaml:"availability,omitempty"`
-	Legality      LegalityType        `yaml:"legality,omitempty"`
-	Modifications []ArmorModification `yaml:"modifications"`
-	Tags          []ItemTag           `yaml:"tags"`
-	Modifiers     []Modifier          `yaml:"modifiers"`
-	Cost          int                 `yaml:"cost,omitempty"`
-	RuleSource    RuleSource          `yaml:"rule_source,omitempty"`
-}
+type (
+	ArmorSpec struct {
+		ID            string              `yaml:"id,omitempty"`
+		Name          string              `yaml:"name,omitempty"`
+		Description   string              `yaml:"description,omitempty"`
+		ArmorRating   int                 `yaml:"armor_rating,omitempty"`
+		Capacity      int                 `yaml:"capacity,omitempty"`
+		Availability  int                 `yaml:"availability,omitempty"`
+		Legality      LegalityType        `yaml:"legality,omitempty"`
+		Modifications []ArmorModification `yaml:"modifications"`
+		Tags          []ItemTag           `yaml:"tags"`
+		Modifiers     []Modifier          `yaml:"modifiers"`
+		Cost          int                 `yaml:"cost,omitempty"`
+		RuleSource    RuleSource          `yaml:"rule_source,omitempty"`
+	}
+	Armor struct {
+		ID            string              `yaml:"id,omitempty"`
+		ArmorRating   int                 `yaml:"armor_rating,omitempty"`
+		Modifications []ArmorModification `yaml:"modifications"`
+		Modifiers     []Modifier          `yaml:"modifiers"`
+		Spec          ArmorSpec           `yaml:"-"`
+	}
+)
 
 func (as ArmorSpec) GetInstance() Armor {
 	return Armor{
@@ -28,14 +35,6 @@ func (as ArmorSpec) GetInstance() Armor {
 		Modifications: as.Modifications,
 		Modifiers:     as.Modifiers,
 	}
-}
-
-type Armor struct {
-	ID            string              `yaml:"id,omitempty"`
-	ArmorRating   int                 `yaml:"armor_rating,omitempty"`
-	Modifications []ArmorModification `yaml:"modifications"`
-	Modifiers     []Modifier          `yaml:"modifiers"`
-	Spec          ArmorSpec           `yaml:"-"`
 }
 
 var (

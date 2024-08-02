@@ -1,17 +1,18 @@
 package common
 
 const (
-	SkillGroupsDataPath = "data/skills/groups"
-	SkillGroupFilename  = SkillGroupsDataPath + "/%s.yaml"
+	SkillGroupsFilepath = "_data/skills/groups"
 )
 
-type SkillGroup struct {
-	ID          string     `yaml:"id,omitempty"`
-	Name        string     `yaml:"name,omitempty"`
-	Description string     `yaml:"description,omitempty"`
-	Skills      []string   `yaml:"skills"`
-	RuleSource  RuleSource `yaml:"rule_source,omitempty"`
-}
+type (
+	SkillGroup struct {
+		ID          string     `yaml:"id,omitempty"`
+		Name        string     `yaml:"name,omitempty"`
+		Description string     `yaml:"description,omitempty"`
+		Skills      []string   `yaml:"skills"`
+		RuleSource  RuleSource `yaml:"rule_source,omitempty"`
+	}
+)
 
 var CoreSkillGroups = []SkillGroup{
 	{
@@ -100,8 +101,8 @@ var CoreSkillGroups = []SkillGroup{
 	},
 }
 
-// TODO: LoadSkillGroups loads the skill groups from the data files.
-func LoadSkillGroups() map[string]SkillGroup {
-	data := make(map[string]SkillGroup)
-	return data
-}
+// // TODO: LoadSkillGroups loads the skill groups from the data files.
+// func LoadSkillGroups() map[string]SkillGroup {
+// 	data := make(map[string]SkillGroup)
+// 	return data
+// }

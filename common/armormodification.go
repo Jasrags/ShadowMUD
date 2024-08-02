@@ -1,25 +1,25 @@
 package common
 
 const (
-	ArmorModificationsDataPath      = "data/items/armor/modifications"
-	ArmorModificationFilename       = ArmorModificationsDataPath + "/%s.yaml"
-	ArmorModificationFileMinVersion = "0.0.1"
+	ArmorModificationsFilepath = "_data/items/armor/modifications"
 )
 
-type ArmorModification struct {
-	ID           string       `yaml:"id,omitempty"`
-	Name         string       `yaml:"name,omitempty"`
-	Description  string       `yaml:"description,omitempty"`
-	ArmorRating  int          `yaml:"armor_rating,omitempty"`
-	Rating       int          `yaml:"rating,omitempty"`
-	Cost         int          `yaml:"cost,omitempty"`
-	CapacityCost int          `yaml:"capacity_cost,omitempty"`
-	Availability int          `yaml:"availability,omitempty"`
-	Legality     LegalityType `yaml:"legality,omitempty"`
-	ItemTags     []ItemTag    `yaml:"tags"`
-	RuleSource   RuleSource   `yaml:"rule_source,omitempty"`
-	FileVersion  string       `yaml:"file_version,omitempty"`
-}
+type (
+	ArmorModification struct {
+		ID           string       `yaml:"id,omitempty"`
+		Name         string       `yaml:"name,omitempty"`
+		Description  string       `yaml:"description,omitempty"`
+		ArmorRating  int          `yaml:"armor_rating,omitempty"`
+		Rating       int          `yaml:"rating,omitempty"`
+		Cost         int          `yaml:"cost,omitempty"`
+		CapacityCost int          `yaml:"capacity_cost,omitempty"`
+		Availability int          `yaml:"availability,omitempty"`
+		Legality     LegalityType `yaml:"legality,omitempty"`
+		ItemTags     []ItemTag    `yaml:"tags"`
+		RuleSource   RuleSource   `yaml:"rule_source,omitempty"`
+		FileVersion  string       `yaml:"file_version,omitempty"`
+	}
+)
 
 var CoreArmorModifications = []ArmorModification{
 	{

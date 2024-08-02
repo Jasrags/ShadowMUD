@@ -1,5 +1,6 @@
 id: ork
 name: Ork
+description: Orks are large and muscular metatypes, known for their strength and resilience.
 body:
     min: 4
     max: 9

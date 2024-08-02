@@ -12,7 +12,8 @@ import (
 
 func TestSaveCoreWeaponRanged(t *testing.T) {
 	for _, v := range common.CoreWeaponRanged {
-		if err := utils.SaveStructToYAML(fmt.Sprintf("../"+common.WeaponRangedFilename, v.ID), &v); err != nil {
+		filename := fmt.Sprintf("../%s/%s.yaml", common.RangedWeaponsFilepath, v.ID)
+		if err := utils.SaveStructToYAML(filename, &v); err != nil {
 			t.Errorf("Error saving %s: %s", v.ID, err)
 		}
 	}

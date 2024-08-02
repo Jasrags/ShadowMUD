@@ -1,5 +1,6 @@
 id: troll
 name: Troll
+description: Trolls are the largest and strongest metatypes, known for their size and resilience.
 body:
     min: 5
     max: 10

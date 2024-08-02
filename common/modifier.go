@@ -1,7 +1,5 @@
 package common
 
-type ModifierType string
-
 const (
 	ModifierTypeBody             ModifierType = "Body"
 	ModifierTypeAgility          ModifierType = "Agility"
@@ -27,11 +25,7 @@ const (
 	ModifierTypeCost             ModifierType = "Cost"
 	ModifierTypeAvailability     ModifierType = "Availability"
 	ModifierTypeElectric         ModifierType = "Electric"
-)
 
-type ModifierEffect string
-
-const (
 	ModifierEffectAdd      ModifierEffect = "Add"
 	ModifierEffectSubtract ModifierEffect = "Subtract"
 	ModifierEffectMultiply ModifierEffect = "Multiply"
@@ -40,11 +34,15 @@ const (
 	ModifierEffectAttack   ModifierEffect = "Attack"
 )
 
-type Modifier struct {
-	Type   ModifierType   `yaml:"type,omitempty"`
-	Effect ModifierEffect `yaml:"effect,omitempty"`
-	Value  int            `yaml:"value,omitempty"`
-}
+type (
+	ModifierType   string
+	ModifierEffect string
+	Modifier       struct {
+		Type   ModifierType   `yaml:"type,omitempty"`
+		Effect ModifierEffect `yaml:"effect,omitempty"`
+		Value  int            `yaml:"value,omitempty"`
+	}
+)
 
 func (c *Character) ApplyModifiers(m []Modifier) {
 	// Apply a modifier to a character

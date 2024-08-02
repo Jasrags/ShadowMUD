@@ -10,7 +10,8 @@ import (
 
 func TestSaveCoreZones(t *testing.T) {
 	for _, v := range common.CoreZones {
-		if err := utils.SaveStructToYAML(fmt.Sprintf("../"+common.ZoneFilename, v.ID), &v); err != nil {
+		filename := fmt.Sprintf("../%s/%s.yaml", common.ZonesFilepath, v.ID)
+		if err := utils.SaveStructToYAML(filename, &v); err != nil {
 			t.Errorf("Error saving %s: %s", v.ID, err)
 		}
 	}

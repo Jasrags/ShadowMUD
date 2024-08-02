@@ -1,37 +1,28 @@
 package common
 
-import (
-	"fmt"
-	"os"
-	"strings"
-
-	"github.com/Jasrags/ShadowMUD/utils"
-	"github.com/sirupsen/logrus"
-)
-
 const (
-	ActiveSkillDataPath = "data/skills/active"
-	ActiveSkillFilename = ActiveSkillDataPath + "/%s.yaml"
+	ActiveSkillsFilepath = "_data/skills/active"
 )
 
-type ActiveSkillSpec struct {
-	ID              string     `yaml:"id,omitempty"`
-	Name            string     `yaml:"name"`
-	Description     string     `yaml:"description"`
-	IsDefaultable   bool       `yaml:"is_defaultable"`
-	LinkedAttribute Attribute  `yaml:"linked_attribute"`
-	SkillGroup      string     `yaml:"skill_group,omitempty"`
-	Specializations []string   `yaml:"specializations"`
-	RuleSource      RuleSource `yaml:"rule_source"`
-}
-
-type ActiveSkill struct {
-	ID                     string          `yaml:"id,omitempty"`
-	SelectedSpecialization string          `yaml:"selected_specialization,omitempty"`
-	Rating                 int             `yaml:"rating,omitempty"`
-	Modifiers              []Modifier      `yaml:"modifiers"`
-	Spec                   ActiveSkillSpec `yaml:"-"`
-}
+type (
+	ActiveSkillSpec struct {
+		ID              string     `yaml:"id,omitempty"`
+		Name            string     `yaml:"name"`
+		Description     string     `yaml:"description"`
+		IsDefaultable   bool       `yaml:"is_defaultable"`
+		LinkedAttribute Attribute  `yaml:"linked_attribute"`
+		SkillGroup      string     `yaml:"skill_group,omitempty"`
+		Specializations []string   `yaml:"specializations"`
+		RuleSource      RuleSource `yaml:"rule_source"`
+	}
+	ActiveSkill struct {
+		ID                     string          `yaml:"id,omitempty"`
+		SelectedSpecialization string          `yaml:"selected_specialization,omitempty"`
+		Rating                 int             `yaml:"rating,omitempty"`
+		Modifiers              []Modifier      `yaml:"modifiers"`
+		Spec                   ActiveSkillSpec `yaml:"-"`
+	}
+)
 
 var CoreActiveSkills = []ActiveSkillSpec{
 	// BODY
@@ -723,41 +714,41 @@ var CoreActiveSkills = []ActiveSkillSpec{
 	},
 }
 
-func LoadActiveSkills() map[string]ActiveSkill {
-	logrus.Info("Started loading active skills")
+// func LoadActiveSkills() map[string]ActiveSkill {
+// 	logrus.Info("Started loading active skills")
 
-	files, errReadDir := os.ReadDir(ActiveSkillDataPath)
-	if errReadDir != nil {
-		logrus.WithError(errReadDir).Fatal("Could not read active skills directory")
-	}
+// 	files, errReadDir := os.ReadDir(ActiveSkillDataPath)
+// 	if errReadDir != nil {
+// 		logrus.WithError(errReadDir).Fatal("Could not read active skills directory")
+// 	}
 
-	// Create a map to store the metatypes
-	list := make(map[string]ActiveSkill, len(files))
+// 	// Create a map to store the metatypes
+// 	list := make(map[string]ActiveSkill, len(files))
 
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), ".yaml") {
-			filepath := fmt.Sprintf("%s/%s", ActiveSkillDataPath, file.Name())
+// 	for _, file := range files {
+// 		if strings.HasSuffix(file.Name(), ".yaml") {
+// 			filepath := fmt.Sprintf("%s/%s", ActiveSkillDataPath, file.Name())
 
-			var v ActiveSkill
-			if err := utils.LoadStructFromYAML(filepath, &v); err != nil {
-				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load active skills")
-			}
+// 			var v ActiveSkill
+// 			if err := utils.LoadStructFromYAML(filepath, &v); err != nil {
+// 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load active skills")
+// 			}
 
-			list[v.ID] = v
-		}
-		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded active skills file")
-	}
+// 			list[v.ID] = v
+// 		}
+// 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded active skills file")
+// 	}
 
-	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading active skills")
+// 	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading active skills")
 
-	return list
-}
+// 	return list
+// }
 
-func LoadActiveSkill(name string) (*ActiveSkill, error) {
-	var v ActiveSkill
-	if err := utils.LoadStructFromYAML(fmt.Sprintf(ActiveSkillFilename, name), &v); err != nil {
-		return nil, err
-	}
+// func LoadActiveSkill(name string) (*ActiveSkill, error) {
+// 	var v ActiveSkill
+// 	if err := utils.LoadStructFromYAML(fmt.Sprintf(ActiveSkillFilename, name), &v); err != nil {
+// 		return nil, err
+// 	}
 
-	return &v, nil
-}
+// 	return &v, nil
+// }

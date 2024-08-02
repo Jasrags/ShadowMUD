@@ -1,35 +1,35 @@
 package common
 
 const (
-	WeaponMeleeDataPath = "data/items/weapons/melee"
-	WeaponMeleeFilename = WeaponMeleeDataPath + "/%s.yaml"
+	MeleeWeaponsFilepath = "_data/items/weapons/melee"
 )
 
-type WeaponMeleeSpec struct {
-	ID               string       `yaml:"id"`
-	Name             string       `yaml:"name"`
-	Type             WeaponType   `yaml:"type"`
-	Description      string       `yaml:"description,omitempty"`
-	Accuracy         int          `yaml:"accuracy,omitempty"`
-	Reach            int          `yaml:"reach,omitempty"`
-	Concealability   int          `yaml:"concealability,omitempty"`
-	DamageValue      int          `yaml:"damage_value,omitempty"`
-	DamageType       DamageType   `yaml:"damage_type,omitempty"`
-	ArmorPenatration int          `yaml:"armor_penatration,omitempty"`
-	Availability     int          `yaml:"availability,omitempty"`
-	LegalityType     LegalityType `yaml:"legality_type,omitempty"`
-	ItemTags         []ItemTag    `yaml:"tags"`
-	Modifiers        []Modifier   `yaml:"modifiers"`
-	Cost             int          `yaml:"cost,omitempty"`
-	RuleSource       RuleSource   `yaml:"rule_source,omitempty"`
-}
-
-type WeaponMelee struct {
-	ID        string              `yaml:"id"`
-	ItemTags  []ItemTag           `yaml:"tags"`
-	Modifiers []Modifier          `yaml:"modifiers"`
-	Spec      WeaponAmunitionSpec `yaml:"-"`
-}
+type (
+	WeaponMeleeSpec struct {
+		ID               string       `yaml:"id"`
+		Name             string       `yaml:"name"`
+		Type             WeaponType   `yaml:"type"`
+		Description      string       `yaml:"description,omitempty"`
+		Accuracy         int          `yaml:"accuracy,omitempty"`
+		Reach            int          `yaml:"reach,omitempty"`
+		Concealability   int          `yaml:"concealability,omitempty"`
+		DamageValue      int          `yaml:"damage_value,omitempty"`
+		DamageType       DamageType   `yaml:"damage_type,omitempty"`
+		ArmorPenatration int          `yaml:"armor_penatration,omitempty"`
+		Availability     int          `yaml:"availability,omitempty"`
+		LegalityType     LegalityType `yaml:"legality_type,omitempty"`
+		ItemTags         []ItemTag    `yaml:"tags"`
+		Modifiers        []Modifier   `yaml:"modifiers"`
+		Cost             int          `yaml:"cost,omitempty"`
+		RuleSource       RuleSource   `yaml:"rule_source,omitempty"`
+	}
+	WeaponMelee struct {
+		ID        string              `yaml:"id"`
+		ItemTags  []ItemTag           `yaml:"tags"`
+		Modifiers []Modifier          `yaml:"modifiers"`
+		Spec      WeaponAmunitionSpec `yaml:"-"`
+	}
+)
 
 var CoreWeaponMelee = []WeaponMeleeSpec{
 	{

@@ -1,34 +1,34 @@
 package common
 
 const (
-	WeaponAmunitionDataPath = "data/items/weapons/amunition"
-	WeaponAmunitionFilename = WeaponAmunitionDataPath + "/%s.yaml"
+	WeaponAmunitionFilepath = "_data/items/weapons/amunition"
 )
 
-type WeaponAmunitionSpec struct {
-	ID                       string       `yaml:"id"`
-	Name                     string       `yaml:"name"`
-	Description              string       `yaml:"description"`
-	DamageValue              int          `yaml:"damage_value,omitempty"`
-	DamageType               DamageType   `yaml:"damage_type,omitempty"`
-	ArmorPenatration         int          `yaml:"armor_penatration,omitempty"`
-	AccuracyModifier         int          `yaml:"accuracy_modifier,omitempty"`
-	DamageValueModifier      int          `yaml:"damage_value_modifier,omitempty"`
-	ArmorPenatrationModifier int          `yaml:"armor_penatration_modifier,omitempty"`
-	Availability             int          `yaml:"availability"`
-	Legality                 LegalityType `yaml:"legality"`
-	Cost                     int          `yaml:"cost"`
-	ItemTags                 []ItemTag    `yaml:"tags"`
-	Modifiers                []Modifier   `yaml:"modifiers"`
-	RuleSource               RuleSource   `yaml:"rule_source"`
-}
-
-type WeaponAmunition struct {
-	ID        string              `yaml:"id"`
-	Quantity  int                 `yaml:"quantity"`
-	Modifiers []Modifier          `yaml:"modifiers"`
-	Spec      WeaponAmunitionSpec `yaml:"-"`
-}
+type (
+	WeaponAmunitionSpec struct {
+		ID                       string       `yaml:"id"`
+		Name                     string       `yaml:"name"`
+		Description              string       `yaml:"description"`
+		DamageValue              int          `yaml:"damage_value,omitempty"`
+		DamageType               DamageType   `yaml:"damage_type,omitempty"`
+		ArmorPenatration         int          `yaml:"armor_penatration,omitempty"`
+		AccuracyModifier         int          `yaml:"accuracy_modifier,omitempty"`
+		DamageValueModifier      int          `yaml:"damage_value_modifier,omitempty"`
+		ArmorPenatrationModifier int          `yaml:"armor_penatration_modifier,omitempty"`
+		Availability             int          `yaml:"availability"`
+		Legality                 LegalityType `yaml:"legality"`
+		Cost                     int          `yaml:"cost"`
+		ItemTags                 []ItemTag    `yaml:"tags"`
+		Modifiers                []Modifier   `yaml:"modifiers"`
+		RuleSource               RuleSource   `yaml:"rule_source"`
+	}
+	WeaponAmunition struct {
+		ID        string              `yaml:"id"`
+		Quantity  int                 `yaml:"quantity"`
+		Modifiers []Modifier          `yaml:"modifiers"`
+		Spec      WeaponAmunitionSpec `yaml:"-"`
+	}
+)
 
 var CoreWeaponAmunition = []WeaponAmunitionSpec{
 	{

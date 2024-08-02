@@ -8,9 +8,11 @@ import (
 	"github.com/Jasrags/ShadowMUD/utils"
 )
 
+// TODO: add zone folder before loading rooms
 func TestSaveCoreRooms(t *testing.T) {
 	for _, v := range common.CoreRooms {
-		if err := utils.SaveStructToYAML(fmt.Sprintf("../"+common.RoomFilename, v.ZoneID, v.ID), &v); err != nil {
+		filename := fmt.Sprintf("../%s/%s.yaml", common.RoomsFilepath, v.ID)
+		if err := utils.SaveStructToYAML(filename, &v); err != nil {
 			t.Errorf("Error saving %s: %s", v.ID, err)
 		}
 	}

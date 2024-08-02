@@ -1,5 +1,6 @@
 id: human
 name: Human
+description: Humans are the most common metatype in the Sixth World, known for their adaptability and versatility.
 body:
     min: 1
     max: 6

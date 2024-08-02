@@ -1,5 +1,6 @@
 id: dwarf
 name: Dwarf
+description: Dwarves are short and stocky metatypes, known for their resilience and their ability to see in the dark.
 body:
     min: 3
     max: 8

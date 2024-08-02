@@ -1,41 +1,38 @@
 package common
 
 const (
-	BiowareDataPath = "data/items/bioware"
-	BiowareFilename = BiowareDataPath + "/%s.yaml"
-)
+	BiowareFilepath = "_data/items/bioware"
 
-type BiowareType string
-
-const (
 	BiowareTypeBasic    BiowareType = "Basic"
 	BiowareTypeCultured BiowareType = "Cultured"
 )
 
-type BiowareSpec struct {
-	ID           string         `yaml:"id,omitempty"`
-	Name         string         `yaml:"name,omitempty"`
-	Description  string         `yaml:"description,omitempty"`
-	BiowareType  BiowareType    `yaml:"bioware_type,omitempty"`
-	EssenceCost  float64        `yaml:"essence_cost,omitempty"`
-	Capacity     AttributesInfo `yaml:"capacity,omitempty"`
-	Rating       int            `yaml:"rating,omitempty,omitempty"`
-	ToggleAction ActionType     `yaml:"toggle_action,omitempty,omitempty"`
-	IsActive     bool           `yaml:"is_active,omitempty"`
-	Modifiers    []Modifier     `yaml:"modifiers"`
-	Cost         int            `yaml:"cost,omitempty"`
-	Availability int            `yaml:"availability,omitempty"`
-	Legality     LegalityType   `yaml:"legality,omitempty"`
-	Notes        string         `yaml:"notes,omitempty"`
-	RuleSource   RuleSource     `yaml:"rule_source,omitempty"`
-}
-
-type Bioware struct {
-	ID        string      `yaml:"id,omitempty"`
-	Rating    int         `yaml:"rating,omitempty,omitempty"`
-	Modifiers []Modifier  `yaml:"modifiers"`
-	Spec      BiowareSpec `yaml:"-"`
-}
+type (
+	BiowareType string
+	BiowareSpec struct {
+		ID           string         `yaml:"id,omitempty"`
+		Name         string         `yaml:"name,omitempty"`
+		Description  string         `yaml:"description,omitempty"`
+		BiowareType  BiowareType    `yaml:"bioware_type,omitempty"`
+		EssenceCost  float64        `yaml:"essence_cost,omitempty"`
+		Capacity     AttributesInfo `yaml:"capacity,omitempty"`
+		Rating       int            `yaml:"rating,omitempty,omitempty"`
+		ToggleAction ActionType     `yaml:"toggle_action,omitempty,omitempty"`
+		IsActive     bool           `yaml:"is_active,omitempty"`
+		Modifiers    []Modifier     `yaml:"modifiers"`
+		Cost         int            `yaml:"cost,omitempty"`
+		Availability int            `yaml:"availability,omitempty"`
+		Legality     LegalityType   `yaml:"legality,omitempty"`
+		Notes        string         `yaml:"notes,omitempty"`
+		RuleSource   RuleSource     `yaml:"rule_source,omitempty"`
+	}
+	Bioware struct {
+		ID        string      `yaml:"id,omitempty"`
+		Rating    int         `yaml:"rating,omitempty,omitempty"`
+		Modifiers []Modifier  `yaml:"modifiers"`
+		Spec      BiowareSpec `yaml:"-"`
+	}
+)
 
 var CoreBioware = []Bioware{
 	{

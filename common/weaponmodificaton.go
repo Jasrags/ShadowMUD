@@ -1,13 +1,8 @@
 package common
 
 const (
-	WeaponModificationsDataPath = "data/items/weapons/modifications"
-	WeaponModificationFilename  = WeaponModificationsDataPath + "/%s.yaml"
-)
+	WeaponModificationsFilepath = "_data/items/weapons/modifications"
 
-type WeaponMountPoint string
-
-const (
 	WeaponMountPointUnderBarrel WeaponMountPoint = "Under-Barrel"
 	WeaponMountPointBarrel      WeaponMountPoint = "Barrel"
 	WeaponMountPointStock       WeaponMountPoint = "Stock"
@@ -16,28 +11,30 @@ const (
 	WeaponMountPointInternal    WeaponMountPoint = "Internal"
 )
 
-type WeaponModificationSpec struct {
-	ID          string             `yaml:"id,omitempty"`
-	Name        string             `yaml:"name,omitempty"`
-	Description string             `yaml:"description,omitempty"`
-	MountPoints []WeaponMountPoint `yaml:"mount_points"`
-	// ArmorRating  int          `yaml:"armor_rating,omitempty"`
-	Cost         int          `yaml:"cost,omitempty"`
-	Capacity     int          `yaml:"capacity,omitempty"`
-	Availability int          `yaml:"availability,omitempty"`
-	Legality     LegalityType `yaml:"legality,omitempty"`
-	ItemTags     []ItemTag    `yaml:"tags"`
-	Modifiers    []Modifier   `yaml:"modifiers"`
-	RuleSource   RuleSource   `yaml:"rule_source,omitempty"`
-}
-
-type WeaponModification struct {
-	ID        string                 `yaml:"id,omitempty"`
-	Rating    int                    `yaml:"rating,omitempty"`
-	ItemTags  []ItemTag              `yaml:"tags"`
-	Modifiers []Modifier             `yaml:"modifiers"`
-	Spec      WeaponModificationSpec `yaml:"-"`
-}
+type (
+	WeaponMountPoint       string
+	WeaponModificationSpec struct {
+		ID          string             `yaml:"id,omitempty"`
+		Name        string             `yaml:"name,omitempty"`
+		Description string             `yaml:"description,omitempty"`
+		MountPoints []WeaponMountPoint `yaml:"mount_points"`
+		// ArmorRating  int          `yaml:"armor_rating,omitempty"`
+		Cost         int          `yaml:"cost,omitempty"`
+		Capacity     int          `yaml:"capacity,omitempty"`
+		Availability int          `yaml:"availability,omitempty"`
+		Legality     LegalityType `yaml:"legality,omitempty"`
+		ItemTags     []ItemTag    `yaml:"tags"`
+		Modifiers    []Modifier   `yaml:"modifiers"`
+		RuleSource   RuleSource   `yaml:"rule_source,omitempty"`
+	}
+	WeaponModification struct {
+		ID        string                 `yaml:"id,omitempty"`
+		Rating    int                    `yaml:"rating,omitempty"`
+		ItemTags  []ItemTag              `yaml:"tags"`
+		Modifiers []Modifier             `yaml:"modifiers"`
+		Spec      WeaponModificationSpec `yaml:"-"`
+	}
+)
 
 var CoreWeaponModifications = []WeaponModificationSpec{
 	{

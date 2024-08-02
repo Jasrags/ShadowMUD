@@ -1,36 +1,27 @@
 package common
 
-import (
-	"fmt"
-
-	"github.com/Jasrags/ShadowMUD/utils"
-)
-
-type ContactType string
-
 const (
-	ContactsDataPath = "data/contacts"
-	ContactFilename  = ContactsDataPath + "/%s.yaml"
-)
+	ContactsFilepath = "_data/contacts"
 
-const (
 	ContactTypeFixer ContactType = "Fixer"
 )
 
-type ContactSpec struct {
-	ID          string      `yaml:"id,omitempty"`
-	Name        string      `yaml:"name"`
-	Description string      `yaml:"description"`
-	Type        ContactType `yaml:"type"`
-	RuleSource  RuleSource  `yaml:"rule_source"`
-}
-
-type Contact struct {
-	ID         string      `yaml:"id,omitempty"`
-	Spec       ContactSpec `yaml:"-"`
-	Connection int         `yaml:"connection"`
-	Loyalty    int         `yaml:"loyalty"`
-}
+type (
+	ContactType string
+	ContactSpec struct {
+		ID          string      `yaml:"id,omitempty"`
+		Name        string      `yaml:"name"`
+		Description string      `yaml:"description"`
+		Type        ContactType `yaml:"type"`
+		RuleSource  RuleSource  `yaml:"rule_source"`
+	}
+	Contact struct {
+		ID         string      `yaml:"id,omitempty"`
+		Spec       ContactSpec `yaml:"-"`
+		Connection int         `yaml:"connection"`
+		Loyalty    int         `yaml:"loyalty"`
+	}
+)
 
 var CoreContacts = []ContactSpec{
 	{
@@ -71,13 +62,3 @@ var CoreContacts = []ContactSpec{
 
 // 	return data
 // }
-
-func SaveCoreContacts(fileDir string) error {
-	for _, v := range CoreContacts {
-		if err := utils.SaveStructToYAML(fmt.Sprintf("../"+ContactFilename, v.ID), &v); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}

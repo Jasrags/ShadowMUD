@@ -6,105 +6,90 @@ import (
 	"strings"
 
 	"github.com/Jasrags/ShadowMUD/utils"
-	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
 
 const (
-	MetatypeDataPath = "data/metatypes"
-	MetatypeFilename = MetatypeDataPath + "/%s.yaml"
+	MetatypesFilepath = "_data/metatypes"
+
+	RacialTraitLowLightVision                    RacialTrait = "Low-Light Vision"
+	RacialTraitThermographicVision               RacialTrait = "Thermographic Vision"
+	RacialTrait2DicForPathogenAndToxinResistance RacialTrait = "+2 dice for pathogen and toxin resistance"
+	RacialTrait20PercentIncreasedLifestyleCost   RacialTrait = "+20% increased Lifestyle cost"
+	RacialTrait1Reach                            RacialTrait = "+1 Reach"
+	RacialTrait1DermalArmor                      RacialTrait = "+1 dermal armor"
+	RacialTraitDoubleLifestyleCosts              RacialTrait = "Double Lifestyle costs"
 )
 
-const (
-	RacialTraitLowLightVision                    = "Low-Light Vision"
-	RacialTraitThermographicVision               = "Thermographic Vision"
-	RacialTrait2DicForPathogenAndToxinResistance = "+2 dice for pathogen and toxin resistance"
-	RacialTrait20PercentIncreasedLifestyleCost   = "+20% increased Lifestyle cost"
-	RacialTrait1Reach                            = "+1 Reach"
-	RacialTrait1DermalArmor                      = "+1 dermal armor"
-	RacialTraitDoubleLifestyleCosts              = "Double Lifestyle costs"
+type (
+	RacialTrait       string
+	RacialTraits      []RacialTrait
+	MetatypeAttribute struct {
+		Min int `yaml:"min"`
+		Max int `yaml:"max"`
+	}
+	Metatypes map[string]*Metatype
+	Metatype  struct {
+		ID           string            `yaml:"id"`
+		Name         string            `yaml:"name"`
+		Description  string            `yaml:"description"`
+		Body         MetatypeAttribute `yaml:"body"`
+		Agility      MetatypeAttribute `yaml:"agility"`
+		Reaction     MetatypeAttribute `yaml:"reaction"`
+		Strength     MetatypeAttribute `yaml:"strength"`
+		Willpower    MetatypeAttribute `yaml:"willpower"`
+		Logic        MetatypeAttribute `yaml:"logic"`
+		Intuition    MetatypeAttribute `yaml:"intuition"`
+		Charisma     MetatypeAttribute `yaml:"charisma"`
+		Edge         MetatypeAttribute `yaml:"edge"`
+		RacialTraits RacialTraits      `yaml:"racial_traits"`
+		RuleSource   RuleSource        `yaml:"rule_source"`
+	}
 )
-
-type MetatypeAttribute struct {
-	Min int
-	Max int
-}
 
 func NewMetatype() *Metatype {
-	uuid := uuid.New().String()
-	return &Metatype{
-		ID: uuid,
+	m := &Metatype{
+		RacialTraits: make(RacialTraits, 0),
 	}
+
+	return m
 }
 
-// type MetatypeSpec struct {
-// 	ID           string            `yaml:"id,omitempty"`
-// 	Name         string            `yaml:"name"`
-// 	Body         MetatypeAttribute `yaml:"body"`
-// 	Agility      MetatypeAttribute `yaml:"agility"`
-// 	Reaction     MetatypeAttribute `yaml:"reaction"`
-// 	Strength     MetatypeAttribute `yaml:"strength"`
-// 	Willpower    MetatypeAttribute `yaml:"willpower"`
-// 	Logic        MetatypeAttribute `yaml:"logic"`
-// 	Intuition    MetatypeAttribute `yaml:"intuition"`
-// 	Charisma     MetatypeAttribute `yaml:"charisma"`
-// 	Edge         MetatypeAttribute `yaml:"edge"`
-// 	RacialTraits []string          `yaml:"racial_traits"`
-// 	RuleSource   RuleSource        `yaml:"rule_source"`
-// }
+func LoadMetatype(name string, v *Metatype) error {
+	name = strings.ToLower(name)
+	filepath := fmt.Sprintf("%s/%s.yaml", MetatypesFilepath, name)
 
-type Metatype struct {
-	ID           string            `yaml:"id,omitempty"`
-	Name         string            `yaml:"name"`
-	Body         MetatypeAttribute `yaml:"body"`
-	Agility      MetatypeAttribute `yaml:"agility"`
-	Reaction     MetatypeAttribute `yaml:"reaction"`
-	Strength     MetatypeAttribute `yaml:"strength"`
-	Willpower    MetatypeAttribute `yaml:"willpower"`
-	Logic        MetatypeAttribute `yaml:"logic"`
-	Intuition    MetatypeAttribute `yaml:"intuition"`
-	Charisma     MetatypeAttribute `yaml:"charisma"`
-	Edge         MetatypeAttribute `yaml:"edge"`
-	RacialTraits []string          `yaml:"racial_traits"`
-	RuleSource   RuleSource        `yaml:"rule_source"`
-	// Spec         MetatypeSpec      `yaml:"-"`
+	if err := utils.LoadStructFromYAML(filepath, &v); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func LoadMetatypes() map[string]Metatype {
+func LoadMetatypes() Metatypes {
 	logrus.Info("Started loading metatypes")
+	list := make(Metatypes)
 
-	files, errReadDir := os.ReadDir(MetatypeDataPath)
+	files, errReadDir := os.ReadDir(MetatypesFilepath)
 	if errReadDir != nil {
 		logrus.WithError(errReadDir).Fatal("Could not read metatype directory")
 	}
 
-	// Create a map to store the metatypes
-	list := make(map[string]Metatype, len(files))
-
 	for _, file := range files {
+		var v Metatype
 		if strings.HasSuffix(file.Name(), ".yaml") {
-			filepath := fmt.Sprintf("%s/%s", MetatypeDataPath, file.Name())
 
-			var v Metatype
-			if err := utils.LoadStructFromYAML(filepath, &v); err != nil {
+			name := strings.TrimSuffix(file.Name(), ".yaml")
+			if err := LoadMetatype(name, &v); err != nil {
 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load metatype")
 			}
 
-			list[v.ID] = v
+			list[v.ID] = &v
+			logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded metatype file")
 		}
-		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded metatype file")
 	}
 
 	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading metatypes")
 
 	return list
-}
-
-func LoadMetatype(name string) (*Metatype, error) {
-	var v Metatype
-	if err := utils.LoadStructFromYAML(fmt.Sprintf(MetatypeFilename, name), &v); err != nil {
-		return nil, err
-	}
-
-	return &v, nil
 }

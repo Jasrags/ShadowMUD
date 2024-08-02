@@ -3,13 +3,8 @@ package common
 import "fmt"
 
 const (
-	WeaponRangedDataPath = "data/items/weapons/ranged"
-	WeaponRangedFilename = WeaponRangedDataPath + "/%s.yaml"
-)
+	RangedWeaponsFilepath = "_data/items/weapons/ranged"
 
-type WeaponRangedReload string
-
-const (
 	WeaponRangedReloadBreakAction        WeaponRangedReload = "b"
 	WeaponRangedReloadDetachableMagazine WeaponRangedReload = "c"
 	WeaponRangedReloadDrum               WeaponRangedReload = "d"
@@ -17,11 +12,7 @@ const (
 	WeaponRangedReloadInternalMagazine   WeaponRangedReload = "m"
 	WeaponRangedReloadCylinder           WeaponRangedReload = "cy"
 	WeaponRangedReloadBelt               WeaponRangedReload = "belt"
-)
 
-type WeaponFiringMode string
-
-const (
 	WeaponFiringModeSingleShot    WeaponFiringMode = "Single-Shot"
 	WeaponFiringModeSemiAutomatic WeaponFiringMode = "Semi-Automatic"
 	WeaponFiringModeBurstFire     WeaponFiringMode = "Burst Fire"
@@ -29,36 +20,39 @@ const (
 	WeaponFiringModeFullAuto      WeaponFiringMode = "Full Auto"
 )
 
-type WeaponRangedSpec struct {
-	ID               string               `yaml:"id,omitempty"`
-	Name             string               `yaml:"name,omitempty"`
-	Description      string               `yaml:"description,omitempty"`
-	Accuracy         int                  `yaml:"accuracy,omitempty"`
-	DamageValue      int                  `yaml:"damage_value,omitempty"`
-	DamageType       DamageType           `yaml:"damage_type,omitempty"`
-	ArmorPenatration int                  `yaml:"armor_penatration,omitempty"`
-	FiringModes      []WeaponFiringMode   `yaml:"firing_modes"`
-	Recoil           int                  `yaml:"recoil,omitempty"`
-	AmmoCapacity     int                  `yaml:"ammo_capacity,omitempty"`
-	Reload           WeaponRangedReload   `yaml:"reload,omitempty"`
-	Availability     int                  `yaml:"availability,omitempty"`
-	LegalityType     LegalityType         `yaml:"legality_type,omitempty"`
-	ItemTags         []ItemTag            `yaml:"tags"`
-	Modifications    []WeaponModification `yaml:"modifications"`
-	Modifiers        []Modifier           `yaml:"modifiers"`
-	Cost             int                  `yaml:"cost,omitempty"`
-	RuleSource       RuleSource           `yaml:"rule_source,omitempty"`
-}
-
-type WeaponRanged struct {
-	ID                 string               `yaml:"id,omitempty"`
-	SelectedFiringMode WeaponFiringMode     `yaml:"selected_firing_mode,omitempty"`
-	AmmoType           *WeaponAmunitionSpec `yaml:"ammo_type,omitempty"`
-	AmmoRemaining      int                  `yaml:"ammo_remaining,omitempty"`
-	Modifications      []WeaponModification `yaml:"modifications"`
-	Modifiers          []Modifier           `yaml:"modifiers"`
-	Spec               WeaponRangedSpec     `yaml:"-"`
-}
+type (
+	WeaponRangedReload string
+	WeaponFiringMode   string
+	WeaponRangedSpec   struct {
+		ID               string               `yaml:"id,omitempty"`
+		Name             string               `yaml:"name,omitempty"`
+		Description      string               `yaml:"description,omitempty"`
+		Accuracy         int                  `yaml:"accuracy,omitempty"`
+		DamageValue      int                  `yaml:"damage_value,omitempty"`
+		DamageType       DamageType           `yaml:"damage_type,omitempty"`
+		ArmorPenatration int                  `yaml:"armor_penatration,omitempty"`
+		FiringModes      []WeaponFiringMode   `yaml:"firing_modes"`
+		Recoil           int                  `yaml:"recoil,omitempty"`
+		AmmoCapacity     int                  `yaml:"ammo_capacity,omitempty"`
+		Reload           WeaponRangedReload   `yaml:"reload,omitempty"`
+		Availability     int                  `yaml:"availability,omitempty"`
+		LegalityType     LegalityType         `yaml:"legality_type,omitempty"`
+		ItemTags         []ItemTag            `yaml:"tags"`
+		Modifications    []WeaponModification `yaml:"modifications"`
+		Modifiers        []Modifier           `yaml:"modifiers"`
+		Cost             int                  `yaml:"cost,omitempty"`
+		RuleSource       RuleSource           `yaml:"rule_source,omitempty"`
+	}
+	WeaponRanged struct {
+		ID                 string               `yaml:"id,omitempty"`
+		SelectedFiringMode WeaponFiringMode     `yaml:"selected_firing_mode,omitempty"`
+		AmmoType           *WeaponAmunitionSpec `yaml:"ammo_type,omitempty"`
+		AmmoRemaining      int                  `yaml:"ammo_remaining,omitempty"`
+		Modifications      []WeaponModification `yaml:"modifications"`
+		Modifiers          []Modifier           `yaml:"modifiers"`
+		Spec               WeaponRangedSpec     `yaml:"-"`
+	}
+)
 
 func (w *WeaponRanged) ToggleFiringMode() string {
 	if len(w.Spec.FiringModes) == 0 {

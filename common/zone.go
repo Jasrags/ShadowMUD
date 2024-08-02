@@ -5,24 +5,30 @@ import (
 )
 
 const (
-	ZonesDataPath = "data/zones"
-	ZoneFilename  = ZonesDataPath + "/%s.yaml"
+	ZonesFilepath = "_data/zones"
 )
 
-type Zones map[string]*Zone
+type (
+	Zones    map[string]*Zone
+	ZoneSpec struct {
+		ID          string     `yaml:"id"`
+		Name        string     `yaml:"name"`
+		Description string     `yaml:"description"`
+		RuleSource  RuleSource `yaml:"rule_source"`
+	}
+	Zone struct {
+		sync.Mutex
+		ID    string    `yaml:"id"`
+		Spec  *ZoneSpec `yaml:"-"`
+		Rooms Rooms     `yaml:"-"`
+	}
+)
 
-type ZoneSpec struct {
-	ID          string     `yaml:"id"`
-	Name        string     `yaml:"name"`
-	Description string     `yaml:"description"`
-	RuleSource  RuleSource `yaml:"rule_source"`
-}
-
-func (z ZoneSpec) Filepath() string {
+func (z *ZoneSpec) Filepath() string {
 	return ""
 }
 
-func (z ZoneSpec) Validate() error {
+func (z *ZoneSpec) Validate() error {
 	return nil
 }
 
@@ -32,13 +38,6 @@ func NewZone(spec *ZoneSpec) *Zone {
 		Spec:  spec,
 		Rooms: make(Rooms),
 	}
-}
-
-type Zone struct {
-	sync.Mutex
-	ID    string    `yaml:"id"`
-	Spec  *ZoneSpec `yaml:"-"`
-	Rooms Rooms     `yaml:"-"`
 }
 
 var CoreZones = []ZoneSpec{

@@ -1,35 +1,35 @@
 package common
 
 const (
-	QualityDataPath                 = "data/qualities"
-	QualityFilename                 = QualityDataPath + "/%s.yaml"
+	QualitiesFilepath = "_data/qualities"
+
 	QualityTypePositive QualityType = "Positive"
 	QualityTypeNegative QualityType = "Negative"
 )
 
-type QualityType string
+type (
+	QualityType string
+	QualitySpec struct {
+		ID            string      `yaml:"id,omitempty"`
+		Type          QualityType `yaml:"type"`
+		Name          string      `yaml:"name"`
+		MaxRating     int         `yaml:"max_rating,omitempty"`
+		Description   string      `yaml:"description"`
+		Prerequisites []string    `yaml:"prerequisites,omitempty"`
+		Modifiers     []Modifier  `yaml:"modifiers"`
+		Cost          int         `yaml:"cost"`
+		RuleSource    RuleSource  `yaml:"rule_source"`
+	}
+	Quality struct {
+		ID        string       `yaml:"id,omitempty"`
+		Rating    int          `yaml:"rating,omitempty"`
+		Modifiers []Modifier   `yaml:"modifiers"`
+		Spec      *QualitySpec `yaml:"-"`
+	}
+)
 
 func NewQuality() *Quality {
 	return &Quality{}
-}
-
-type QualitySpec struct {
-	ID            string      `yaml:"id,omitempty"`
-	Type          QualityType `yaml:"type"`
-	Name          string      `yaml:"name"`
-	MaxRating     int         `yaml:"max_rating,omitempty"`
-	Description   string      `yaml:"description"`
-	Prerequisites []string    `yaml:"prerequisites,omitempty"`
-	Modifiers     []Modifier  `yaml:"modifiers"`
-	Cost          int         `yaml:"cost"`
-	RuleSource    RuleSource  `yaml:"rule_source"`
-}
-
-type Quality struct {
-	ID        string       `yaml:"id,omitempty"`
-	Rating    int          `yaml:"rating,omitempty"`
-	Modifiers []Modifier   `yaml:"modifiers"`
-	Spec      *QualitySpec `yaml:"-"`
 }
 
 var CoreQualties = []QualitySpec{

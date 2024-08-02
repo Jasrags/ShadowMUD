@@ -1,20 +1,10 @@
 package common
 
 const (
-	WeaponsDataPath = "data/items/weapons"
-	WeaponFilename  = WeaponsDataPath + "/%s.yaml"
-)
+	WeaponsFilePath = "_data/items/weapons"
 
-type WeaponType string
-
-const (
 	WeaponTypeMelee  WeaponType = "Melee"
 	WeaponTypeRanged WeaponType = "Ranged"
-)
-
-type WeaponGroup string
-
-const (
 	// Melee
 	WeaponGroupImprovised WeaponGroup = "Improvised"
 	WeaponGroupClubs      WeaponGroup = "Clubs"
@@ -31,11 +21,6 @@ const (
 	WeaponGroupLasers                  WeaponGroup = "Lasers"
 	WeaponGroupLargeCaliberProjectiles WeaponGroup = "Large-Caliber Projectiles"
 	WeaponGroupImplantWeapons          WeaponGroup = "Implant Weapons"
-)
-
-type WeaponCategory string
-
-const (
 	// Ranged
 	WeaponCategoryPistol         WeaponCategory = "Pistol"
 	WeaponCategorySubmachineGun  WeaponCategory = "Submachine Gun"
@@ -51,11 +36,6 @@ const (
 	WeaponCategorySword  WeaponCategory = "Sword"
 	WeaponCategoryKatana WeaponCategory = "Katana"
 	WeaponCategoryDagger WeaponCategory = "Dagger"
-)
-
-type WeaponSubCategory string
-
-const (
 	// Ranged
 	WeaponSubCategoryHoldOutPistol      WeaponSubCategory = "Hold-Out Pistol"
 	WeaponSubCategoryLightPistol        WeaponSubCategory = "Light Pistol"
@@ -74,43 +54,48 @@ const (
 	WeaponSubCategoryImplantFirearm     WeaponSubCategory = "Implant Firearm"
 )
 
-type WeaponSpec struct {
-	ID               string               `yaml:"id,omitempty"`
-	Name             string               `yaml:"name,omitempty"`
-	Description      string               `yaml:"description,omitempty"`
-	Type             WeaponType           `yaml:"type,omitempty"`
-	Group            WeaponGroup          `yaml:"group,omitempty"`
-	Category         WeaponCategory       `yaml:"category,omitempty"`
-	SubCategory      WeaponSubCategory    `yaml:"sub_category,omitempty"`
-	Concealability   int                  `yaml:"concealability,omitempty"`
-	Accuracy         int                  `yaml:"accuracy,omitempty"`
-	Reach            int                  `yaml:"reach,omitempty"`
-	DamageValue      int                  `yaml:"damage_value,omitempty"`
-	DamageType       DamageType           `yaml:"damage_type,omitempty"`
-	ArmorPenatration int                  `yaml:"armor_penatration,omitempty"`
-	Recoil           int                  `yaml:"recoil,omitempty"`
-	Reload           WeaponRangedReload   `yaml:"reload,omitempty"`
-	FiringModes      []WeaponFiringMode   `yaml:"firing_modes,omitempty"`
-	AmmoCapacity     int                  `yaml:"ammo_capacity,omitempty"`
-	Availability     int                  `yaml:"availability,omitempty"`
-	Legality         LegalityType         `yaml:"legality,omitempty"`
-	Tags             []ItemTag            `yaml:"tags"`
-	Modifications    []WeaponModification `yaml:"modifications"`
-	Modifiers        []Modifier           `yaml:"modifiers"`
-	Cost             int                  `yaml:"cost,omitempty"`
-	RuleSource       RuleSource           `yaml:"rule_source,omitempty"`
-}
-
-type Weapon struct {
-	ID                 string               `yaml:"id"`
-	SelectedFiringMode WeaponFiringMode     `yaml:"selected_firing_mode,omitempty"`
-	AmmoType           *WeaponAmunitionSpec `yaml:"ammo_type,omitempty"`
-	AmmoRemaining      int                  `yaml:"ammo_remaining,omitempty"`
-	Tags               []ItemTag            `yaml:"tags"`
-	Modifications      []WeaponModification `yaml:"modifications"`
-	Modifiers          []Modifier           `yaml:"modifiers"`
-	Spec               *WeaponSpec          `yaml:"-"`
-}
+type (
+	WeaponType        string
+	WeaponGroup       string
+	WeaponCategory    string
+	WeaponSubCategory string
+	WeaponSpec        struct {
+		ID               string               `yaml:"id,omitempty"`
+		Name             string               `yaml:"name,omitempty"`
+		Description      string               `yaml:"description,omitempty"`
+		Type             WeaponType           `yaml:"type,omitempty"`
+		Group            WeaponGroup          `yaml:"group,omitempty"`
+		Category         WeaponCategory       `yaml:"category,omitempty"`
+		SubCategory      WeaponSubCategory    `yaml:"sub_category,omitempty"`
+		Concealability   int                  `yaml:"concealability,omitempty"`
+		Accuracy         int                  `yaml:"accuracy,omitempty"`
+		Reach            int                  `yaml:"reach,omitempty"`
+		DamageValue      int                  `yaml:"damage_value,omitempty"`
+		DamageType       DamageType           `yaml:"damage_type,omitempty"`
+		ArmorPenatration int                  `yaml:"armor_penatration,omitempty"`
+		Recoil           int                  `yaml:"recoil,omitempty"`
+		Reload           WeaponRangedReload   `yaml:"reload,omitempty"`
+		FiringModes      []WeaponFiringMode   `yaml:"firing_modes,omitempty"`
+		AmmoCapacity     int                  `yaml:"ammo_capacity,omitempty"`
+		Availability     int                  `yaml:"availability,omitempty"`
+		Legality         LegalityType         `yaml:"legality,omitempty"`
+		Tags             []ItemTag            `yaml:"tags"`
+		Modifications    []WeaponModification `yaml:"modifications"`
+		Modifiers        []Modifier           `yaml:"modifiers"`
+		Cost             int                  `yaml:"cost,omitempty"`
+		RuleSource       RuleSource           `yaml:"rule_source,omitempty"`
+	}
+	Weapon struct {
+		ID                 string               `yaml:"id"`
+		SelectedFiringMode WeaponFiringMode     `yaml:"selected_firing_mode,omitempty"`
+		AmmoType           *WeaponAmunitionSpec `yaml:"ammo_type,omitempty"`
+		AmmoRemaining      int                  `yaml:"ammo_remaining,omitempty"`
+		Tags               []ItemTag            `yaml:"tags"`
+		Modifications      []WeaponModification `yaml:"modifications"`
+		Modifiers          []Modifier           `yaml:"modifiers"`
+		Spec               *WeaponSpec          `yaml:"-"`
+	}
+)
 
 // func (w *Weapon) GetDamageValue() error {
 // 	/*
