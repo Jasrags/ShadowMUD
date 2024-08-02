@@ -33,6 +33,14 @@ type RoomSpec struct {
 	Exits            Exits  `yaml:"exits"`
 }
 
+func (r RoomSpec) Filepath() string {
+	return ""
+}
+
+func (r RoomSpec) Validate() error {
+	return nil
+}
+
 func NewRoom(spec *RoomSpec) *Room {
 	return &Room{
 		ID:         spec.ID,

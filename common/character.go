@@ -8,10 +8,10 @@ import (
 	"strings"
 
 	"github.com/Jasrags/ShadowMUD/utils"
+	"github.com/i582/cfmt/cmd/cfmt"
 
 	"github.com/fatih/color"
 	"github.com/gliderlabs/ssh"
-	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/term"
 )
@@ -149,19 +149,21 @@ func (c *Character) Authenticate() bool {
 }
 
 // After auth for an exisiting character start loading up the data from the files and load the character into the game
-func (c *Character) Load() {
-	logrus.Debug("Loading character")
-	uuid, _ := uuid.NewRandom()
-	c.ID = uuid.String()
-	c.Name = "Test"
-	roomSpec := &CoreRooms[0]
-	c.Room = Room{
-		ID:         roomSpec.ID,
-		Spec:       roomSpec,
-		Characters: map[string]*Character{},
-	}
-	c.Room.AddCharacter(c)
-}
+// func (c *Character) Load() {
+// 	logrus.Debug("Loading character")
+// 	uuid, _ := uuid.NewRandom()
+
+// 	c.ID = uuid.String()
+// 	c.Name = "Test"
+// 	// c.Room = NewRoom()
+// 	roomSpec := &CoreRooms[0]
+// 	c.Room = Room{
+// 		ID:         roomSpec.ID,
+// 		Spec:       roomSpec,
+// 		Characters: map[string]*Character{},
+// 	}
+// 	c.Room.AddCharacter(c)
+// }
 
 // TODO: Cycle through the list of available commands when we have more than one
 func (c *Character) AutoCompleteCallback(line string, pos int, key rune) (string, int, bool) {
@@ -193,15 +195,16 @@ func (c *Character) AutoCompleteCallback(line string, pos int, key rune) (string
 
 func (c *Character) GameLoop() error {
 	c.Term.AutoCompleteCallback = c.AutoCompleteCallback
+
 	for {
-		color.New(color.FgWhite).Fprint(c.Session, ">")
-		// io.WriteString(c.Session, ">")
+		io.WriteString(c.Session, cfmt.Sprintf("{{> }}::white|bold"))
 		line, err := c.Term.ReadLine()
 		if err != nil {
 			return err
 		}
-		logrus.WithField("line", line).Info("Received line")
-		io.WriteString(c.Session, "You typed: "+line+"\n")
+		logrus.WithField("line", line).Debug("Received line")
+		io.WriteString(c.Session, cfmt.Sprintf("{{You typed:}}::white|bold %s\n", line))
+		// color.New(color.FgWhite).Fprintf(c.Session, "You typed: %s\n", line)
 	}
 }
 
@@ -216,7 +219,7 @@ type Character struct {
 	// Personal Data
 	ID       string   `yaml:"id"`
 	Name     string   `yaml:"name"`
-	Room     Room     `yaml:"room"`
+	Room     *Room    `yaml:"room"`
 	Metatype Metatype `yaml:"-"`
 	// Ethnicity       string          `yaml:"ethnicity"`
 	// Age             int             `yaml:"age"`

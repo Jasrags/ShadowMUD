@@ -2,15 +2,14 @@ host: localhost
 port: 33333
 log_level: DEBUG
 max_connections: 100
-timeouts:
-    idle: 30m
-data:
-    base_dir: _data
-    test_dir: test/_data
-    characters_dir: /characters
-    zones_dir: /zones
-    rooms_dir: /rooms
+idle_timeout: 30m
+login_enabled: true
+login_max_attempts: 3
+password_min_length: 6
+password_max_length: 72
+registration_enabled: true
 banned_names:
     - root
     - admin
     - god
+    - new

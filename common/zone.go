@@ -1,6 +1,8 @@
 package common
 
-import "sync"
+import (
+	"sync"
+)
 
 const (
 	ZonesDataPath = "data/zones"
@@ -14,6 +16,14 @@ type ZoneSpec struct {
 	Name        string     `yaml:"name"`
 	Description string     `yaml:"description"`
 	RuleSource  RuleSource `yaml:"rule_source"`
+}
+
+func (z ZoneSpec) Filepath() string {
+	return ""
+}
+
+func (z ZoneSpec) Validate() error {
+	return nil
 }
 
 func NewZone(spec *ZoneSpec) *Zone {
