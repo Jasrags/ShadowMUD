@@ -2,18 +2,12 @@ package common
 
 import (
 	"fmt"
-	"io"
-	"log"
 	"math"
-	"strings"
+	"time"
 
 	"github.com/Jasrags/ShadowMUD/utils"
-	"github.com/i582/cfmt/cmd/cfmt"
 
-	"github.com/fatih/color"
-	"github.com/gliderlabs/ssh"
 	"github.com/sirupsen/logrus"
-	"golang.org/x/term"
 )
 
 const (
@@ -100,55 +94,47 @@ type ConditionDamage struct {
 	Stun     int `yaml:"stun"`
 }
 
-func NewCharacter(s ssh.Session) *Character {
-	pty, ptyWindow, isActive := s.Pty()
-	if !isActive {
-		logrus.Error("Session is not active")
-	}
+func NewCharacter() *Character {
+	c := &Character{}
 
-	return &Character{
-		Session: s,
-		Pty:     pty,
-		Window:  ptyWindow,
-		Term:    term.NewTerminal(s, ""),
-	}
+	return c
 }
 
-// TODO: keep track of auth attempts and lock out after a certain number
-// TODO: Add a list of restricted usernames that will always fail authentication
-// TODO: Hook up an actual authentication system to validate a hashed password from the data files
-func (c *Character) Authenticate() bool {
-	// Collect username
-	color.New(color.FgHiWhite).Fprint(c.Session, "Username: ")
-	username, errReadLine := c.Term.ReadLine()
-	if errReadLine != nil {
-		logrus.WithError(errReadLine).Error("Error reading username")
-		return false
-	}
-	username = strings.TrimSpace(username)
-	logrus.WithField("username", username).Info("Received username")
+// // TODO: keep track of auth attempts and lock out after a certain number
+// // TODO: Add a list of restricted usernames that will always fail authentication
+// // TODO: Hook up an actual authentication system to validate a hashed password from the data files
+// func (c *Character) Authenticate() bool {
+// 	// Collect username
+// 	color.New(color.FgHiWhite).Fprint(c.Session, "Username: ")
+// 	username, errReadLine := c.Term.ReadLine()
+// 	if errReadLine != nil {
+// 		logrus.WithError(errReadLine).Error("Error reading username")
+// 		return false
+// 	}
+// 	username = strings.TrimSpace(username)
+// 	logrus.WithField("username", username).Info("Received username")
 
-	// Collect password without echoing
-	passwordBytes, err := c.Term.ReadPassword(color.New(color.FgHiWhite).Sprint("Password: "))
-	if err != nil {
-		log.Println("Error reading password:", err)
-		return false
-	}
-	password := strings.TrimSpace(string(passwordBytes))
-	logrus.WithField("password", password).Info("Received password")
+// 	// Collect password without echoing
+// 	passwordBytes, err := c.Term.ReadPassword(color.New(color.FgHiWhite).Sprint("Password: "))
+// 	if err != nil {
+// 		log.Println("Error reading password:", err)
+// 		return false
+// 	}
+// 	password := strings.TrimSpace(string(passwordBytes))
+// 	logrus.WithField("password", password).Info("Received password")
 
-	// Validate credentials
-	if pass, ok := utils.Users[username]; ok && strings.EqualFold(pass, password) {
-		logrus.WithFields(logrus.Fields{"username": username}).Info("Authentication successful")
+// 	// Validate credentials
+// 	if pass, ok := utils.Users[username]; ok && strings.EqualFold(pass, password) {
+// 		logrus.WithFields(logrus.Fields{"username": username}).Info("Authentication successful")
 
-		return true
-	}
+// 		return true
+// 	}
 
-	logrus.WithFields(logrus.Fields{"username": username}).Error("Authentication unsuccessful")
-	return false
-}
+// 	logrus.WithFields(logrus.Fields{"username": username}).Error("Authentication unsuccessful")
+// 	return false
+// }
 
-// After auth for an exisiting character start loading up the data from the files and load the character into the game
+// // After auth for an exisiting character start loading up the data from the files and load the character into the game
 // func (c *Character) Load() {
 // 	logrus.Debug("Loading character")
 // 	uuid, _ := uuid.NewRandom()
@@ -165,57 +151,52 @@ func (c *Character) Authenticate() bool {
 // 	c.Room.AddCharacter(c)
 // }
 
-// TODO: Cycle through the list of available commands when we have more than one
-func (c *Character) AutoCompleteCallback(line string, pos int, key rune) (string, int, bool) {
-	logrus.WithFields(logrus.Fields{"line": line, "pos": pos, "key": key, "key_string": string(key)}).Debug("AutoCompleteCallback")
+// // TODO: Cycle through the list of available commands when we have more than one
+// func (c *Character) AutoCompleteCallback(line string, pos int, key rune) (string, int, bool) {
+// 	logrus.WithFields(logrus.Fields{"line": line, "pos": pos, "key": key, "key_string": string(key)}).Debug("AutoCompleteCallback")
 
-	if len(line) > 0 {
-		results := []string{}
-		text := strings.ToLower(strings.TrimSpace(line + string(key))) // Get the command name from the line
-		command := strings.Fields(line)[0]
+// 	if len(line) > 0 {
+// 		results := []string{}
+// 		text := strings.ToLower(strings.TrimSpace(line + string(key))) // Get the command name from the line
+// 		command := strings.Fields(line)[0]
 
-		// Get the list of available commands
-		commands := []string{"meleeattack", "rolldice", "getcomposure", "getjudgeintentions", "getmemory", "getliftcarry", "getmovement", "addcyberware", "removecyberware", "recalculatecyberware", "recalculatebioware"}
+// 		// Get the list of available commands
+// 		commands := []string{"meleeattack", "rolldice", "getcomposure", "getjudgeintentions", "getmemory", "getliftcarry", "getmovement", "addcyberware", "removecyberware", "recalculatecyberware", "recalculatebioware"}
 
-		// Check if the command name matches any of the available commands
-		for _, cmd := range commands {
-			if strings.HasPrefix(cmd, command) {
-				results = append(results, cmd)
-			}
-		}
+// 		// Check if the command name matches any of the available commands
+// 		for _, cmd := range commands {
+// 			if strings.HasPrefix(cmd, command) {
+// 				results = append(results, cmd)
+// 			}
+// 		}
 
-		logrus.WithFields(logrus.Fields{"text": text, "results": results}).Debug("Results")
-		if len(results) == 1 {
-			return results[0], len(results[0]), true
-		}
-	}
+// 		logrus.WithFields(logrus.Fields{"text": text, "results": results}).Debug("Results")
+// 		if len(results) == 1 {
+// 			return results[0], len(results[0]), true
+// 		}
+// 	}
 
-	return "", pos, false // Return the current result as the auto-completed text
-}
+// 	return "", pos, false // Return the current result as the auto-completed text
+// }
 
-func (c *Character) GameLoop() error {
-	c.Term.AutoCompleteCallback = c.AutoCompleteCallback
+// func (c *Character) GameLoop() error {
+// 	c.Term.AutoCompleteCallback = c.AutoCompleteCallback
 
-	for {
-		io.WriteString(c.Session, cfmt.Sprintf("{{> }}::white|bold"))
-		line, err := c.Term.ReadLine()
-		if err != nil {
-			return err
-		}
-		logrus.WithField("line", line).Debug("Received line")
-		io.WriteString(c.Session, cfmt.Sprintf("{{You typed:}}::white|bold %s\n", line))
-		// color.New(color.FgWhite).Fprintf(c.Session, "You typed: %s\n", line)
-	}
-}
+// 	for {
+// 		io.WriteString(c.Session, cfmt.Sprintf("{{> }}::white|bold"))
+// 		line, err := c.Term.ReadLine()
+// 		if err != nil {
+// 			return err
+// 		}
+// 		logrus.WithField("line", line).Debug("Received line")
+// 		io.WriteString(c.Session, cfmt.Sprintf("{{You typed:}}::white|bold %s\n", line))
+// 		// color.New(color.FgWhite).Fprintf(c.Session, "You typed: %s\n", line)
+// 	}
+// }
 
-type Charcters map[string]*Character
+type Characters map[string]*Character
 
 type Character struct {
-	Session ssh.Session       `yaml:"-"`
-	Pty     ssh.Pty           `yaml:"-"`
-	Window  <-chan ssh.Window `yaml:"-"`
-	Term    *term.Terminal    `yaml:"-"`
-
 	// Personal Data
 	ID       string   `yaml:"id"`
 	Name     string   `yaml:"name"`
@@ -272,6 +253,9 @@ type Character struct {
 	// Vehicals        map[string]string         `yaml:"vehicals"`
 	// Gear map[string]string `yaml:"gear"`
 	// AdeptPowers     map[string]string         `yaml:"adept_powers"`
+	CreatedAt time.Time `yaml:"created_at"`
+	UpdatedAt time.Time `yaml:"updated_at,omitempty"`
+	DeletedAt time.Time `yaml:"deleted_at,omitempty"`
 }
 
 // func (c *Character) MeleeAttack(target *Character) {

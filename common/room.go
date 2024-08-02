@@ -1,11 +1,7 @@
 package common
 
 import (
-	"io"
 	"sync"
-
-	"github.com/fatih/color"
-	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -45,66 +41,66 @@ func NewRoom(spec *RoomSpec) *Room {
 	return &Room{
 		ID:         spec.ID,
 		Spec:       spec,
-		Characters: make(Charcters),
+		Characters: make(Characters),
 	}
 }
 
 type Room struct {
 	sync.Mutex
-	ID              string                `yaml:"id,omitempty"`
-	Spec            *RoomSpec             `yaml:"-"`
-	Characters      map[string]*Character `yaml:"-"`
-	CharactersCount int                   `yaml:"-"`
-	Zone            *Zone                 `yaml:"-"`
+	ID              string     `yaml:"id,omitempty"`
+	Spec            *RoomSpec  `yaml:"-"`
+	Characters      Characters `yaml:"-"`
+	CharactersCount int        `yaml:"-"`
+	Zone            *Zone      `yaml:"-"`
 }
 
-func (r *Room) AddCharacter(c *Character) {
-	logrus.WithFields(logrus.Fields{"room_id": r.ID, "character_id": c.ID, "character_name": c.Name}).Debug("Adding character to room")
-	r.Lock()
-	r.Characters[c.ID] = c
-	r.CharactersCount++
-	r.Unlock()
+// func (r *Room) AddCharacter(c *Character) {
+// 	logrus.WithFields(logrus.Fields{"room_id": r.ID, "character_id": c.ID, "character_name": c.Name}).Debug("Adding character to room")
+// 	r.Lock()
+// 	r.Characters[c.ID] = c
+// 	r.CharactersCount++
+// 	r.Unlock()
 
-	for k, v := range r.Characters {
-		logrus.WithFields(logrus.Fields{"id": k, "name": v.Name}).Debug("Character in room")
-		if k == c.ID {
-			continue
-		}
-		// TODO: add direction of entrance
-		io.WriteString(v.Session, c.Name+" has entered the room.\n")
-		logrus.WithFields(logrus.Fields{"character": c.Name, "room": r.ID}).Info("Character entered room")
-	}
-}
+// 	for k, v := range r.Characters {
+// 		logrus.WithFields(logrus.Fields{"id": k, "name": v.Name}).Debug("Character in room")
+// 		if k == c.ID {
+// 			continue
+// 		}
+// 		// TODO: add direction of entrance
+// 		io.WriteString(v.Session, c.Name+" has entered the room.\n")
+// 		logrus.WithFields(logrus.Fields{"character": c.Name, "room": r.ID}).Info("Character entered room")
+// 	}
+// }
 
-func (r *Room) RemoveCharacter(c *Character) {
-	logrus.WithFields(logrus.Fields{"room_id": r.ID, "character_id": c.ID, "character_name": c.Name}).Debug("Removing character from room")
-	// TODO: add direction of exit
-	for k, v := range r.Characters {
-		logrus.WithFields(logrus.Fields{"id": k, "name": v.Name}).Debug("Character in room")
-		if k == c.ID {
-			continue
-		}
-		io.WriteString(v.Session, c.Name+" has left the room.\n")
-		logrus.WithFields(logrus.Fields{"character": c.Name, "room": r.ID}).Info("Character left room")
-	}
-	r.Lock()
-	delete(r.Characters, c.ID)
-	r.CharactersCount--
-	r.Unlock()
-}
+// func (r *Room) RemoveCharacter(c *Character) {
+// 	logrus.WithFields(logrus.Fields{"room_id": r.ID, "character_id": c.ID, "character_name": c.Name}).Debug("Removing character from room")
+// 	// TODO: add direction of exit
+// 	for k, v := range r.Characters {
+// 		logrus.WithFields(logrus.Fields{"id": k, "name": v.Name}).Debug("Character in room")
+// 		if k == c.ID {
+// 			continue
+// 		}
+// 		io.WriteString(v.Session, c.Name+" has left the room.\n")
+// 		logrus.WithFields(logrus.Fields{"character": c.Name, "room": r.ID}).Info("Character left room")
+// 	}
+// 	r.Lock()
+// 	delete(r.Characters, c.ID)
+// 	r.CharactersCount--
+// 	r.Unlock()
+// }
 
-func (r *Room) DisplayRoom(c *Character) {
-	color.New(color.FgBlue, color.Underline).Fprintln(c.Session, r.Spec.Name)
-	color.New(color.FgWhite).Fprintln(c.Session, r.Spec.ShortDescription)
-	color.New(color.FgGreen).Fprintln(c.Session, "Exits:")
-	if len(r.Spec.Exits) == 0 {
-		color.New(color.FgGreen).Fprintln(c.Session, "\tNone")
-		// } else {
-		// for k, v := range r.Spec.Exits {
-		// color.New(color.FgGreen).Fprintf(c.Session, "\t%s - %s", k, v)
-		// }
-	}
-}
+// func (r *Room) DisplayRoom(c *Character) {
+// 	color.New(color.FgBlue, color.Underline).Fprintln(c.Session, r.Spec.Name)
+// 	color.New(color.FgWhite).Fprintln(c.Session, r.Spec.ShortDescription)
+// 	color.New(color.FgGreen).Fprintln(c.Session, "Exits:")
+// 	if len(r.Spec.Exits) == 0 {
+// 		color.New(color.FgGreen).Fprintln(c.Session, "\tNone")
+// 		// } else {
+// 		// for k, v := range r.Spec.Exits {
+// 		// color.New(color.FgGreen).Fprintf(c.Session, "\t%s - %s", k, v)
+// 		// }
+// 	}
+// }
 
 var CoreRooms = []RoomSpec{
 	{

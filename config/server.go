@@ -11,6 +11,7 @@ type Server struct {
 	LoginMaxAttempts         int           `yaml:"login_max_attempts"`
 	PasswordMinLength        int           `yaml:"password_min_length"`
 	PasswordMaxLength        int           `yaml:"password_max_length"`
+	PasswordBcryptCost       int           `yaml:"password_bcrypt_cost"`
 	RegistrationEnabled      bool          `yaml:"registration_enabled"`
 	CharacterCreationEnabled bool          `yaml:"character_creation_enabled"`
 	UserCharacterMaxCount    int           `yaml:"user_character_max_count"`

@@ -2,12 +2,15 @@ host: localhost
 port: 33333
 log_level: DEBUG
 max_connections: 100
-idle_timeout: 30m
 login_enabled: true
 login_max_attempts: 3
 password_min_length: 6
 password_max_length: 72
+password_bcrypt_cost: 10
 registration_enabled: true
+character_creation_enabled: true
+user_character_max_count: 3
+idle_timeout: 30m
 banned_names:
     - root
     - admin
