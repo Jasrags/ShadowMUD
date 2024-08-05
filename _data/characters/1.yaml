@@ -1,0 +1,54 @@
+id: "1"
+name: Test
+user_id: 5cd3ae71-6b77-4ff4-ad8a-7c3b9878eb38
+metatype_id: elf
+attributes:
+    body:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    agility:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    reaction:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    strength:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    willpower:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    logic:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    intuition:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    charisma:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    edge:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    essence:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    magic:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+    resonance:
+        value: 1
+        aug_modifier: 0
+        total_value: 1
+created_at: 2024-08-03T15:01:21.462209-05:00

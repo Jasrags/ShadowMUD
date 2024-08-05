@@ -37,6 +37,7 @@ const (
 type (
 	ModifierType   string
 	ModifierEffect string
+	Modifiers      map[string]*Modifier
 	Modifier       struct {
 		Type   ModifierType   `yaml:"type,omitempty"`
 		Effect ModifierEffect `yaml:"effect,omitempty"`

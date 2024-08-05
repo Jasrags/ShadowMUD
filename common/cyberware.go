@@ -94,19 +94,19 @@ func GetCyberwareGradeModifiers(grade CyberwareGrade) (float64, int, float64, er
 	return essenceCostMultiplier, availMod, costMultiplier, nil
 }
 
-func (c *Cyberware) Recalculate() {
-	c.Spec.Capacity.Reset()
+// func (c *Cyberware) Recalculate() {
+// 	c.Spec.Capacity.Reset()
 
-	essenceCostMultiplier, _, _, _ := GetCyberwareGradeModifiers(c.Spec.Grade)
-	for _, mod := range c.Modifications {
-		c.Spec.Capacity.Mods += mod.CapacityCost
-		c.Spec.EssenceCost.Mods += mod.EssenceCost * essenceCostMultiplier
-	}
-	c.Spec.EssenceCost.Reset()
-	for _, mod := range c.Modifications {
-		c.Spec.EssenceCost.Mods += mod.EssenceCost
-	}
-}
+// 	essenceCostMultiplier, _, _, _ := GetCyberwareGradeModifiers(c.Spec.Grade)
+// 	for _, mod := range c.Modifications {
+// 		c.Spec.Capacity.Mods += mod.CapacityCost
+// 		c.Spec.EssenceCost.Mods += mod.EssenceCost * essenceCostMultiplier
+// 	}
+// 	c.Spec.EssenceCost.Reset()
+// 	for _, mod := range c.Modifications {
+// 		c.Spec.EssenceCost.Mods += mod.EssenceCost
+// 	}
+// }
 
 var CoreCyberware = []Cyberware{
 	{

@@ -24,17 +24,17 @@ const (
 	ActionSimple  ActionType = "Simple"
 	ActionComplex ActionType = "Complex"
 
-	AttributeBody      Attribute = "Body"
-	AttributeAgility   Attribute = "Agility"
-	AttributeReaction  Attribute = "Reaction"
-	AttributeStrength  Attribute = "Strength"
-	AttributeWillpower Attribute = "Willpower"
-	AttributeCharisma  Attribute = "Charisma"
-	AttributeLogic     Attribute = "Logic"
-	AttributeIntuition Attribute = "Intuition"
-	AttributeMagic     Attribute = "Magic"
-	AttributeResonance Attribute = "Resonance"
-	AttributeEssence   Attribute = "Essence"
+	AttributeBody      AttributeType = "Body"
+	AttributeAgility   AttributeType = "Agility"
+	AttributeReaction  AttributeType = "Reaction"
+	AttributeStrength  AttributeType = "Strength"
+	AttributeWillpower AttributeType = "Willpower"
+	AttributeCharisma  AttributeType = "Charisma"
+	AttributeLogic     AttributeType = "Logic"
+	AttributeIntuition AttributeType = "Intuition"
+	AttributeMagic     AttributeType = "Magic"
+	AttributeResonance AttributeType = "Resonance"
+	AttributeEssence   AttributeType = "Essence"
 
 	LegalityTypeLegal      LegalityType = "Legal"
 	LegalityTypeRestricted LegalityType = "Restricted"
@@ -139,7 +139,7 @@ const (
 type (
 	RuleSource         string
 	ActionType         string
-	Attribute          string
+	AttributeType      string
 	LegalityType       string
 	EnvironmentType    string
 	EnvironmenModifier string

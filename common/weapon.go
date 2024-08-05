@@ -85,7 +85,8 @@ type (
 		Cost             int                  `yaml:"cost,omitempty"`
 		RuleSource       RuleSource           `yaml:"rule_source,omitempty"`
 	}
-	Weapon struct {
+	Weapons map[string]*Weapon
+	Weapon  struct {
 		ID                 string               `yaml:"id"`
 		SelectedFiringMode WeaponFiringMode     `yaml:"selected_firing_mode,omitempty"`
 		AmmoType           *WeaponAmunitionSpec `yaml:"ammo_type,omitempty"`

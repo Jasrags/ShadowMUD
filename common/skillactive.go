@@ -5,21 +5,23 @@ const (
 )
 
 type (
-	ActiveSkillSpec struct {
-		ID              string     `yaml:"id,omitempty"`
-		Name            string     `yaml:"name"`
-		Description     string     `yaml:"description"`
-		IsDefaultable   bool       `yaml:"is_defaultable"`
-		LinkedAttribute Attribute  `yaml:"linked_attribute"`
-		SkillGroup      string     `yaml:"skill_group,omitempty"`
-		Specializations []string   `yaml:"specializations"`
-		RuleSource      RuleSource `yaml:"rule_source"`
+	ActiveSkillSpecs map[string]*ActiveSkillSpec
+	ActiveSkillSpec  struct {
+		ID              string        `yaml:"id,omitempty"`
+		Name            string        `yaml:"name"`
+		Description     string        `yaml:"description"`
+		IsDefaultable   bool          `yaml:"is_defaultable"`
+		LinkedAttribute AttributeType `yaml:"linked_attribute"`
+		SkillGroup      string        `yaml:"skill_group,omitempty"`
+		Specializations []string      `yaml:"specializations"`
+		RuleSource      RuleSource    `yaml:"rule_source"`
 	}
-	ActiveSkill struct {
+	ActiveSkills map[string]*ActiveSkill
+	ActiveSkill  struct {
 		ID                     string          `yaml:"id,omitempty"`
 		SelectedSpecialization string          `yaml:"selected_specialization,omitempty"`
 		Rating                 int             `yaml:"rating,omitempty"`
-		Modifiers              []Modifier      `yaml:"modifiers"`
+		Modifiers              Modifiers       `yaml:"modifiers"`
 		Spec                   ActiveSkillSpec `yaml:"-"`
 	}
 )

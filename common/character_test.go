@@ -1,5 +1,22 @@
 package common_test
 
+import (
+	"fmt"
+	"testing"
+
+	"github.com/Jasrags/ShadowMUD/common"
+	"github.com/Jasrags/ShadowMUD/utils"
+)
+
+func TestSaveCoreCharacters(t *testing.T) {
+	for _, v := range common.CoreCharacters {
+		filename := fmt.Sprintf("../%s/%s.yaml", common.CharactersFilepath, v.ID)
+		if err := utils.SaveStructToYAML(filename, &v); err != nil {
+			t.Errorf("Error saving %s: %s", v.ID, err)
+		}
+	}
+}
+
 // func TestSaveCharacter(t *testing.T) {
 // 	c := common.Character{
 // 		ID:   "street-samurai",

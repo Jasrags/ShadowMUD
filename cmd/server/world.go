@@ -8,30 +8,13 @@ import (
 
 	"github.com/Jasrags/ShadowMUD/common"
 	"github.com/Jasrags/ShadowMUD/config"
+
+	"github.com/gliderlabs/ssh"
 	"github.com/google/uuid"
 	"github.com/i582/cfmt/cmd/cfmt"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
-
-	"github.com/gliderlabs/ssh"
 )
-
-type World struct {
-	lock      sync.Mutex
-	cfg       *config.Server
-	users     map[string]*common.User
-	sessions  map[string]*ssh.Session
-	metatypes common.Metatypes
-}
-
-func NewWorld(cfg *config.Server) *World {
-	w := &World{
-		cfg:      cfg,
-		users:    make(map[string]*common.User),
-		sessions: make(map[string]*ssh.Session),
-	}
-	return w
-}
 
 const (
 	StateBanner = iota
@@ -46,6 +29,18 @@ const (
 	StateMOTD
 	StateGameLoop
 	StateQuit
+)
+
+type (
+	World struct {
+		lock sync.Mutex
+		cfg  *config.Server
+
+		users     map[string]*common.User
+		sessions  map[string]*ssh.Session
+		metatypes common.Metatypes
+		pregens   common.Pregens
+	}
 )
 
 var (
@@ -85,11 +80,19 @@ var (
 	characterListOption             = "{{%d.}}::#00ff00 %s\n"
 )
 
+func NewWorld(cfg *config.Server) *World {
+	w := &World{
+		cfg:      cfg,
+		users:    make(map[string]*common.User),
+		sessions: make(map[string]*ssh.Session),
+	}
+	return w
+}
+
 func (w *World) LoadData() {
 	logrus.Info("Started loading data")
-
 	w.metatypes = common.LoadMetatypes()
-
+	w.pregens = common.LoadPregens()
 	logrus.Info("Finished loading data")
 }
 
@@ -98,9 +101,7 @@ func (w *World) Handler(s ssh.Session) {
 	logrus.WithFields(logrus.Fields{"user": s.User(), "remote_addr": s.RemoteAddr()}).Info("New connection")
 
 	u := common.NewUser(s)
-
 	state := StateBanner
-
 	for {
 		switch state {
 		case StateBanner:
@@ -176,7 +177,7 @@ func (w *World) PromptLoginUser(u *common.User) int {
 	if errReadLine != nil {
 		logrus.WithError(errReadLine).Error("Error reading username")
 
-		return StatePromptLoginUser
+		return StateQuit
 	}
 
 	username = strings.TrimSpace(username)
@@ -192,8 +193,10 @@ func (w *World) PromptLoginUser(u *common.User) int {
 	password, err := u.Term.ReadPassword(cfmt.Sprint(passwordPrompt))
 	if err != nil {
 		logrus.WithError(err).Error("Error reading password")
-		return StatePromptLoginUser
+
+		return StateQuit
 	}
+
 	logrus.WithFields(logrus.Fields{"username": username}).Debug("Received password")
 
 	// is login enabled?
@@ -271,7 +274,7 @@ func (w *World) PromptRegisterUser(u *common.User) int {
 	if errReadLine != nil {
 		logrus.WithError(errReadLine).Error("Error reading username")
 
-		return StatePromptRegisterUser
+		return StateQuit
 	}
 
 	logrus.WithField("username", username).Info("Received new username")
@@ -290,7 +293,7 @@ func (w *World) PromptRegisterUser(u *common.User) int {
 	if errReadLine != nil {
 		logrus.WithError(errReadLine).Error("Error reading username")
 
-		return StatePromptRegisterUser
+		return StateQuit
 	}
 
 	if !strings.EqualFold(confirmUsername, "y") {
@@ -303,7 +306,7 @@ func (w *World) PromptRegisterUser(u *common.User) int {
 	if err != nil {
 		logrus.WithError(err).Error("Error reading password")
 
-		return StatePromptRegisterUser
+		return StateQuit
 	}
 	logrus.WithFields(logrus.Fields{"username": username}).Debug("Received password")
 
@@ -311,7 +314,7 @@ func (w *World) PromptRegisterUser(u *common.User) int {
 	if err != nil {
 		logrus.WithError(err).Error("Error reading confirm password")
 
-		return StatePromptRegisterUser
+		return StateQuit
 	}
 	logrus.WithFields(logrus.Fields{"username": username}).Debug("Received confirm password")
 
@@ -374,7 +377,7 @@ func (w *World) PromptMainMenu(u *common.User) int {
 	if errReadLine != nil {
 		logrus.WithError(errReadLine).Error("Error reading menu choice")
 
-		return StatePromptMainMenu
+		return StateQuit
 	}
 
 	menuChoice = strings.ToLower(strings.TrimSpace(menuChoice))
@@ -416,7 +419,7 @@ func (w *World) EnterGame(u *common.User) int {
 	if errReadLine != nil {
 		logrus.WithError(errReadLine).Error("Error reading menu choice")
 
-		return StatePromptCreateCharacter
+		return StateQuit
 	}
 
 	choice = strings.ToLower(strings.TrimSpace(choice))
@@ -443,7 +446,7 @@ func (w *World) PromptCreateCharacter(u *common.User) int {
 	if errReadLine != nil {
 		logrus.WithError(errReadLine).Error("Error reading menu choice")
 
-		return StatePromptMainMenu
+		return StateQuit
 	}
 
 	choice = strings.ToLower(strings.TrimSpace(choice))
@@ -507,6 +510,9 @@ func (w *World) GameLoop(u *common.User) int {
 		line, err := u.Term.ReadLine()
 		if err != nil {
 			logrus.WithError(err).Error("Error reading line")
+
+			return StateQuit
+
 		}
 		line = strings.TrimSpace(line)
 		logrus.WithField("line", line).Debug("Received line")

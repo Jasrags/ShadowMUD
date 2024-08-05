@@ -33,13 +33,16 @@ func main() {
 	logrus.WithField("log_level", logrusLevel).Info("Logger level set")
 
 	w := NewWorld(cfg)
-	// Load data
 	w.LoadData()
 
 	// Start the server
 	server := &ssh.Server{
 		Addr:        net.JoinHostPort(cfg.Host, cfg.Port),
 		IdleTimeout: cfg.IdleTimeout,
+		ConnectionFailedCallback: func(conn net.Conn, err error) {
+			logrus.WithError(err).Error("Connection failed")
+			conn.Close()
+		},
 	}
 	defer server.Close()
 

@@ -2,7 +2,6 @@ package common
 
 import (
 	"fmt"
-	"math"
 	"strings"
 	"sync"
 	"time"
@@ -12,7 +11,7 @@ import (
 )
 
 const (
-	CharactersDataPath = "_data/characters"
+	CharactersFilepath = "_data/characters"
 )
 
 type (
@@ -27,48 +26,72 @@ type (
 		Value float64 `yaml:"-"`
 	}
 	Attributes struct {
-		Body      AttributesInfo  `yaml:"body"`
-		Agility   AttributesInfo  `yaml:"agility"`
-		Reaction  AttributesInfo  `yaml:"reaction"`
-		Strength  AttributesInfo  `yaml:"strength"`
-		Willpower AttributesInfo  `yaml:"willpower"`
-		Logic     AttributesInfo  `yaml:"logic"`
-		Intuition AttributesInfo  `yaml:"intuition"`
-		Charisma  AttributesInfo  `yaml:"charisma"`
-		Essence   AttributesInfoF `yaml:"essence"`
+		Body      Attribute  `yaml:"body"`
+		Agility   Attribute  `yaml:"agility"`
+		Reaction  Attribute  `yaml:"reaction"`
+		Strength  Attribute  `yaml:"strength"`
+		Willpower Attribute  `yaml:"willpower"`
+		Logic     Attribute  `yaml:"logic"`
+		Intuition Attribute  `yaml:"intuition"`
+		Charisma  Attribute  `yaml:"charisma"`
+		Edge      Attribute  `yaml:"edge"`
+		Essence   AttributeF `yaml:"essence"`
+		Magic     Attribute  `yaml:"magic"`
+		Resonance Attribute  `yaml:"resonance"`
 	}
-	InitiativeDice struct {
-		Physical AttributesInfo `yaml:"physical"`
-		// Astral          AttributesInfo `yaml:"astral"`
-		// MatrixAR        AttributesInfo `yaml:"matrix_ar"`
-		// MatrixVRHotSim  AttributesInfo `yaml:"matrix_vr"`
-		// MatrixVRColdSim AttributesInfo `yaml:"hot_sim"`
-		// RiggerAR        AttributesInfo `yaml:"rigger_ar"`
+	Attribute struct {
+		Value       int `yaml:"value"`
+		AugModifier int `yaml:"aug_modifier"`
+		TotalValue  int `yaml:"total_value"`
 	}
-	Equipment struct {
-		Head          Armor  `yaml:"head,omitempty"`
-		Body          Armor  `yaml:"body,omitempty"`
-		Weapon        Weapon `yaml:"primary_weapon,omitempty"`
-		OffHandWeapon Weapon `yaml:"off_hand_weapon,omitempty"`
-		// Weapons   map[string]Weapon    `yaml:"weapons"`
-		// Armor     map[string]Armor     `yaml:"armor"`
-		// Cyberware map[string]Cyberware `yaml:"cyberware"`
-		// Gear      map[string]Gear      `yaml:"gear"`
+	AttributeF struct {
+		Value       float32 `yaml:"value"`
+		AugModifier float32 `yaml:"aug_modifier"`
+		TotalValue  float32 `yaml:"total_value"`
 	}
-	ConditionDamage struct {
-		Physical int `yaml:"physical"`
-		Stun     int `yaml:"stun"`
-	}
+	// InitiativeDice struct {
+	// 	Physical AttributesInfo `yaml:"physical"`
+	// 	// Astral          AttributesInfo `yaml:"astral"`
+	// 	// MatrixAR        AttributesInfo `yaml:"matrix_ar"`
+	// 	// MatrixVRHotSim  AttributesInfo `yaml:"matrix_vr"`
+	// 	// MatrixVRColdSim AttributesInfo `yaml:"hot_sim"`
+	// 	// RiggerAR        AttributesInfo `yaml:"rigger_ar"`
+	// }
+	// Equipment struct {
+	// 	Head          Armor  `yaml:"head,omitempty"`
+	// 	Body          Armor  `yaml:"body,omitempty"`
+	// 	Weapon        Weapon `yaml:"primary_weapon,omitempty"`
+	// 	OffHandWeapon Weapon `yaml:"off_hand_weapon,omitempty"`
+	// 	// Weapons   map[string]Weapon    `yaml:"weapons"`
+	// 	// Armor     map[string]Armor     `yaml:"armor"`
+	// 	// Cyberware map[string]Cyberware `yaml:"cyberware"`
+	// 	// Gear      map[string]Gear      `yaml:"gear"`
+	// }
+	// ConditionDamage struct {
+	// 	Physical int `yaml:"physical"`
+	// 	Stun     int `yaml:"stun"`
+	// }
+	// Initiatives struct {
+	// 	Initiative                int // (Reaction + Intuition) + 1D6
+	// 	AstralInitiative          int // (Intuition x 2) + 2D6
+	// 	MatrixARInitiative        int // (Reaction + Intuition) + 1D6
+	// 	MatrixVRHotSimInitiative  int // (Data Processing + Intuition) + 4D6
+	// 	MatrixVRColdSimInitiative int // (Data Processing + Intuition) + 3D6
+	// 	RiggerARInitiative        int // (Reaction + Intuition) + 1D6
+	// }
 	Characters map[string]*Character
 	Character  struct {
 		lock sync.RWMutex  `yaml:"-"`
 		log  *logrus.Entry `yaml:"-"`
 
 		// Personal Data
-		ID       string   `yaml:"id"`
-		Name     string   `yaml:"name"`
-		Room     *Room    `yaml:"room"`
-		Metatype Metatype `yaml:"-"`
+		ID     string `yaml:"id"`
+		Name   string `yaml:"name"`
+		UserID string `yaml:"user_id"`
+		// RoomID     string   `yaml:"room_id"`
+		// Room       *Room    `yaml:"room"`
+		MetatypeID string    `yaml:"metatype_id"`
+		Metatype   *Metatype `yaml:"-"`
 		// Ethnicity       string          `yaml:"ethnicity"`
 		// Age             int             `yaml:"age"`
 		// Sex             string          `yaml:"sex"`
@@ -79,11 +102,11 @@ type (
 		// PublicAwareness int             `yaml:"public_awareness"`
 		// Karma           int             `yaml:"karma"`
 		// TotalKarma      int             `yaml:"total_karma"`
-		ConditionDamage ConditionDamage `yaml:"condition_damage"`
+		// ConditionDamage ConditionDamage `yaml:"condition_damage"`
 		// Attributes
-		Attributes     Attributes     `yaml:"attributes"`
-		InitiativeDice InitiativeDice `yaml:"initiative_dice"`
-		Equipment      Equipment      `yaml:"equipment"`
+		Attributes Attributes `yaml:"attributes"`
+		// InitiativeDice InitiativeDice `yaml:"initiative_dice"`
+		// Equipment      Equipment      `yaml:"equipment"`
 		// Edge           int            `yaml:"edge"`
 		// EdgePoints     int            `yaml:"edge_points"`
 		// Derived Attributes
@@ -101,15 +124,15 @@ type (
 		// LiftCarry       int `yaml:"-"`
 		// Movement        int `yaml:"-"`
 		// Skills
-		// ActiveSkills map[string]ActiveSkill `yaml:"active_skills"`
+		ActiveSkills ActiveSkills `yaml:"active_skills"`
 		// LanguageSkills  map[string]LanguageSkill  `yaml:"language_skills"`
 		// KnowledgeSkills map[string]KnowledgeSkill `yaml:"knowledge_skills"`
-		// Qualities       map[string]Quality        `yaml:"qualities"`
+		// Qualities Qualities `yaml:"qualities"`
 		// Contacts        map[string]Contact        `yaml:"contacts"`
 		// Identities      map[string]string         `yaml:"identities"`
 		// Lifestyles      map[string]string         `yaml:"lifestyles"`
 		// Currancy        map[string]int            `yaml:"currancy"`
-		// Weapons map[string]Weapon `yaml:"weapons"`
+		// Weapons Weapons `yaml:"weapons"`
 		// RangedWeapons map[string]WeaponRanged `yaml:"ranged_weapons"`
 		// MeleeWeapons  map[string]WeaponMelee  `yaml:"melee_weapons"`
 		// Armor []Armor `yaml:"armor"`
@@ -124,33 +147,25 @@ type (
 		UpdatedAt time.Time `yaml:"updated_at,omitempty"`
 		DeletedAt time.Time `yaml:"deleted_at,omitempty"`
 	}
-	Initiatives struct {
-		Initiative                int // (Reaction + Intuition) + 1D6
-		AstralInitiative          int // (Intuition x 2) + 2D6
-		MatrixARInitiative        int // (Reaction + Intuition) + 1D6
-		MatrixVRHotSimInitiative  int // (Data Processing + Intuition) + 4D6
-		MatrixVRColdSimInitiative int // (Data Processing + Intuition) + 3D6
-		RiggerARInitiative        int // (Reaction + Intuition) + 1D6
-	}
 )
 
-func (ai *AttributesInfo) Reset() {
-	ai.Mods = 0
-	ai.Value = 0
-}
+// func (ai *AttributesInfo) Reset() {
+// 	ai.Mods = 0
+// 	ai.Value = 0
+// }
 
-func (ai *AttributesInfo) Recalculate() {
-	ai.Value = ai.Base + ai.Mods
-}
+// func (ai *AttributesInfo) Recalculate() {
+// 	ai.Value = ai.Base + ai.Mods
+// }
 
-func (ai *AttributesInfoF) Reset() {
-	ai.Mods = 0
-	ai.Value = 0
-}
+// func (ai *AttributesInfoF) Reset() {
+// 	ai.Mods = 0
+// 	ai.Value = 0
+// }
 
-func (ai *AttributesInfoF) Recalculate() {
-	ai.Value = ai.Base + ai.Mods
-}
+// func (ai *AttributesInfoF) Recalculate() {
+// 	ai.Value = ai.Base + ai.Mods
+// }
 
 /*
 If the damage is Stun, it carries over into the Physical damage track.
@@ -286,7 +301,7 @@ func (c *Character) Validate() error {
 }
 
 func (c *Character) Filepath() string {
-	return fmt.Sprintf("%s/%s.yaml", CharactersDataPath, strings.ToLower(c.Name))
+	return fmt.Sprintf("%s/%s.yaml", CharactersFilepath, strings.ToLower(c.Name))
 }
 
 // func (c *Character) MeleeAttack(target *Character) {
@@ -325,55 +340,55 @@ func (c *Character) Filepath() string {
 // 	return hits, criticalHits
 // }
 
-// Will need to make this a function that can be called to recalculate
-func (c *Character) GetConditionPhysical() int {
-	return (c.Attributes.Body.Value / 2) + 8
-}
+// // Will need to make this a function that can be called to recalculate
+// func (c *Character) GetConditionPhysical() int {
+// 	return (c.Attributes.Body.Value / 2) + 8
+// }
 
-// Will need to make this a function that can be called to recalculate
-func (c *Character) GetConditionStun() int {
-	return (c.Attributes.Willpower.Value / 2) + 8
-}
+// // Will need to make this a function that can be called to recalculate
+// func (c *Character) GetConditionStun() int {
+// 	return (c.Attributes.Willpower.Value / 2) + 8
+// }
 
-// TODO: Indomitable quality can modify these limits
-// Will need to make this a function that can be called to recalculate
-func (c *Character) GetPhysicalLimit() int {
-	s := float64(c.Attributes.Strength.Value)
-	b := float64(c.Attributes.Body.Value)
-	r := float64(c.Attributes.Reaction.Value)
+// // TODO: Indomitable quality can modify these limits
+// // Will need to make this a function that can be called to recalculate
+// func (c *Character) GetPhysicalLimit() int {
+// 	s := float64(c.Attributes.Strength.Value)
+// 	b := float64(c.Attributes.Body.Value)
+// 	r := float64(c.Attributes.Reaction.Value)
 
-	return int(math.Ceil((s*2 + b + r) / 3))
-}
+// 	return int(math.Ceil((s*2 + b + r) / 3))
+// }
 
-// Will need to make this a function that can be called to recalculate
-func (c *Character) GetMentalLimit() int {
-	l := float64(c.Attributes.Logic.Value)
-	i := float64(c.Attributes.Intuition.Value)
-	w := float64(c.Attributes.Willpower.Value)
+// // Will need to make this a function that can be called to recalculate
+// func (c *Character) GetMentalLimit() int {
+// 	l := float64(c.Attributes.Logic.Value)
+// 	i := float64(c.Attributes.Intuition.Value)
+// 	w := float64(c.Attributes.Willpower.Value)
 
-	return int(math.Ceil((l*2 + i + w) / 3))
-}
+// 	return int(math.Ceil((l*2 + i + w) / 3))
+// }
 
-// Will need to make this a function that can be called to recalculate
-func (c *Character) GetSocialLimit() int {
-	ch := float64(c.Attributes.Charisma.Value)
-	w := float64(c.Attributes.Willpower.Value)
-	e := c.Attributes.Essence.Value
+// // Will need to make this a function that can be called to recalculate
+// func (c *Character) GetSocialLimit() int {
+// 	ch := float64(c.Attributes.Charisma.Value)
+// 	w := float64(c.Attributes.Willpower.Value)
+// 	e := c.Attributes.Essence.Value
 
-	return int(math.Ceil((ch*2 + w + e) / 3))
-}
+// 	return int(math.Ceil((ch*2 + w + e) / 3))
+// }
 
-// Return base initiative values
-func (c *Character) GetInitiative() Initiatives {
-	// TODO: Add DataProcessing
-	return Initiatives{
-		Initiative:         (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value),
-		AstralInitiative:   (c.Attributes.Intuition.Value * 2),
-		MatrixARInitiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value),
-		// MatrixVRHotSimInitiative:  (c.DataProcessing + c.Intuition),
-		// MatrixVRColdSimInitiative: (c.DataProcessing + c.Intuition),
-	}
-}
+// // Return base initiative values
+// func (c *Character) GetInitiative() Initiatives {
+// 	// TODO: Add DataProcessing
+// 	return Initiatives{
+// 		Initiative:         (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value),
+// 		AstralInitiative:   (c.Attributes.Intuition.Value * 2),
+// 		MatrixARInitiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value),
+// 		// MatrixVRHotSimInitiative:  (c.DataProcessing + c.Intuition),
+// 		// MatrixVRColdSimInitiative: (c.DataProcessing + c.Intuition),
+// 	}
+// }
 
 /*
 Use base initiative values to roll initiative
@@ -386,23 +401,23 @@ Matrix VR (Hot Sim)     Data Processing + Intuition + 4D6
 Matrix VR (Cold Sim)    Data Processing + Intuition + 3D6
 Rigger AR               Reaction + Intuition + 1D6
 */
-func (c *Character) RollInitiative() Initiatives {
-	// TODO: Add DataProcessing
-	total1, _ := utils.RollDice(c.InitiativeDice.Physical.Value)
-	// total2, _ := utils.RollDice(c.InitiativeDice.Astral.Value)
-	// total3, _ := utils.RollDice(c.InitiativeDice.MatrixAR.Value)
-	// total4, _ := utils.RollDice(c.InitiativeDice.MatrixVRHotSim.Value)
-	// total5, _ := utils.RollDice(c.InitiativeDice.MatrixVRColdSim.Value)
-	// total6, _ := utils.RollDice(c.InitiativeDice.RiggerAR.Value)
-	return Initiatives{
-		Initiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total1,
-		// AstralInitiative:   (c.Attributes.Intuition.Value * 2) + total2,
-		// MatrixARInitiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total3,
-		// MatrixVRHotSimInitiative:  (c.DataProcessing + c.Intuition)+total4,
-		// MatrixVRColdSimInitiative: (c.DataProcessing + c.Intuition)+total5,
-		// RiggerARInitiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total6,
-	}
-}
+// func (c *Character) RollInitiative() Initiatives {
+// TODO: Add DataProcessing
+// total1, _ := utils.RollDice(c.InitiativeDice.Physical.Value)
+// total2, _ := utils.RollDice(c.InitiativeDice.Astral.Value)
+// total3, _ := utils.RollDice(c.InitiativeDice.MatrixAR.Value)
+// total4, _ := utils.RollDice(c.InitiativeDice.MatrixVRHotSim.Value)
+// total5, _ := utils.RollDice(c.InitiativeDice.MatrixVRColdSim.Value)
+// total6, _ := utils.RollDice(c.InitiativeDice.RiggerAR.Value)
+// return Initiatives{
+// Initiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total1,
+// AstralInitiative:   (c.Attributes.Intuition.Value * 2) + total2,
+// MatrixARInitiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total3,
+// MatrixVRHotSimInitiative:  (c.DataProcessing + c.Intuition)+total4,
+// MatrixVRColdSimInitiative: (c.DataProcessing + c.Intuition)+total5,
+// RiggerARInitiative: (c.Attributes.Reaction.Value + c.Attributes.Intuition.Value) + total6,
+// }
+// }
 
 /*
 Composure (WIL + CHA)
@@ -486,33 +501,33 @@ Composure is a Willpower + Charisma Test, with a threshold based on the severity
 // }
 // }
 
-func (c *Character) Recalculate() {
-	// c.RecalculateCyberware()
-	// c.RecalculateBioware()
-	c.RecalculateAttributes()
-	// c.RecalculateInitiativeDice()
-}
+// func (c *Character) Recalculate() {
+// 	// c.RecalculateCyberware()
+// 	// c.RecalculateBioware()
+// 	// c.RecalculateAttributes()
+// 	// c.RecalculateInitiativeDice()
+// }
 
-func (c *Character) RecalculateAttributes() {
-	c.Attributes.Body.Recalculate()
-	c.Attributes.Agility.Recalculate()
-	c.Attributes.Reaction.Recalculate()
-	c.Attributes.Strength.Recalculate()
-	c.Attributes.Willpower.Recalculate()
-	c.Attributes.Logic.Recalculate()
-	c.Attributes.Intuition.Recalculate()
-	c.Attributes.Charisma.Recalculate()
-	c.Attributes.Essence.Recalculate()
-}
+// func (c *Character) RecalculateAttributes() {
+// 	c.Attributes.Body.Recalculate()
+// 	c.Attributes.Agility.Recalculate()
+// 	c.Attributes.Reaction.Recalculate()
+// 	c.Attributes.Strength.Recalculate()
+// 	c.Attributes.Willpower.Recalculate()
+// 	c.Attributes.Logic.Recalculate()
+// 	c.Attributes.Intuition.Recalculate()
+// 	c.Attributes.Charisma.Recalculate()
+// 	c.Attributes.Essence.Recalculate()
+// }
 
-func (c *Character) RecalculateInitiativeDice() {
-	c.InitiativeDice.Physical.Recalculate()
-	// c.InitiativeDice.Astral.Recalculate()
-	// c.InitiativeDice.MatrixAR.Recalculate()
-	// c.InitiativeDice.MatrixVRHotSim.Recalculate()
-	// c.InitiativeDice.MatrixVRColdSim.Recalculate()
-	// c.InitiativeDice.RiggerAR.Recalculate()
-}
+// func (c *Character) RecalculateInitiativeDice() {
+// 	c.InitiativeDice.Physical.Recalculate()
+// 	// c.InitiativeDice.Astral.Recalculate()
+// 	// c.InitiativeDice.MatrixAR.Recalculate()
+// 	// c.InitiativeDice.MatrixVRHotSim.Recalculate()
+// 	// c.InitiativeDice.MatrixVRColdSim.Recalculate()
+// 	// c.InitiativeDice.RiggerAR.Recalculate()
+// }
 
 func (c *Character) Save() error {
 	c.log.Debug("Saving character")
@@ -614,3 +629,27 @@ Notoriety							Public Awareness 											Street Cred
 // Body + Augmentation bonuses — Charisma — Resonance — Intuition —
 // Public Awareness
 // Street Cred
+
+var CoreCharacters = []*Character{
+	{
+		ID:         "1",
+		Name:       "Test",
+		UserID:     "5cd3ae71-6b77-4ff4-ad8a-7c3b9878eb38",
+		MetatypeID: "elf",
+		Attributes: Attributes{
+			Body:      Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+			Agility:   Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+			Reaction:  Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+			Strength:  Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+			Willpower: Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+			Logic:     Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+			Intuition: Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+			Charisma:  Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+			Edge:      Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+			Essence:   AttributeF{Value: 1, AugModifier: 0, TotalValue: 1},
+			Magic:     Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+			Resonance: Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
+		},
+		CreatedAt: time.Now(),
+	},
+}

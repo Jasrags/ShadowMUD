@@ -19,8 +19,10 @@ type (
 		Modifiers     []Modifier  `yaml:"modifiers"`
 		Cost          int         `yaml:"cost"`
 		RuleSource    RuleSource  `yaml:"rule_source"`
+		Hidden        bool        `yaml:"hidden,omitempty"`
 	}
-	Quality struct {
+	Qualities map[string]*QualitySpec
+	Quality   struct {
 		ID        string       `yaml:"id,omitempty"`
 		Rating    int          `yaml:"rating,omitempty"`
 		Modifiers []Modifier   `yaml:"modifiers"`
@@ -33,6 +35,23 @@ func NewQuality() *Quality {
 }
 
 var CoreQualties = []QualitySpec{
+	// Racial Qualities
+	{
+		ID:          "low_light_vision",
+		Type:        QualityTypePositive,
+		Name:        "Low-Light Vision",
+		Description: "The character can see in dim light as if it were normal light. The character can see twice as far as a normal human in starlight, moonlight, and similar conditions of poor illumination. This quality is common among elves and some other metatypes.",
+		RuleSource:  RuleSourceSR5Core,
+		Hidden:      true,
+	},
+	{
+		ID:          "thermographic_vision",
+		Type:        QualityTypePositive,
+		Name:        "Thermographic Vision",
+		Description: "The character can see heat sources. The character can see in the infrared spectrum, allowing him to see warm objects in the dark. This quality is common among trolls and some other metatypes.",
+		RuleSource:  RuleSourceSR5Core,
+		Hidden:      true,
+	},
 	{
 		ID:          "ambidextrous",
 		Type:        QualityTypePositive,
@@ -264,6 +283,7 @@ var CoreQualties = []QualitySpec{
 		Description: "The character is naturally resistant to a particular toxin or pathogen. The character receives a +1 dice pool modifier on all tests to resist the effects of that toxin or pathogen.",
 		Cost:        4, // OR 8 KARMA
 		RuleSource:  RuleSourceSR5Core,
+		// +2 dice
 	},
 	{
 		ID:          "spirit_affinity",
