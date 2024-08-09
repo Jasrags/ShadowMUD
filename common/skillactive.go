@@ -2,19 +2,43 @@ package common
 
 const (
 	ActiveSkillsFilepath = "_data/skills/active"
+
+	// Skill Categories
+	SkillCategoryCombat        SkillCategory = "Combat Active"
+	SkillCategoryPhysical      SkillCategory = "Physical Active"
+	SkillCategorySocial        SkillCategory = "Social Active"
+	SkillCategoryMagical       SkillCategory = "Magical Active"
+	SkillCategoryPseudoMagical SkillCategory = "Pseudo-Magical Active"
+	SkillCategoryResonance     SkillCategory = "Resonance Active"
+	SkillCategoryTechnical     SkillCategory = "Technical Active"
+	SkillCategoryVehicle       SkillCategory = "Vehicle Active"
+	// Knowledge Skills
+	SkillCategoryAcademic     SkillCategory = "Academic"
+	SkillCategoryInterest     SkillCategory = "Interest"
+	SkillCategoryLanguage     SkillCategory = "Language"
+	SkillCategoryProfessional SkillCategory = "Professional"
+	SkillCategoryStreet       SkillCategory = "Street"
 )
 
 type (
+	SkillCategory    string
 	ActiveSkillSpecs map[string]*ActiveSkillSpec
 	ActiveSkillSpec  struct {
-		ID              string        `yaml:"id,omitempty"`
-		Name            string        `yaml:"name"`
-		Description     string        `yaml:"description"`
-		IsDefaultable   bool          `yaml:"is_defaultable"`
-		LinkedAttribute AttributeType `yaml:"linked_attribute"`
-		SkillGroup      string        `yaml:"skill_group,omitempty"`
-		Specializations []string      `yaml:"specializations"`
-		RuleSource      RuleSource    `yaml:"rule_source"`
+		ID                     string        `yaml:"id,omitempty"`
+		Name                   string        `yaml:"name"`
+		Hidden                 bool          `yaml:"hidden,omitempty"`
+		Category               SkillCategory `yaml:"category"`
+		Description            string        `yaml:"description"`
+		Defaultable            bool          `yaml:"defaultable"`
+		Exotic                 bool          `yaml:"exotic,omitempty"`
+		RequiresGroundMovement bool          `yaml:"requires_ground_movement,omitempty"`
+		RequiresSwimMovement   bool          `yaml:"requires_swim_movement,omitempty"`
+		RequiresFlyMovement    bool          `yaml:"requires_fly_movement,omitempty"`
+		LinkedAttribute        AttributeType `yaml:"linked_attribute"`
+		SkillGroup             string        `yaml:"skill_group,omitempty"`
+		Specializations        []string      `yaml:"specializations"`
+		RuleSource             RuleSource    `yaml:"rule_source"`
+		Page                   string        `yaml:"page"`
 	}
 	ActiveSkills map[string]*ActiveSkill
 	ActiveSkill  struct {
@@ -32,16 +56,16 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "diving",
 		Name:            "Diving",
 		Description:     "Diving brings together a wide array of actions performed underwater. This skill can be applied when diving, swimming underwater, using complex diving equipment, and holding your breath.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeBody,
-		Specializations: []string{"Liquid Breathing Apparatus", "Mixed Gas", "Oxygen Extraction", "SCUBA", "Arctic", "Cave", "Commercial", "Military", "Controlled Hyperventilation"},
+		Specializations: []string{"Arctic", " Cave", " Commercial", " Controlled Hyperventilation", " Liquid Breathing Apparatus", " Military", " Mixed Gas", " Oxygen Extraction", " SCUBA", " [Other Breathing Apparatus]", " [Other Condition]"},
 		RuleSource:      RuleSourceSR5Core,
 	},
 	{
 		ID:              "free_fall",
 		Name:            "Free-Fall",
 		Description:     "This skill covers any jump from height, including leaps from a third-floor window to jumps from a plane at high altitude. If it involves any kind of attempt to slow or control your fall, this covers it, so it includes skydiving with a parachute, flying a wingsuit, or descending on a line, bungee cord, or zipline.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeBody,
 		Specializations: []string{"BASE Jumping", "Break-Fall", "Bungee", "HALO", "Low Altitude", "Parachute", "Static Line", "Wingsuit", "Zipline"},
 		RuleSource:      RuleSourceSR5Core,
@@ -51,7 +75,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "archery",
 		Name:            "Archery",
 		Description:     "Archery is used to fire string-loaded projectile weapons. An archer is familiar with many different styles of bow and the multitude of arrows that can be used to maximum effect.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Bow", "Crossbow", "Non-Standard Ammunition", "Slingshot"},
 		RuleSource:      RuleSourceSR5Core,
@@ -60,7 +84,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "automatics",
 		Name:            "Automatics",
 		Description:     "The Automatics skill covers a specific subset of firearms larger than handheld pistols but smaller than rifles. This category includes submachine guns and other fully automatic carbines.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Assault Rifles", "Cyber-Implant", "Machine Pistols", "Submachine Guns"},
 		RuleSource:      RuleSourceSR5Core,
@@ -69,7 +93,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "blades",
 		Name:            "Blades",
 		Description:     "Slice and dice! The Blades skill includes the use of all handheld slashing and stabbing weapons. You can use a range of edged weapons including daggers, swords, and axes.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Axes", "Knives", "Swords", "Parrying"},
 		RuleSource:      RuleSourceSR5Core,
@@ -78,7 +102,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "clubs",
 		Name:            "Clubs",
 		Description:     "Clubs governs the use of all hand-held bludgeoning instruments. With this skill you can turn any blunt item, be it a baseball bat, crutch, or mace, into a weapon.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Batons", "Hammers", "Saps", "Staves", "Parrying"},
 		RuleSource:      RuleSourceSR5Core,
@@ -87,7 +111,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "escape_artist",
 		Name:            "Escape Artist",
 		Description:     "Escape Artist measures the character’s ability to escape from bindings by using body contortion and manual dexterity.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Cuffs", "Ropes", "Zip Ties", "Contortionism"},
 		RuleSource:      RuleSourceSR5Core,
@@ -96,7 +120,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "exotic_melee_weapon",
 		Name:            "Exotic Melee Weapon",
 		Description:     "Sometimes a regular gun or blade won’t do the job and you need something fancier. Or weirder. This skill must be taken once for each unusual ranged weapon you want to use. Some examples include blowguns, gyrojet pistols, flamethrowers, and lasers.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		RuleSource:      RuleSourceSR5Core,
 	},
@@ -104,7 +128,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "exotic_ranged_weapon",
 		Name:            "Exotic Ranged Weapon",
 		Description:     "Sometimes a regular gun or blade won’t do the job and you need something fancier. Or weirder. This skill must be taken once for each unusual ranged weapon you want to use. Some examples include blowguns, gyrojet pistols, flamethrowers, and lasers.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		RuleSource:      RuleSourceSR5Core,
 	},
@@ -112,7 +136,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "gunnery",
 		Name:            "Gunnery",
 		Description:     "Gunnery is used when firing any vehicle-mounted weapon, regardless of how or where the weapon is mounted. This skill extends to manual and sensor-enhanced gunnery.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Artillery", "Ballistic", "Energy", "Guided Missile", "Rocket"},
 		RuleSource:      RuleSourceSR5Core,
@@ -121,7 +145,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "gymnastics",
 		Name:            "Gymnastics",
 		Description:     "Gymnastics measures your balance, general athleticism, and all-around ability to use your body.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Balance", "Climbing", "Dance", "Leaping", "Parkour", "Rolling"},
 		RuleSource:      RuleSourceSR5Core,
@@ -130,7 +154,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "heavy_weapons",
 		Name:            "Heavy Weapons",
 		Description:     "The term heavy weapon is designated for all projectile weaponry larger than an assault rifle, such as grenade launchers, machine guns, and assault cannons. This skill is exclusive to handheld and non-vehicle-mounted weaponry—if you’ve got a gun mounted on or in a vehicle, use Gunnery.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Assault Cannons", "Grenade Launchers", "Guided Missiles", "Machine Guns", "Rocket Launchers"},
 		RuleSource:      RuleSourceSR5Core,
@@ -139,7 +163,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "locksmith",
 		Name:            "Locksmith",
 		Description:     "This skill covers building, repairing, and opening mechanical and electronic locks. While largely banished to antiquity, traditional mechanical locking mechanisms are still in use around the globe, often as throwbacks or backups. Electronic locks are far more common and quite susceptible to your ministrations.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Combination", "Keypad", "Maglock", "Tumbler", "Voice Recognition"},
 		RuleSource:      RuleSourceSR5Core,
@@ -148,7 +172,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "longarms",
 		Name:            "Longarms",
 		Description:     "The Longarms skill is for firing extended-barrel weapons such as sporting rifles and sniper rifles. This grouping also includes weapons like shotguns that are designed to be braced against the shoulder.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Extended-Range Shots", "Long-Range Shots", "Shotguns", "Sniper Rifles"},
 		RuleSource:      RuleSourceSR5Core,
@@ -157,7 +181,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "palming",
 		Name:            "Palming",
 		Description:     "Palming is sleight-of-hand skill that gives a character the ability to snag, hide, and pass off small objects.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Legerdemain", "Pickpocket", "Pilfering"},
 		RuleSource:      RuleSourceSR5Core,
@@ -166,7 +190,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "pistols",
 		Name:            "Pistols",
 		Description:     "The Pistols skill is for firing handguns. This category includes hold-out pistols, light pistols, heavy pistols, machine pistols, and revolvers.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Hold-Out Pistols", "Light Pistols", "Heavy Pistols", "Machine Pistols", "Revolvers"},
 		RuleSource:      RuleSourceSR5Core,
@@ -175,7 +199,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "sneaking",
 		Name:            "Sneaking",
 		Description:     "Need to get where you’re not supposed to be? This skill allows you to remain inconspicuous in various situations.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Jungle", "Urban", "Desert"},
 		RuleSource:      RuleSourceSR5Core,
@@ -184,7 +208,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "throwing_weapon",
 		Name:            "Throwing Weapon",
 		Description:     "Throwing Weapons is a broad-based attack skill that can be used for any handheld item that is thrown by the user as a weapon.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Aerodynamic", "Blades", "NonAerodynamic"},
 		RuleSource:      RuleSourceSR5Core,
@@ -193,7 +217,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "unarmed_combat",
 		Name:            "Unarmed Combat",
 		Description:     "Unarmed Combat covers the various self-defense and attack moves that employ the body as a primary weapon. This includes a wide array of martial arts along with the use of cybernetic implant weaponry and the fighting styles that sprung up around those implants.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{"Blocking", "Cyber Implants", "Subduing Combat", "Martial Art"},
 		RuleSource:      RuleSourceSR5Core,
@@ -203,7 +227,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "pilot_aerospace",
 		Name:            "Pilot Aerospace",
 		Description:     "Aerospace vehicles include all reduced- and zero-gravity aircraft capable of suborbital or extra-orbital flight.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeReaction,
 		Specializations: []string{"Deep Space", "Launch Craft", "Remote Operation", "Semiballistic", "Suborbital"},
 		RuleSource:      RuleSourceSR5Core,
@@ -212,7 +236,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "pilot_aircraft",
 		Name:            "Pilot Aircraft",
 		Description:     "This skill is used to pilot any manned or unmanned aircraft operating solely within planetary atmosphere.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeReaction,
 		Specializations: []string{"Fixed-Wing", "Lighter-Than-Air", "Remote Operation", "Rotary Wing", "Tilt Wing", "Vectored Thrust"},
 		RuleSource:      RuleSourceSR5Core,
@@ -221,7 +245,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "pilot_exotic_vehicle",
 		Name:            "Pilot Exotic Vehicle",
 		Description:     "Characters must take this skill one time for each specific exotic vehicle. Characters may control the vehicle remotely with this skill where possible.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeReaction,
 		RuleSource:      RuleSourceSR5Core,
 	},
@@ -237,7 +261,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "pilot_walker",
 		Name:            "Pilot Walker",
 		Description:     "Any vehicle that walks on two or more legs is piloted through this skill. Characters may control the walker physically or remotely.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeReaction,
 		Specializations: []string{"Biped", "Multiped", "Quadruped", "Remote"},
 		RuleSource:      RuleSourceSR5Core,
@@ -255,7 +279,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "running",
 		Name:            "Running",
 		Description:     "Running, as you may guess, is about how much ground you can cover quickly.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeStrength,
 		Specializations: []string{"Distance", "Sprinting", "Desert", "Urban", "Wilderness"},
 		RuleSource:      RuleSourceSR5Core,
@@ -264,7 +288,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "swimming",
 		Name:            "Swimming",
 		Description:     "This skill determines the character’s ability to swim in various bodies of water. The skill level affects the distance and speed at which a character can swim.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeStrength,
 		Specializations: []string{"Dash", "Long Distance"},
 		RuleSource:      RuleSourceSR5Core,
@@ -282,7 +306,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "survival",
 		Name:            "Survival",
 		Description:     "In the desert with nothing more than a tin cup, a poncho, and an iron rod? You’ll need this skill to help you get out alive. Survival is the ability to stay alive in extreme environmental conditions for extended periods of time. The skill governs a character’s ability to perform vital outdoor tasks such as start a fire, build a shelter, scrounge for food, etc. in hostile environments.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeWillpower,
 		Specializations: []string{"Desert", "Forest", "Jungle", "Mountain", "Polar", "Urban", "Other terrain"},
 		RuleSource:      RuleSourceSR5Core,
@@ -292,7 +316,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "animal_handling",
 		Name:            "Animal Handling",
 		Description:     "This skill governs the training, care, riding (if they’re big enough), and control of non-sentient animals. Competent trainers have the ability to handle multiple animals. It is even possible to approach an untrained animal and get it to trust you, or at least not eat you.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{"By animal (Cat, Bird, Hell Hound, Horse, Dolphin, etc.)", "Herding", "Riding", "Training"},
 		RuleSource:      RuleSourceSR5Core,
@@ -301,7 +325,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "con",
 		Name:            "Con",
 		Description:     "Con governs the ability to manipulate or fool an NPC during a social encounter. This skill covers a range of confidence games as well as the principles behind those cons.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{"Fast Talking", "Seduction"},
 		RuleSource:      RuleSourceSR5Core,
@@ -310,7 +334,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "etiquette",
 		Name:            "Etiquette",
 		Description:     "Etiquette represents the level of understanding and awareness of proper social rituals. The skill works as a sort of social version of Sneak, allowing you to move unimpeded through various social situations. Etiquette also serves as a social safety net in case a player botches a social situation in a way a skilled character would not.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{"By culture or subculture (Corporate, High Society, Media, Mercenary, Street, Yakuza, etc.)"},
 		RuleSource:      RuleSourceSR5Core,
@@ -319,7 +343,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "impersonation",
 		Name:            "Impersonation",
 		Description:     "Impersonation is the ability to assume the identity of another person, including voice and physical mannerisms. The skill is limited by the physical abilities of the character. A dwarf might be able to impersonate a troll over a commlink, but the illusion shatters when he is face to face with his target.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{"Dwarf", "Elf", "Human", "Ork", "Troll)"},
 		RuleSource:      RuleSourceSR5Core,
@@ -328,7 +352,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "instruction",
 		Name:            "Instruction",
 		Description:     "Instruction governs the ability to teach people. The skill level helps determine how comfortable the instructor is delivering new material as well as how complex of a skill may be taught.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{"By Active or Knowledge skill category (Combat, Language, Magical, Academic Knowledge, Street Knowledge, etc.)"},
 		RuleSource:      RuleSourceSR5Core,
@@ -337,7 +361,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "intimidation",
 		Name:            "Intimidation",
 		Description:     "Intimidation is about creating the impression that you are more menacing than another person in order to get them to do what you want. The skill may be applied multiple ways, from negotiation to interrogation. Intimidation is an Opposed Intimidation + Charisma [Social] Test against the target’s Charisma + Willpower, modified by the appropriate entries on the Social Modifiers Table. ",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{"Interrogation", "Mental", "Physical"},
 		RuleSource:      RuleSourceSR5Core,
@@ -346,7 +370,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "leadership",
 		Name:            "Leadership",
 		Description:     "Leadership is the ability to direct and motivate others. It’s like Con, except rather than using deception you’re using a position of authority. This skill is especially helpful in situations where the will of a teammate is shaken or someone is being asked to do something uncomfortable. The Leadership skill is not meant to replace or make up for poor teamwork. When using Leadership make an opposed test Charisma + Leadership.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{"Command", "Direct", "Inspire", "Rally"},
 		RuleSource:      RuleSourceSR5Core,
@@ -355,7 +379,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "negotiation",
 		Name:            "Negotiation",
 		Description:     "Negotiation governs a character’s ability to apply their charisma, tactics, and knowledge of situational psychology in order to create a better position when making deals.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{"Bargaining", "Contracts", "Diplomacy"},
 		RuleSource:      RuleSourceSR5Core,
@@ -364,7 +388,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "performance",
 		Name:            "Performance",
 		Description:     "This skill governs the ability to execute a performing art. Performance is to the arts what Artisan is to craft. The performer uses her skill to entertain or even captivate an audience.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{"By performance art (Presentation, Acting, Comedy, specific Musical Instrument, etc.)"},
 		RuleSource:      RuleSourceSR5Core,
@@ -374,7 +398,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "academic_knowledge",
 		Name:            "Academic Knowledge",
 		Description:     "Academic knowledge is linked to Logic. This type of knowledge includes university subjects such as history, science, design, technology, magical theory, and the people and organizations with fingers in those pies. The humanities (cultures, art, philosophy, and so on) are also included in this category.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{"By trigger (Command, Contact, Time), by spell type (Combat Spells, Detection Spells, etc.)"},
 		RuleSource:      RuleSourceSR5Core,
@@ -559,7 +583,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "disguise",
 		Name:            "Disguise",
 		Description:     "Disguise covers non-magical forms of masking your identity, including makeup and enhancement.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeIntuition,
 		Specializations: []string{"Camouflage", "Cosmetic", "Theatrical", "Trideo & Video"},
 		RuleSource:      RuleSourceSR5Core,
@@ -575,7 +599,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 	{
 		ID:              "language",
 		Name:            "Language",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		Description:     "Language is the ability to converse in a specific language through written and verbal means. Characters who speak multiple languages must purchase a separate language skill for each language.",
 		LinkedAttribute: AttributeIntuition,
 		Specializations: []string{"English, Japanese, Sperethiel"},
@@ -585,7 +609,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "navigation",
 		Name:            "Navigation",
 		Description:     "Navigation governs the use of technology and natural instinct to navigate through territory. This skill enables characters to read maps, use GPS devices, follow AR nav points, or follow a course by landmarks or general direction sense. Navigation applies to both AR and non-AR-enhanced environments.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeIntuition,
 		Specializations: []string{"Augmented Reality Markers", "Celestial", "Compass", "Maps", "GPS "},
 		RuleSource:      RuleSourceSR5Core,
@@ -594,7 +618,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "perception",
 		Name:            "Perception",
 		Description:     "Perception refers to the ability to spot anomalies in everyday situations, making it one of the key skills a shadowrunner needs.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeIntuition,
 		Specializations: []string{"Hearing", "Sight", "Smell", "Taste", "Touch"},
 		RuleSource:      RuleSourceSR5Core,
@@ -611,7 +635,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "tracking",
 		Name:            "Tracking",
 		Description:     "This skill confers the ability to detect the passage of metahumans and other game through terrain and use those clues to follow that individual. This skill also allows you to identify unmarked trails and common game paths is various environments.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeIntuition,
 		Specializations: []string{"Urban", "Desert", "Forest", "Mountain", "Polar", "Jungle"},
 		RuleSource:      RuleSourceSR5Core,
@@ -621,7 +645,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		ID:              "alchemy",
 		Name:            "Alchemy",
 		Description:     "Alchemy is used to create substances that store spells. Alchemy is most commonly used to brew potions, distill magical reagents, and even create orichalcum.",
-		IsDefaultable:   true,
+		Defaultable:     true,
 		LinkedAttribute: AttributeMagic,
 		Specializations: []string{" By trigger (Command, Contact, Time), by spell type (Combat Spells, Detection Spells, etc.)"},
 		RuleSource:      RuleSourceSR5Core,

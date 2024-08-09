@@ -6,6 +6,7 @@ import (
 
 	"github.com/Jasrags/ShadowMUD/config"
 	"github.com/Jasrags/ShadowMUD/utils"
+	"github.com/fatih/structs"
 
 	"github.com/gliderlabs/ssh"
 	"github.com/sirupsen/logrus"
@@ -20,8 +21,17 @@ var (
 )
 
 func main() {
-	utils.LoadStructFromYAML(ConfigFilepath, &cfg)
+	if err := utils.LoadStructFromYAML(ConfigFilepath, &cfg); err != nil {
+		logrus.WithError(err).Fatal("Could not load server configuration")
+	}
+
 	logrus.WithField("config", cfg).Info("Loaded server configuration")
+
+	logrus.Info("==================================")
+	for k, v := range structs.Map(cfg) {
+		logrus.Infof("%24s: %v", k, v)
+	}
+	logrus.Info("==================================")
 
 	// set up logging
 	logrusLevel, err := logrus.ParseLevel(cfg.LogLevel)
@@ -45,6 +55,7 @@ func main() {
 		},
 	}
 	defer server.Close()
+	defer close(w.commandQueue)
 
 	// handle connections
 	ssh.Handle(w.Handler)

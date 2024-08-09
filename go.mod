@@ -3,6 +3,7 @@ module github.com/Jasrags/ShadowMUD
 go 1.22.3
 
 require (
+	github.com/fatih/structs v1.1.0
 	github.com/gliderlabs/ssh v0.3.7
 	github.com/google/uuid v1.6.0
 	github.com/i582/cfmt v1.4.0

@@ -85,11 +85,11 @@ type (
 		log  *logrus.Entry `yaml:"-"`
 
 		// Personal Data
-		ID     string `yaml:"id"`
-		Name   string `yaml:"name"`
-		UserID string `yaml:"user_id"`
-		// RoomID     string   `yaml:"room_id"`
-		// Room       *Room    `yaml:"room"`
+		ID         string    `yaml:"id"`
+		Name       string    `yaml:"name"`
+		UserID     string    `yaml:"user_id"`
+		RoomID     string    `yaml:"room_id"`
+		Room       *Room     `yaml:"room"`
 		MetatypeID string    `yaml:"metatype_id"`
 		Metatype   *Metatype `yaml:"-"`
 		// Ethnicity       string          `yaml:"ethnicity"`
