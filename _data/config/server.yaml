@@ -4,6 +4,10 @@ log_level: DEBUG
 max_connections: 100
 login_enabled: true
 login_max_attempts: 3
+username_min_length: 3
+username_max_length: 24
+character_name_min_length: 3
+character_name_max_length: 24
 password_min_length: 6
 password_max_length: 72
 password_bcrypt_cost: 10

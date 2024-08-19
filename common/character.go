@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/Jasrags/ShadowMUD/utils"
+
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -15,40 +17,25 @@ const (
 )
 
 type (
-	AttributesInfo struct {
-		Base  int `yaml:"base"`
-		Mods  int `yaml:"-"`
-		Value int `yaml:"-"`
-	}
-	AttributesInfoF struct {
-		Base  float64 `yaml:"base"`
-		Mods  float64 `yaml:"-"`
-		Value float64 `yaml:"-"`
-	}
-	Attributes struct {
-		Body      Attribute  `yaml:"body"`
-		Agility   Attribute  `yaml:"agility"`
-		Reaction  Attribute  `yaml:"reaction"`
-		Strength  Attribute  `yaml:"strength"`
-		Willpower Attribute  `yaml:"willpower"`
-		Logic     Attribute  `yaml:"logic"`
-		Intuition Attribute  `yaml:"intuition"`
-		Charisma  Attribute  `yaml:"charisma"`
-		Edge      Attribute  `yaml:"edge"`
-		Essence   AttributeF `yaml:"essence"`
-		Magic     Attribute  `yaml:"magic"`
-		Resonance Attribute  `yaml:"resonance"`
-	}
-	Attribute struct {
-		Value       int `yaml:"value"`
-		AugModifier int `yaml:"aug_modifier"`
-		TotalValue  int `yaml:"total_value"`
-	}
-	AttributeF struct {
-		Value       float32 `yaml:"value"`
-		AugModifier float32 `yaml:"aug_modifier"`
-		TotalValue  float32 `yaml:"total_value"`
-	}
+	// Attributes struct {
+	// 	Body      Attribute[int]     `yaml:"body"`
+	// 	Agility   Attribute[int]     `yaml:"agility"`
+	// 	Reaction  Attribute[int]     `yaml:"reaction"`
+	// 	Strength  Attribute[int]     `yaml:"strength"`
+	// 	Willpower Attribute[int]     `yaml:"willpower"`
+	// 	Logic     Attribute[int]     `yaml:"logic"`
+	// 	Intuition Attribute[int]     `yaml:"intuition"`
+	// 	Charisma  Attribute[int]     `yaml:"charisma"`
+	// 	Edge      Attribute[int]     `yaml:"edge"`
+	// 	Essence   Attribute[float64] `yaml:"essence"`
+	// 	Magic     Attribute[int]     `yaml:"magic"`
+	// 	Resonance Attribute[int]     `yaml:"resonance"`
+	// }
+	// Attribute[T int | float64] struct {
+	// 	Value       T `yaml:"value"`
+	// 	AugModifier T `yaml:"aug_modifier"`
+	// 	TotalValue  T `yaml:"total_value"`
+	// }
 	// InitiativeDice struct {
 	// 	Physical AttributesInfo `yaml:"physical"`
 	// 	// Astral          AttributesInfo `yaml:"astral"`
@@ -81,15 +68,14 @@ type (
 	// }
 	Characters map[string]*Character
 	Character  struct {
-		lock sync.RWMutex  `yaml:"-"`
-		log  *logrus.Entry `yaml:"-"`
+		sync.RWMutex `yaml:"-"`
+		log          *logrus.Entry `yaml:"-"`
 
 		// Personal Data
 		ID         string    `yaml:"id"`
 		Name       string    `yaml:"name"`
-		UserID     string    `yaml:"user_id"`
 		RoomID     string    `yaml:"room_id"`
-		Room       *Room     `yaml:"room"`
+		Room       *Room     `yaml:"-"`
 		MetatypeID string    `yaml:"metatype_id"`
 		Metatype   *Metatype `yaml:"-"`
 		// Ethnicity       string          `yaml:"ethnicity"`
@@ -107,11 +93,8 @@ type (
 		Attributes Attributes `yaml:"attributes"`
 		// InitiativeDice InitiativeDice `yaml:"initiative_dice"`
 		// Equipment      Equipment      `yaml:"equipment"`
-		// Edge           int            `yaml:"edge"`
 		// EdgePoints     int            `yaml:"edge_points"`
 		// Derived Attributes
-		// Magic         int `yaml:"-"`
-		// Resonance     int `yaml:"-"`
 		// PhysicalLimit int `yaml:"-"`
 		// MentalLimit   int `yaml:"-"`
 		// SocialLimit   int `yaml:"-"`
@@ -124,10 +107,10 @@ type (
 		// LiftCarry       int `yaml:"-"`
 		// Movement        int `yaml:"-"`
 		// Skills
-		ActiveSkills ActiveSkills `yaml:"active_skills"`
-		// LanguageSkills  map[string]LanguageSkill  `yaml:"language_skills"`
-		// KnowledgeSkills map[string]KnowledgeSkill `yaml:"knowledge_skills"`
-		// Qualities Qualities `yaml:"qualities"`
+		ActiveSkills    Skills    `yaml:"active_skills"`
+		LanguageSkills  Skills    `yaml:"language_skills"`
+		KnowledgeSkills Skills    `yaml:"knowledge_skills"`
+		Qualities       Qualities `yaml:"qualities"`
 		// Contacts        map[string]Contact        `yaml:"contacts"`
 		// Identities      map[string]string         `yaml:"identities"`
 		// Lifestyles      map[string]string         `yaml:"lifestyles"`
@@ -148,6 +131,10 @@ type (
 		DeletedAt time.Time `yaml:"deleted_at,omitempty"`
 	}
 )
+
+func (c *Character) Recalculate() {
+	c.Attributes.Recalculate()
+}
 
 // func (ai *AttributesInfo) Reset() {
 // 	ai.Mods = 0
@@ -181,7 +168,7 @@ at their favorite shadowrunner bar.
 
 func NewCharacter() *Character {
 	c := &Character{
-		lock: sync.RWMutex{},
+		ID: uuid.New().String(),
 	}
 
 	c.log = logrus.WithFields(logrus.Fields{
@@ -193,6 +180,23 @@ func NewCharacter() *Character {
 
 	return c
 }
+
+// // LoadUser loads a user from the filesystem
+// func LoadCharacter(username string, c *Character) error {
+// 	username = strings.ToLower(username)
+// 	filepath := fmt.Sprintf("%s/%s.yaml", CharactersFilepath, username)
+
+// 	// Check if the user file exists
+// 	if _, err := os.Stat(filepath); os.IsNotExist(err) {
+// 		return err
+// 	}
+
+// 	if err := utils.LoadStructFromYAML(filepath, &c); err != nil {
+// 		return err
+// 	}
+
+// 	return nil
+// }
 
 // // TODO: keep track of auth attempts and lock out after a certain number
 // // TODO: Add a list of restricted usernames that will always fail authentication
@@ -532,8 +536,8 @@ Composure is a Willpower + Charisma Test, with a threshold based on the severity
 func (c *Character) Save() error {
 	c.log.Debug("Saving character")
 
-	defer c.lock.Unlock()
-	c.lock.Lock()
+	defer c.Unlock()
+	c.Lock()
 
 	c.UpdatedAt = time.Now()
 
@@ -631,25 +635,24 @@ Notoriety							Public Awareness 											Street Cred
 // Street Cred
 
 var CoreCharacters = []*Character{
-	{
-		ID:         "1",
-		Name:       "Test",
-		UserID:     "5cd3ae71-6b77-4ff4-ad8a-7c3b9878eb38",
-		MetatypeID: "elf",
-		Attributes: Attributes{
-			Body:      Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-			Agility:   Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-			Reaction:  Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-			Strength:  Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-			Willpower: Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-			Logic:     Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-			Intuition: Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-			Charisma:  Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-			Edge:      Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-			Essence:   AttributeF{Value: 1, AugModifier: 0, TotalValue: 1},
-			Magic:     Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-			Resonance: Attribute{Value: 1, AugModifier: 0, TotalValue: 1},
-		},
-		CreatedAt: time.Now(),
-	},
+	// {
+	// 	ID:         "1",
+	// 	Name:       "Test",
+	// 	MetatypeID: "elf",
+	// 	Attributes: Attributes{
+	// 		Body:      Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Agility:   Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Reaction:  Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Strength:  Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Willpower: Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Logic:     Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Intuition: Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Charisma:  Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Edge:      Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Essence:   Attribute[float64]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Magic:     Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 		Resonance: Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+	// 	},
+	// 	CreatedAt: time.Now(),
+	// },
 }

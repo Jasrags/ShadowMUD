@@ -1,39 +1,166 @@
 package common
 
+import (
+	"github.com/sirupsen/logrus"
+)
+
 const (
-	ActiveSkillsFilepath = "_data/skills/active"
+	SkillsFilepath = "_data/skills"
+
+	// Skill Categories
+	SkillCategoryCombat        SkillCategory = "Combat Active"
+	SkillCategoryPhysical      SkillCategory = "Physical Active"
+	SkillCategorySocial        SkillCategory = "Social Active"
+	SkillCategoryMagical       SkillCategory = "Magical Active"
+	SkillCategoryPseudoMagical SkillCategory = "Pseudo-Magical Active"
+	SkillCategoryResonance     SkillCategory = "Resonance Active"
+	SkillCategoryTechnical     SkillCategory = "Technical Active"
+	SkillCategoryVehicle       SkillCategory = "Vehicle Active"
+	// Knowledge Skills
+	SkillCategoryAcademic     SkillCategory = "Academic"
+	SkillCategoryInterest     SkillCategory = "Interest"
+	SkillCategoryLanguage     SkillCategory = "Language"
+	SkillCategoryProfessional SkillCategory = "Professional"
+	SkillCategoryStreet       SkillCategory = "Street"
 )
 
 type (
-	ActiveSkillSpecs map[string]*ActiveSkillSpec
-	ActiveSkillSpec  struct {
-		ID                     string        `yaml:"id,omitempty"`
+	SkillID       string
+	SkillCategory string
+	SkillSpecs    map[string]*SkillSpec
+	SkillSpec     struct {
+		ID                     string        `yaml:"id"`
 		Name                   string        `yaml:"name"`
-		Hidden                 bool          `yaml:"hidden,omitempty"`
+		Hidden                 bool          `yaml:"hidden"`
 		Category               SkillCategory `yaml:"category"`
 		Description            string        `yaml:"description"`
 		Defaultable            bool          `yaml:"defaultable"`
-		Exotic                 bool          `yaml:"exotic,omitempty"`
-		RequiresGroundMovement bool          `yaml:"requires_ground_movement,omitempty"`
-		RequiresSwimMovement   bool          `yaml:"requires_swim_movement,omitempty"`
-		RequiresFlyMovement    bool          `yaml:"requires_fly_movement,omitempty"`
+		Exotic                 bool          `yaml:"exotic"`
+		RequiresGroundMovement bool          `yaml:"requires_ground_movement"`
+		RequiresSwimMovement   bool          `yaml:"requires_swim_movement"`
+		RequiresFlyMovement    bool          `yaml:"requires_fly_movement"`
 		LinkedAttribute        AttributeType `yaml:"linked_attribute"`
-		SkillGroup             string        `yaml:"skill_group,omitempty"`
+		Group                  string        `yaml:"group"`
 		Specializations        []string      `yaml:"specializations"`
 		RuleSource             RuleSource    `yaml:"rule_source"`
-		Page                   string        `yaml:"page"`
 	}
-	ActiveSkills map[string]*ActiveSkill
-	ActiveSkill  struct {
-		ID                     string          `yaml:"id,omitempty"`
-		SelectedSpecialization string          `yaml:"selected_specialization,omitempty"`
-		Rating                 int             `yaml:"rating,omitempty"`
-		Modifiers              Modifiers       `yaml:"modifiers"`
-		Spec                   ActiveSkillSpec `yaml:"-"`
+	Skills map[string]*Skill
+	Skill  struct {
+		ID             string `yaml:"id"`
+		Specialization string `yaml:"specialization"`
+		Rating         int    `yaml:"rating"`
+		// Modifiers              Modifiers  `yaml:"modifiers"`
+		Spec *SkillSpec `yaml:"-"`
 	}
 )
 
-var CoreActiveSkills = []ActiveSkillSpec{
+type SkillManager struct {
+	Active    SkillSpecs
+	Knowledge SkillSpecs
+}
+
+func NewSkillManager() *SkillManager {
+	return &SkillManager{
+		Active:    make(SkillSpecs),
+		Knowledge: make(SkillSpecs),
+	}
+}
+
+func (sm *SkillManager) LoadSkill(id string) (*SkillSpec, error) {
+	logrus.WithFields(logrus.Fields{"id": id}).Debug("Loading skill")
+	return nil, nil
+}
+
+func (sm *SkillManager) LoadSkills() error {
+	logrus.Info("Loading skills")
+
+	for _, skill := range CoreSkills {
+		switch skill.Category {
+		case SkillCategoryCombat, SkillCategoryPhysical, SkillCategorySocial, SkillCategoryMagical, SkillCategoryPseudoMagical, SkillCategoryResonance, SkillCategoryTechnical, SkillCategoryVehicle:
+			sm.Active[skill.ID] = &skill
+		case SkillCategoryAcademic, SkillCategoryInterest, SkillCategoryLanguage, SkillCategoryProfessional, SkillCategoryStreet:
+			sm.Knowledge[skill.ID] = &skill
+		}
+	}
+
+	logrus.Infof("Loaded %d active skills", len(sm.Active))
+	logrus.Infof("Loaded %d knowledge skills", len(sm.Knowledge))
+
+	// sm.Active = Core
+	// var list []Skill
+	// if err := utils.LoadStructFromYAML(fmt.Sprintf("%s/%s.yaml", SkillsFilepath, "active"), &list); err != nil {
+	// 	logrus.WithError(err).Error("Error loading active skills")
+	// 	return err
+	// }
+	// for _, skill := range sl.Skill {
+	// 	logrus.WithFields(logrus.Fields{"id": skill.ID, "name": skill.Name}).Debug("Loaded active skill")
+	// }
+	// if err := utils.LoadStructFromYAML(fmt.Sprintf("%s/%s.yaml", SkillsFilepath, "knowledge"), &sm.Knowledge); err != nil {
+	// 	logrus.WithError(err).Error("Error loading knowledge skills")
+	// 	return err
+	// }
+	// for _, skill := range sm.Knowledge {
+	// 	logrus.WithFields(logrus.Fields{"id": skill.ID, "name": skill.Name}).Debug("Loaded knowledge skill")
+	// }
+
+	return nil
+}
+
+func (sm *SkillManager) SaveSkill(skill *Skill) error {
+	logrus.WithFields(logrus.Fields{"id": skill.ID}).Debug("Saving skill")
+	return nil
+}
+
+func (sm *SkillManager) SaveSkills() error {
+	logrus.Debug("Saving skills")
+	// // Save Active Skills
+	// if err := utils.SaveStructToYAML(fmt.Sprintf("%s/%s.yaml", SkillsFilepath, "active"), sm.Active); err != nil {
+	// 	logrus.WithError(err).Error("Error saving active skills")
+	// 	return err
+	// }
+	// // Save Knowledge Skills
+	// if err := utils.SaveStructToYAML(fmt.Sprintf("%s/%s.yaml", SkillsFilepath, "knowledge"), sm.Knowledge); err != nil {
+	// 	logrus.WithError(err).Error("Error saving knowledge skills")
+	// 	return err
+	// }
+
+	return nil
+}
+
+func (sm *SkillManager) GetInstance(id string) (*Skill, error) {
+	logrus.WithFields(logrus.Fields{"id": id}).Debug("Getting skill instance")
+
+	return nil, nil
+}
+
+// func (sm *SkillManager) Get(id string) (*Skill, error) {
+// 	log := logrus.WithFields(logrus.Fields{"id": id})
+// 	log.Debug("Getting skill")
+
+// 	skill, ok := sm.Skills[id]
+// 	if !ok {
+// 		log.Error("Skill not found")
+// 		return nil, fmt.Errorf("Skill not found")
+// 	}
+
+// 	return skill, nil
+// }
+
+// func (sm *SkillManager) Add(skill *Skill) error {
+// 	logrus.WithFields(logrus.Fields{"id": skill.ID}).Debug("Adding skill")
+// 	sm.Skills[skill.ID] = skill
+
+// 	return nil
+// }
+
+// func (sm *SkillManager) Remove(id string) error {
+// 	logrus.WithFields(logrus.Fields{"id": id}).Debug("Removing skill")
+// 	delete(sm.Skills, id)
+
+// 	return nil
+// }
+
+var CoreSkills = []SkillSpec{
 	// BODY
 	{
 		ID:              "diving",
@@ -95,7 +222,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "The Automatics skill covers a specific subset of firearms larger than handheld pistols but smaller than rifles. This category includes submachine guns and other fully automatic carbines.",
 		Defaultable:     true,
 		Category:        SkillCategoryCombat,
-		SkillGroup:      "firearms",
+		Group:           "firearms",
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{
 			"Assault Rifles",
@@ -111,7 +238,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Slice and dice! The Blades skill includes the use of all handheld slashing and stabbing weapons. You can use a range of edged weapons including daggers, swords, and axes.",
 		Defaultable:     true,
 		Category:        SkillCategoryCombat,
-		SkillGroup:      "close_combat",
+		Group:           "close_combat",
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{
 			"Axes",
@@ -126,7 +253,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Clubs governs the use of all hand-held bludgeoning instruments. With this skill you can turn any blunt item, be it a baseball bat, crutch, or mace, into a weapon.",
 		Defaultable:     true,
 		Category:        SkillCategoryCombat,
-		SkillGroup:      "close_combat",
+		Group:           "close_combat",
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{
 			"Batons",
@@ -197,7 +324,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Gymnastics measures your balance, general athleticism, and all-around ability to use your body.",
 		Defaultable:     true,
 		Category:        SkillCategoryPhysical,
-		SkillGroup:      "athletics",
+		Group:           "athletics",
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{
 			"Balance",
@@ -245,7 +372,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "The Longarms skill is for firing extended-barrel weapons such as sporting rifles and sniper rifles. This grouping also includes weapons like shotguns that are designed to be braced against the shoulder.",
 		Defaultable:     true,
 		Category:        SkillCategoryCombat,
-		SkillGroup:      "firearms",
+		Group:           "firearms",
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{
 			"Extended-Range Shots",
@@ -261,7 +388,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Palming is sleight-of-hand skill that gives a character the ability to snag, hide, and pass off small objects.",
 		Defaultable:     false,
 		Category:        SkillCategoryPhysical,
-		SkillGroup:      "stealth",
+		Group:           "stealth",
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{
 			"Legerdemain",
@@ -275,7 +402,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "The Pistols skill is for firing handguns. This category includes hold-out pistols, light pistols, heavy pistols, machine pistols, and revolvers.",
 		Defaultable:     true,
 		Category:        SkillCategoryCombat,
-		SkillGroup:      "firearms",
+		Group:           "firearms",
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{
 			"Holdouts",
@@ -290,7 +417,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Need to get where you’re not supposed to be? This skill allows you to remain inconspicuous in various situations.",
 		Defaultable:     true,
 		Category:        SkillCategoryPhysical,
-		SkillGroup:      "stealth",
+		Group:           "stealth",
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{
 			"Desert",
@@ -319,7 +446,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Unarmed Combat covers the various self-defense and attack moves that employ the body as a primary weapon. This includes a wide array of martial arts along with the use of cybernetic implant weaponry and the fighting styles that sprung up around those implants.",
 		Defaultable:     true,
 		Category:        SkillCategoryCombat,
-		SkillGroup:      "close_combat",
+		Group:           "close_combat",
 		LinkedAttribute: AttributeAgility,
 		Specializations: []string{
 			"Blocking",
@@ -423,7 +550,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:            "Running, as you may guess, is about how much ground you can cover quickly.",
 		Defaultable:            true,
 		Category:               SkillCategoryPhysical,
-		SkillGroup:             "athletics",
+		Group:                  "athletics",
 		RequiresGroundMovement: true,
 		LinkedAttribute:        AttributeStrength,
 		Specializations: []string{
@@ -440,7 +567,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:          "This skill determines the character’s ability to swim in various bodies of water. The skill level affects the distance and speed at which a character can swim.",
 		Defaultable:          true,
 		Category:             SkillCategoryPhysical,
-		SkillGroup:           "athletics",
+		Group:                "athletics",
 		RequiresSwimMovement: true,
 		LinkedAttribute:      AttributeStrength,
 		Specializations: []string{
@@ -468,7 +595,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "In the desert with nothing more than a tin cup, a poncho, and an iron rod? You’ll need this skill to help you get out alive. Survival is the ability to stay alive in extreme environmental conditions for extended periods of time. The skill governs a character’s ability to perform vital outdoor tasks such as start a fire, build a shelter, scrounge for food, etc. in hostile environments.",
 		Defaultable:     true,
 		Category:        SkillCategoryPhysical,
-		SkillGroup:      "outdoors",
+		Group:           "outdoors",
 		LinkedAttribute: AttributeWillpower,
 		Specializations: []string{
 			"Desert",
@@ -499,7 +626,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Con governs the ability to manipulate or fool an NPC during a social encounter. This skill covers a range of confidence games as well as the principles behind those cons.",
 		Defaultable:     true,
 		Category:        SkillCategorySocial,
-		SkillGroup:      "acting",
+		Group:           "acting",
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{
 			"Fast Talking",
@@ -512,7 +639,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Etiquette represents the level of understanding and awareness of proper social rituals. The skill works as a sort of social version of Sneak, allowing you to move unimpeded through various social situations. Etiquette also serves as a social safety net in case a player botches a social situation in a way a skilled character would not.",
 		Defaultable:     true,
 		Category:        SkillCategorySocial,
-		SkillGroup:      "influence",
+		Group:           "influence",
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{
 			"Catholic Church",
@@ -533,7 +660,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Impersonation is the ability to assume the identity of another person, including voice and physical mannerisms. The skill is limited by the physical abilities of the character. A dwarf might be able to impersonate a troll over a commlink, but the illusion shatters when he is face to face with his target.",
 		Defaultable:     true,
 		Category:        SkillCategorySocial,
-		SkillGroup:      "acting",
+		Group:           "acting",
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{
 			"Dwarf",
@@ -573,7 +700,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Leadership is the ability to direct and motivate others. It’s like Con, except rather than using deception you’re using a position of authority. This skill is especially helpful in situations where the will of a teammate is shaken or someone is being asked to do something uncomfortable. The Leadership skill is not meant to replace or make up for poor teamwork. When using Leadership make an opposed test Charisma + Leadership.",
 		Defaultable:     true,
 		Category:        SkillCategorySocial,
-		SkillGroup:      "influence",
+		Group:           "influence",
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{
 			"Command",
@@ -588,7 +715,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Negotiation governs a character’s ability to apply their charisma, tactics, and knowledge of situational psychology in order to create a better position when making deals.",
 		Defaultable:     true,
 		Category:        SkillCategorySocial,
-		SkillGroup:      "influence",
+		Group:           "influence",
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{
 			"Bargaining",
@@ -602,7 +729,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "This skill governs the ability to execute a performing art. Performance is to the arts what Artisan is to craft. The performer uses her skill to entertain or even captivate an audience.",
 		Defaultable:     true,
 		Category:        SkillCategorySocial,
-		SkillGroup:      "acting",
+		Group:           "acting",
 		LinkedAttribute: AttributeCharisma,
 		Specializations: []string{
 			"Acting",
@@ -666,7 +793,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Automotive mechanics are tasked with fixing all types of ground-based vehicles ranging from commercial automobiles to wheeled drones to tanks. Repairs require the proper tools and time.",
 		Defaultable:     false,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "engineering",
+		Group:           "engineering",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Hover",
@@ -681,7 +808,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Biotechnology is a wide-ranging skill primarily used by doctors and scientists to grow organic body parts. This skill is the basis for cloning as well as all forms of bioware. Provided the right equipment is available, biotechnology can be used to repair damaged bioware, clone new tissue, or detect any bioware in a subject’s body. This skill does not allow characters to install or remove bioware.",
 		Defaultable:     false,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "biotech",
+		Group:           "biotech",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Bioinformatics",
@@ -714,7 +841,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Computer is the base skill for interacting with the Matrix. It represents the ability to use computers and other Matrix-connected devices. The Computer skill focuses on understanding multiple operating systems. It does not allow the character to exploit code (Hacking) or strip down mainframes (Hardware).",
 		Defaultable:     true,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "electronics",
+		Group:           "electronics",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Edit File",
@@ -729,7 +856,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Cybercombat is the skill used by hackers to engage in combat on the Matrix.",
 		Defaultable:     true,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "cracking",
+		Group:           "cracking",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Devices",
@@ -746,7 +873,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Cybertechnology is the ability to create, maintain, and repair cybernetic parts. A character with the proper tools and parts may repair or even build new cybernetics. Cybertechnology is not a surgical skill. Characters cannot attach or re-attach cybernetics to organic material with this skill. This skill may be used to modify or upgrade cybernetics within cyberlimbs.",
 		Defaultable:     true,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "biotech",
+		Group:           "biotech",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Bodyware",
@@ -776,7 +903,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Electronic Warfare is the basis of military signals intelligence. It governs the encoding, disruption, spoofing, and decoding of communication systems. Providing the user has the proper equipment, the skill can be used to manipulate or even take over the signal of any item’s communication system.",
 		Defaultable:     false,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "cracking",
+		Group:           "cracking",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Communications",
@@ -792,7 +919,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "First Aid is the ability to provide emergency medical assistance similar to that of a paramedic. This skill may be used to stabilize wounds and prevent characters from dying. First Aid cannot be used to perform surgery or repair damaged implants.",
 		Defaultable:     true,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "biotech",
+		Group:           "biotech",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Broken Bones",
@@ -823,7 +950,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Hacking is used to discover and exploit security flaws in computers and other electronics.",
 		Defaultable:     true,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "cracking",
+		Group:           "cracking",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Devices",
@@ -838,7 +965,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Hardware reflects a characters ability to build and repair electronic devices. A workspace, proper materials, and sufficient build time are required to enact a repair or to build a new device. See Building & Repairing, at right.",
 		Defaultable:     false,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "electronics",
+		Group:           "electronics",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Commlinks",
@@ -863,7 +990,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Medicine is used to perform advanced medical procedures such as surgeries. It includes long-term medical support for disease and illness, and the skill can be used to diagnose a character’s medical condition. This skill is used to implant or remove cybernetics and bioware but cannot be used to repair or maintain implanted devices.",
 		Defaultable:     false,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "biotech",
+		Group:           "biotech",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Cosmetic Surgery",
@@ -896,7 +1023,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Software is the skill used to create and manipulate programming in the Matrix. It’s also what technomancers use when they create their complex forms.",
 		Defaultable:     false,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "electronics",
+		Group:           "electronics",
 		LinkedAttribute: AttributeLogic,
 		Specializations: []string{
 			"Data Bombs",
@@ -943,7 +1070,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Disguise covers non-magical forms of masking your identity, including makeup and enhancement.",
 		Defaultable:     true,
 		Category:        SkillCategoryPhysical,
-		SkillGroup:      "stealth",
+		Group:           "stealth",
 		LinkedAttribute: AttributeIntuition,
 		Specializations: []string{
 			"Camouflage",
@@ -985,7 +1112,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Navigation governs the use of technology and natural instinct to navigate through territory. This skill enables characters to read maps, use GPS devices, follow AR nav points, or follow a course by landmarks or general direction sense. Navigation applies to both AR and non-AR-enhanced environments.",
 		Defaultable:     true,
 		Category:        SkillCategoryTechnical,
-		SkillGroup:      "outdoors",
+		Group:           "outdoors",
 		LinkedAttribute: AttributeIntuition,
 		Specializations: []string{
 			"Augmented Reality Markers",
@@ -1026,7 +1153,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "This skill confers the ability to detect the passage of metahumans and other game through terrain and use those clues to follow that individual. This skill also allows you to identify unmarked trails and common game paths is various environments.",
 		Defaultable:     true,
 		Category:        SkillCategoryPhysical,
-		SkillGroup:      "outdoors",
+		Group:           "outdoors",
 		LinkedAttribute: AttributeIntuition,
 		Specializations: []string{
 			"Desert",
@@ -1064,7 +1191,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Artificing is the process of crafting magical foci. The skill may also be used forensically, in order to assense qualities about an existing focus’ creation and purpose.",
 		Defaultable:     false,
 		Category:        SkillCategoryMagical,
-		SkillGroup:      "enchanting",
+		Group:           "enchanting",
 		LinkedAttribute: AttributeMagic,
 		Specializations: []string{
 			"Focus Analysis",
@@ -1077,7 +1204,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Banishing is used to disrupt the link between spirits and the physical world. Banished spirits are forced to return to their native plane and are no longer required to complete unfulfilled services.",
 		Defaultable:     false,
 		Category:        SkillCategoryMagical,
-		SkillGroup:      "conjuring",
+		Group:           "conjuring",
 		LinkedAttribute: AttributeMagic,
 		Specializations: []string{
 			"Spirits of Air",
@@ -1098,7 +1225,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Binding is used to compel a summoned spirit to perform a number of additional services.",
 		Defaultable:     false,
 		Category:        SkillCategoryMagical,
-		SkillGroup:      "conjuring",
+		Group:           "conjuring",
 		LinkedAttribute: AttributeMagic,
 		Specializations: []string{
 			"Spirits of Air",
@@ -1119,7 +1246,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Counterspelling is a defensive skill used to defend against magical attacks and dispel sustained magical spells.",
 		Defaultable:     false,
 		Category:        SkillCategoryMagical,
-		SkillGroup:      "sorcery",
+		Group:           "sorcery",
 		LinkedAttribute: AttributeMagic,
 		Specializations: []string{
 			"Combat",
@@ -1135,7 +1262,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "This skill governs a character’s ability to remove the enchantment from an item.",
 		Defaultable:     false,
 		Category:        SkillCategoryMagical,
-		SkillGroup:      "enchanting",
+		Group:           "enchanting",
 		LinkedAttribute: AttributeMagic,
 		Specializations: []string{"[Type]"},
 		RuleSource:      RuleSourceSR5Core,
@@ -1146,7 +1273,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Ritual spellcasting is a spellcasting skill used to cast ritual spells.",
 		Defaultable:     false,
 		Category:        SkillCategoryMagical,
-		SkillGroup:      "sorcery",
+		Group:           "sorcery",
 		LinkedAttribute: AttributeMagic,
 		Specializations: []string{"[Keyword]"},
 		RuleSource:      RuleSourceSR5Core,
@@ -1157,7 +1284,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "The Spellcasting skill permits the character to channel mana into effects known as spells.",
 		Defaultable:     false,
 		Category:        SkillCategoryMagical,
-		SkillGroup:      "sorcery",
+		Group:           "sorcery",
 		LinkedAttribute: AttributeMagic,
 		Specializations: []string{
 			"Combat",
@@ -1173,7 +1300,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description: "This skill is used to summon spirits.",
 		Defaultable: false,
 		Category:    SkillCategoryMagical,
-		SkillGroup:  "conjuring",
+		Group:       "conjuring",
 		Specializations: []string{
 			"Spirits of Air",
 			"Spirits of Beasts",
@@ -1194,7 +1321,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Compiling involves the ability to translate the complex 0s and 1s of machine source language and the rhythms of the resonance into sprites.",
 		Defaultable:     false,
 		Category:        SkillCategoryResonance,
-		SkillGroup:      "tasking",
+		Group:           "tasking",
 		LinkedAttribute: AttributeResonance,
 		Specializations: []string{"[Sprite Type]"},
 		RuleSource:      RuleSourceSR5Core,
@@ -1205,7 +1332,7 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "Decompiling is a character’s ability to effectively delete previously compiled sprites.",
 		Defaultable:     false,
 		Category:        SkillCategoryResonance,
-		SkillGroup:      "tasking",
+		Group:           "tasking",
 		LinkedAttribute: AttributeResonance,
 		Specializations: []string{"[Sprite Type]"},
 		RuleSource:      RuleSourceSR5Core,
@@ -1216,48 +1343,9 @@ var CoreActiveSkills = []ActiveSkillSpec{
 		Description:     "This skill allows a technomancer to register sprites on the Matrix, thereby convincing the grids that they are legitimate.",
 		Defaultable:     false,
 		Category:        SkillCategoryResonance,
-		SkillGroup:      "tasking",
+		Group:           "tasking",
 		LinkedAttribute: AttributeResonance,
 		Specializations: []string{"[Sprite Type]"},
 		RuleSource:      RuleSourceSR5Core,
 	},
 }
-
-// func LoadActiveSkills() map[string]ActiveSkill {
-// 	logrus.Info("Started loading active skills")
-
-// 	files, errReadDir := os.ReadDir(ActiveSkillDataPath)
-// 	if errReadDir != nil {
-// 		logrus.WithError(errReadDir).Fatal("Could not read active skills directory")
-// 	}
-
-// 	// Create a map to store the metatypes
-// 	list := make(map[string]ActiveSkill, len(files))
-
-// 	for _, file := range files {
-// 		if strings.HasSuffix(file.Name(), ".yaml") {
-// 			filepath := fmt.Sprintf("%s/%s", ActiveSkillDataPath, file.Name())
-
-// 			var v ActiveSkill
-// 			if err := utils.LoadStructFromYAML(filepath, &v); err != nil {
-// 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load active skills")
-// 			}
-
-// 			list[v.ID] = v
-// 		}
-// 		logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded active skills file")
-// 	}
-
-// 	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading active skills")
-
-// 	return list
-// }
-
-// func LoadActiveSkill(name string) (*ActiveSkill, error) {
-// 	var v ActiveSkill
-// 	if err := utils.LoadStructFromYAML(fmt.Sprintf(ActiveSkillFilename, name), &v); err != nil {
-// 		return nil, err
-// 	}
-
-// 	return &v, nil
-// }

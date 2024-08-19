@@ -15,7 +15,7 @@ type (
 		Description  string         `yaml:"description,omitempty"`
 		BiowareType  BiowareType    `yaml:"bioware_type,omitempty"`
 		EssenceCost  float64        `yaml:"essence_cost,omitempty"`
-		Capacity     AttributesInfo `yaml:"capacity,omitempty"`
+		Capacity     Attribute[int] `yaml:"capacity,omitempty"`
 		Rating       int            `yaml:"rating,omitempty,omitempty"`
 		ToggleAction ActionType     `yaml:"toggle_action,omitempty,omitempty"`
 		IsActive     bool           `yaml:"is_active,omitempty"`
@@ -45,7 +45,7 @@ var CoreBioware = []Bioware{
 			Description:  "Adrenaline Pump Description",
 			BiowareType:  BiowareTypeBasic,
 			EssenceCost:  0.75, // Rating * 0.75
-			Capacity:     AttributesInfo{},
+			Capacity:     Attribute[int]{},
 			ToggleAction: ActionFree,
 			IsActive:     false,
 			Modifiers:    []Modifier{},

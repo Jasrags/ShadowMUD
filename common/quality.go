@@ -1,5 +1,11 @@
 package common
 
+import (
+	"sync"
+
+	"github.com/sirupsen/logrus"
+)
+
 const (
 	QualitiesFilepath = "_data/qualities"
 
@@ -23,6 +29,9 @@ type (
 	}
 	Qualities map[string]*QualitySpec
 	Quality   struct {
+		sync.Mutex `yaml:"-"`
+		log        *logrus.Entry `yaml:"-"`
+
 		ID        string       `yaml:"id,omitempty"`
 		Rating    int          `yaml:"rating,omitempty"`
 		Modifiers []Modifier   `yaml:"modifiers"`
@@ -30,8 +39,14 @@ type (
 	}
 )
 
-func NewQuality() *Quality {
-	return &Quality{}
+func NewQuality(spec *QualitySpec) *Quality {
+	q := &Quality{
+		ID:   spec.ID,
+		Spec: spec,
+	}
+	q.log = logrus.WithFields(logrus.Fields{"package": "common", "type": "quality", "quality_id": q.ID})
+
+	return q
 }
 
 var CoreQualties = []QualitySpec{

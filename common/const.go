@@ -1,6 +1,8 @@
 package common
 
 const (
+	ChummerFilepath = "_data/chummer"
+
 	InitiativeDicePhysical        = 1
 	InitiativeDiceAstral          = 2
 	InitiativeDiceMatrixAR        = 1
@@ -23,18 +25,6 @@ const (
 	ActionFree    ActionType = "Free"
 	ActionSimple  ActionType = "Simple"
 	ActionComplex ActionType = "Complex"
-
-	AttributeBody      AttributeType = "Body"
-	AttributeAgility   AttributeType = "Agility"
-	AttributeReaction  AttributeType = "Reaction"
-	AttributeStrength  AttributeType = "Strength"
-	AttributeWillpower AttributeType = "Willpower"
-	AttributeCharisma  AttributeType = "Charisma"
-	AttributeLogic     AttributeType = "Logic"
-	AttributeIntuition AttributeType = "Intuition"
-	AttributeMagic     AttributeType = "Magic"
-	AttributeResonance AttributeType = "Resonance"
-	AttributeEssence   AttributeType = "Essence"
 
 	LegalityTypeLegal      LegalityType = "Legal"
 	LegalityTypeRestricted LegalityType = "Restricted"
@@ -134,12 +124,20 @@ const (
 	ItemTagHelmet                 ItemTag = "Helmet"
 	ItemTagCoat                   ItemTag = "Coat"
 	ItemTagShield                 ItemTag = "Shield"
+
+	ElementTypeAcid        ElementType = "Acid"
+	ElementTypeCold        ElementType = "Cold"
+	ElementTypeElectricity ElementType = "Electricity"
+	ElementTypeFire        ElementType = "Fire"
+	ElementTypePollutant   ElementType = "Pollutant"
+	ElementTypeRadiation   ElementType = "Radiation"
+	ElementTypeWater       ElementType = "Water"
 )
 
 type (
+	ElementType        string
 	RuleSource         string
 	ActionType         string
-	AttributeType      string
 	LegalityType       string
 	EnvironmentType    string
 	EnvironmenModifier string

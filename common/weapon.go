@@ -1,5 +1,12 @@
 package common
 
+import (
+	"sync"
+
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
+)
+
 const (
 	WeaponsFilePath = "_data/items/weapons"
 
@@ -87,6 +94,9 @@ type (
 	}
 	Weapons map[string]*Weapon
 	Weapon  struct {
+		sync.Mutex `yaml:"-"`
+		log        *logrus.Entry `yaml:"-"`
+
 		ID                 string               `yaml:"id"`
 		SelectedFiringMode WeaponFiringMode     `yaml:"selected_firing_mode,omitempty"`
 		AmmoType           *WeaponAmunitionSpec `yaml:"ammo_type,omitempty"`
@@ -97,6 +107,16 @@ type (
 		Spec               *WeaponSpec          `yaml:"-"`
 	}
 )
+
+func NewWeapon(spec *WeaponSpec) *Weapon {
+	w := &Weapon{
+		ID:   uuid.New().String(),
+		Spec: spec,
+	}
+	w.log = logrus.WithFields(logrus.Fields{"package": "common", "type": "weapon", "weapon_id": w.ID, "weapon_name": w.Spec.Name})
+
+	return w
+}
 
 // func (w *Weapon) GetDamageValue() error {
 // 	/*

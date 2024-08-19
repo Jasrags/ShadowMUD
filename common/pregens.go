@@ -39,13 +39,13 @@ func LoadPregen(title string, u *Pregen) error {
 		return err
 	}
 
-	logrus.WithFields(logrus.Fields{"pregen": u.Character}).Debug("Loaded pregen")
+	logrus.WithFields(logrus.Fields{"id": u.ID}).Debug("Loaded pregen")
 
 	return nil
 }
 
 func LoadPregens() Pregens {
-	logrus.Info("Started loading pregen characters")
+	logrus.Info("Started loading pregens")
 	list := make(Pregens)
 
 	files, errReadDir := os.ReadDir(PregenFilepath)
@@ -84,49 +84,49 @@ var CorePregens = Pregens{
 		Character: &Character{
 			MetatypeID: "ork",
 			Attributes: Attributes{
-				Body:      Attribute{Value: 7},
-				Agility:   Attribute{Value: 6},
-				Reaction:  Attribute{Value: 5}, // Should be 7 modified
-				Strength:  Attribute{Value: 5},
-				Willpower: Attribute{Value: 3},
-				Logic:     Attribute{Value: 2},
-				Intuition: Attribute{Value: 3},
-				Charisma:  Attribute{Value: 2},
-				Edge:      Attribute{Value: 1},
-				Essence:   AttributeF{Value: 6}, // Should be 0.88 modified
-				Magic:     Attribute{Value: 0},
-				Resonance: Attribute{Value: 0},
+				Body:      Attribute[int]{Base: 7},
+				Agility:   Attribute[int]{Base: 6},
+				Reaction:  Attribute[int]{Base: 5}, // Should be 7 modified
+				Strength:  Attribute[int]{Base: 5},
+				Willpower: Attribute[int]{Base: 3},
+				Logic:     Attribute[int]{Base: 2},
+				Intuition: Attribute[int]{Base: 3},
+				Charisma:  Attribute[int]{Base: 2},
+				Edge:      Attribute[int]{Base: 1},
+				Essence:   Attribute[float64]{Base: 6}, // Should be 0.88 modified
+				Magic:     Attribute[int]{Base: 0},
+				Resonance: Attribute[int]{Base: 0},
 			},
-			ActiveSkills: ActiveSkills{
-				"automatics": &ActiveSkill{
-					ID:     "automatics",
-					Rating: 5,
-				},
-				"blades": &ActiveSkill{
-					ID:     "blades",
-					Rating: 5, // Should be 6 modified
-				},
-				"longarms": &ActiveSkill{
-					ID:     "longarms",
-					Rating: 3, // Should be 4 modified
-				},
-				"pilot_ground_craft": &ActiveSkill{
-					ID:     "pilot_ground_craft",
-					Rating: 1,
-				},
-				"pistols": &ActiveSkill{
-					ID:     "pistols",
-					Rating: 4,
-				},
-				"sneaking": &ActiveSkill{
-					ID:     "sneaking",
-					Rating: 2, // Should be 3 modified
-				},
-				"unarmed_combat": &ActiveSkill{
-					ID:     "unarmed_combat",
-					Rating: 2, // Should be 3 modified
-				},
-			},
+			// ActiveSkills: ActiveSkills{
+			// 	"automatics": &ActiveSkill{
+			// 		ID:     "automatics",
+			// 		Rating: 5,
+			// 	},
+			// 	"blades": &ActiveSkill{
+			// 		ID:     "blades",
+			// 		Rating: 5, // Should be 6 modified
+			// 	},
+			// 	"longarms": &ActiveSkill{
+			// 		ID:     "longarms",
+			// 		Rating: 3, // Should be 4 modified
+			// 	},
+			// 	"pilot_ground_craft": &ActiveSkill{
+			// 		ID:     "pilot_ground_craft",
+			// 		Rating: 1,
+			// 	},
+			// 	"pistols": &ActiveSkill{
+			// 		ID:     "pistols",
+			// 		Rating: 4,
+			// 	},
+			// 	"sneaking": &ActiveSkill{
+			// 		ID:     "sneaking",
+			// 		Rating: 2, // Should be 3 modified
+			// 	},
+			// 	"unarmed_combat": &ActiveSkill{
+			// 		ID:     "unarmed_combat",
+			// 		Rating: 2, // Should be 3 modified
+			// 	},
+			// },
 			CreatedAt: time.Now(),
 		},
 	},

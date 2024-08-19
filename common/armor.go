@@ -4,6 +4,16 @@ const (
 	ArmorFilepath = "_data/items/armor"
 )
 
+type ArmorManager struct {
+	ArmorSpecs map[string]ArmorSpec
+}
+
+func NewArmorManager() *ArmorManager {
+	return &ArmorManager{
+		ArmorSpecs: make(map[string]ArmorSpec),
+	}
+}
+
 type (
 	ArmorSpec struct {
 		ID            string              `yaml:"id,omitempty"`
@@ -26,7 +36,7 @@ type (
 		Rating        int                 `yaml:"rating,omitempty"`
 		Modifications []ArmorModification `yaml:"modifications"`
 		Modifiers     []Modifier          `yaml:"modifiers"`
-		Spec          ArmorSpec           `yaml:"-"`
+		Spec          *ArmorSpec          `yaml:"-"`
 	}
 	ArmorCategory    string
 	ArmorModCategory string

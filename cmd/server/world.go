@@ -6,6 +6,7 @@ import (
 
 	"github.com/Jasrags/ShadowMUD/common"
 	"github.com/Jasrags/ShadowMUD/config"
+	"github.com/Jasrags/ShadowMUD/screen"
 
 	"github.com/gliderlabs/ssh"
 	"github.com/i582/cfmt/cmd/cfmt"
@@ -18,14 +19,18 @@ type (
 		lock sync.Mutex
 		cfg  *config.Server
 
-		users     common.Users
-		sessions  Sessions
+		users    common.Users
+		sessions Sessions
+
+		// Loaded data
+		zones     common.Zones
+		rooms     common.Rooms
 		metatypes common.Metatypes
 		pregens   common.Pregens
 
 		broadcast    chan string
 		userChannels map[string]chan string
-		commandQueue chan Command
+		// commandQueue chan Command
 	}
 )
 
@@ -36,7 +41,7 @@ func NewWorld(cfg *config.Server) *World {
 		sessions:     make(Sessions),
 		broadcast:    make(chan string),
 		userChannels: make(map[string]chan string),
-		commandQueue: make(chan Command),
+		// commandQueue: make(chan Command),
 	}
 	go w.broadcastMessages()
 	go w.handleCommands()
@@ -44,9 +49,9 @@ func NewWorld(cfg *config.Server) *World {
 	return w
 }
 func (w *World) handleCommands() {
-	for cmd := range w.commandQueue {
-		w.ProcessCommand(cmd)
-	}
+	// for cmd := range w.commandQueue {
+	// w.ProcessCommand(cmd)
+	// }
 }
 
 func (w *World) broadcastMessages() {
@@ -61,8 +66,15 @@ func (w *World) broadcastMessages() {
 
 func (w *World) LoadData() {
 	logrus.Info("Started loading data")
-	w.metatypes = common.LoadMetatypes()
-	w.pregens = common.LoadPregens()
+
+	// w.zones = common.LoadZones()
+	// w.rooms = common.LoadRooms()
+	// w.metatypes = common.LoadMetatypes()
+	// // w.pregens = common.LoadPregens()
+	// sm := common.NewSkillManager()
+	// if err := sm.LoadSkills(); err != nil {
+	// 	logrus.WithError(err).Error("Error loading skills")
+	// }
 	logrus.Info("Finished loading data")
 }
 
@@ -77,45 +89,41 @@ func (w *World) Handler(s ssh.Session) {
 	logrus.WithFields(logrus.Fields{"user": s.User(), "remote_addr": s.RemoteAddr()}).Info("New connection")
 
 	u := common.NewUser(s)
-	state := StateBanner
+	screens := screen.New(u, w.cfg)
+	state := screen.StateBanner
 	for {
 		switch state {
-		case StateBanner:
-			state = w.Banner(u)
-		case StatePromptLoginUser:
-			state = w.PromptLoginUser(u)
-		case StatePromptRegisterUser:
-			state = w.PromptRegisterUser(u)
-		case StatePromptMainMenu:
-			state = w.PromptMainMenu(u)
-		case StateEnterGame:
-			state = w.EnterGame(u)
+		case screen.StateBanner:
+			state = screens.Banner()
+		case screen.StatePromptLoginUser:
+			state = screens.PromptLoginUser()
+		case screen.StatePromptRegisterUser:
+			state = screens.PromptRegisterUser()
+		case screen.StatePromptMainMenu:
+			state = screens.PromptMainMenu()
+		case screen.StateEnterGame:
+			state = screens.EnterGame()
 			// TODO: If character has not been selected, prompt for character selection
 			// TODO: Enter game loop
-		case StatePromptCreateCharacter:
-			state = w.PromptCreateCharacter(u)
+		case screen.StatePromptCreateCharacter:
+			state = screens.PromptCreateCharacter()
 			// TODO: Prompt for using archtype or creating a new character
-		case StatePromptListCharacters:
-			state = w.PromptListCharacters(u)
+		case screen.StatePromptListCharacters:
+			state = screens.PromptListCharacters()
 			// TODO: List out all the characters for the user with short details
-		case StatePromptDeleteCharacter:
-			state = w.PromptDeleteCharacter(u)
+		case screen.StatePromptDeleteCharacter:
+			state = screens.PromptDeleteCharacter()
 			// TODO: List out all the characters for the user
 			// TODO: Prompt for the character to delete
 			// TODO: Confirm the deletion
 			// TODO: Delete the character
-		case StatePromptChangePassword:
-			state = w.PromptChangePassword(u)
-			// TODO: Prompt for new password
-			// TODO: Prompt for confirm password
-			// TODO: Confirm the new passwords match
-			// TODO: Hash the new password
-			// TODO: Save the new password
-		case StateMOTD:
-			state = w.MOTD(u)
-		case StateGameLoop:
-			state = w.GameLoop(u)
-		case StateQuit:
+		case screen.StatePromptChangePassword:
+			state = screens.PromptChangePassword()
+		case screen.StateMOTD:
+			state = screens.MOTD()
+		case screen.StateGameLoop:
+			state = screens.GameLoop()
+		case screen.StateQuit:
 			u.Save()
 			io.WriteString(u.Session, cfmt.Sprint("Goodbye!\n"))
 			w.RemoveSession(u.ID)
@@ -124,7 +132,7 @@ func (w *World) Handler(s ssh.Session) {
 			return
 		default:
 			logrus.WithField("state", state).Error("Invalid state")
-			state = StateBanner
+			state = screen.StateBanner
 		}
 	}
 
@@ -139,14 +147,14 @@ func (w *World) AutoCompleteCallback(line string, pos int, key rune) (string, in
 }
 
 // ProcessCommand simulates processing a command in the world
-func (w *World) ProcessCommand(cmd Command) {
-	logrus.WithFields(logrus.Fields{"command": cmd.Name, "args": cmd.Args}).Info("Processing command")
-	switch cmd.Name {
-	case "say":
-	case "tell":
-		w.userChannels[cmd.Recipient.Name] <- cfmt.Sprintf("{{%s}} tells you: %s\n", cmd.Sender.Name, cmd.Args[0])
-	}
-}
+// func (w *World) ProcessCommand(cmd Command) {
+// 	logrus.WithFields(logrus.Fields{"command": cmd.Name, "args": cmd.Args}).Info("Processing command")
+// 	switch cmd.Name {
+// 	case "say":
+// 	case "tell":
+// 		w.userChannels[cmd.Recipient.Name] <- cfmt.Sprintf("{{%s}} tells you: %s\n", cmd.Sender.Name, cmd.Args[0])
+// 	}
+// }
 
 func (w *World) SendMessageToAllUsers(message string) {
 	w.broadcast <- cfmt.Sprintf("Brodcast: {{%s}}::#00ff00\n", message)

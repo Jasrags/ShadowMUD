@@ -31,8 +31,8 @@ type (
 		ID            string                   `yaml:"id,omitempty"`
 		Name          string                   `yaml:"name"`
 		Description   string                   `yaml:"description"`
-		EssenceCost   AttributesInfoF          `yaml:"essence_cost"`
-		Capacity      AttributesInfo           `yaml:"capacity"`
+		EssenceCost   Attribute[float64]       `yaml:"essence_cost"`
+		Capacity      Attribute[int]           `yaml:"capacity"`
 		Rating        int                      `yaml:"rating,omitempty"`
 		CyberwarePart CyberwarePart            `yaml:"cyberware_part"`
 		Grade         CyberwareGrade           `yaml:"grade,omitempty"`
@@ -40,7 +40,7 @@ type (
 		IsActive      bool                     `yaml:"is_active,omitempty"`
 		Modifications []CyberwareModifications `yaml:"modifications"`
 		Modifiers     []Modifier               `yaml:"modifiers"`
-		Cost          AttributesInfo           `yaml:"cost"`
+		Cost          Attribute[int]           `yaml:"cost"`
 		Availability  int                      `yaml:"availability"`
 		Legality      LegalityType             `yaml:"legality"`
 		Notes         string                   `yaml:"notes"`
@@ -115,10 +115,10 @@ var CoreCyberware = []Cyberware{
 		Spec: CyberwareSpec{
 			Name:        "Wired Reflexes R1",
 			Description: "Wired reflexes increase the user's reaction time, allowing them to react more quickly to threats.",
-			EssenceCost: AttributesInfoF{
+			EssenceCost: Attribute[float64]{
 				Base: 2.0,
 			},
-			Capacity: AttributesInfo{
+			Capacity: Attribute[int]{
 				Base: 0,
 			},
 			Rating:        1,
@@ -128,7 +128,7 @@ var CoreCyberware = []Cyberware{
 			IsActive:      false,
 			Modifications: []CyberwareModifications{},
 			Modifiers:     []Modifier{},
-			Cost: AttributesInfo{
+			Cost: Attribute[int]{
 				Base: 39000,
 			},
 			Availability: 8,

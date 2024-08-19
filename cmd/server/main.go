@@ -55,7 +55,7 @@ func main() {
 		},
 	}
 	defer server.Close()
-	defer close(w.commandQueue)
+	// defer close(w.commandQueue)
 
 	// handle connections
 	ssh.Handle(w.Handler)
