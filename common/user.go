@@ -1,267 +1,250 @@
 package common
 
-import (
-	"fmt"
-	"io"
-	"os"
-	"strings"
-	"sync"
-	"time"
+// const (
+// 	UsersFilepath = "_data/users"
 
-	"github.com/Jasrags/ShadowMUD/utils"
+// 	UserRoleAdmin UserRole = "admin"
+// 	UserRoleUser  UserRole = "user"
+// )
 
-	"github.com/gliderlabs/ssh"
-	"github.com/i582/cfmt/cmd/cfmt"
-	"github.com/sirupsen/logrus"
-	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/term"
-)
+// type (
+// 	Logins []Login
+// 	Login  struct {
+// 		Time time.Time `yaml:"time"`
+// 		IP   string    `yaml:"ip"`
+// 	}
+// 	Bans []Ban
+// 	Ban  struct {
+// 		CreatedAt time.Time `yaml:"created_at"`
+// 		ExpiresAt time.Time `yaml:"time"`
+// 		Reason    string    `yaml:"reason"`
+// 		CreatedBy string    `yaml:"created_by"`
+// 	}
+// 	UserRole  string
+// 	UserRoles []UserRole
 
-const (
-	UsersFilepath = "_data/users"
+// 	Users map[string]*User
+// 	User  struct {
+// 		sync.Mutex `yaml:"-"`
+// 		log        *logrus.Entry     `yaml:"-"`
+// 		Session    ssh.Session       `yaml:"-"`
+// 		Pty        ssh.Pty           `yaml:"-"`
+// 		Window     <-chan ssh.Window `yaml:"-"`
+// 		Term       *term.Terminal    `yaml:"-"`
+// 		Character  *Character        `yaml:"-"` // Set to the active character
 
-	UserRoleAdmin UserRole = "admin"
-	UserRoleUser  UserRole = "user"
-)
+// 		// Saved fields
+// 		ID           string     `yaml:"id"`
+// 		Username     string     `yaml:"username"`
+// 		Roles        UserRoles  `yaml:"roles"`
+// 		Password     string     `yaml:"password"`
+// 		Characters   Characters `yaml:"characters"`
+// 		CharacterIDs []string   `yaml:"character_ids"`
+// 		Bans         Bans       `yaml:"bans"`
+// 		Logins       Logins     `yaml:"logins"`
+// 		CreatedAt    time.Time  `yaml:"created_at"`
+// 		UpdatedAt    time.Time  `yaml:"updated_at,omitempty"`
+// 		DeletedAt    time.Time  `yaml:"deleted_at,omitempty"`
+// 	}
+// )
 
-type (
-	Logins []Login
-	Login  struct {
-		Time time.Time `yaml:"time"`
-		IP   string    `yaml:"ip"`
-	}
-	Bans []Ban
-	Ban  struct {
-		CreatedAt time.Time `yaml:"created_at"`
-		ExpiresAt time.Time `yaml:"time"`
-		Reason    string    `yaml:"reason"`
-		CreatedBy string    `yaml:"created_by"`
-	}
-	UserRole  string
-	UserRoles []UserRole
+// func NewUser(s ssh.Session) *User {
+// 	pty, ptyWindow, isActive := s.Pty()
+// 	if !isActive {
+// 		logrus.Error("Session is not active")
+// 		return nil
+// 	}
 
-	Users map[string]*User
-	User  struct {
-		sync.Mutex `yaml:"-"`
-		log        *logrus.Entry     `yaml:"-"`
-		Session    ssh.Session       `yaml:"-"`
-		Pty        ssh.Pty           `yaml:"-"`
-		Window     <-chan ssh.Window `yaml:"-"`
-		Term       *term.Terminal    `yaml:"-"`
-		Character  *Character        `yaml:"-"` // Set to the active character
+// 	u := &User{
+// 		Session: s,
+// 		Pty:     pty,
+// 		Window:  ptyWindow,
+// 		Term:    term.NewTerminal(s, ""),
 
-		// Saved fields
-		ID           string     `yaml:"id"`
-		Username     string     `yaml:"username"`
-		Roles        UserRoles  `yaml:"roles"`
-		Password     string     `yaml:"password"`
-		Characters   Characters `yaml:"characters"`
-		CharacterIDs []string   `yaml:"character_ids"`
-		Bans         Bans       `yaml:"bans"`
-		Logins       Logins     `yaml:"logins"`
-		CreatedAt    time.Time  `yaml:"created_at"`
-		UpdatedAt    time.Time  `yaml:"updated_at,omitempty"`
-		DeletedAt    time.Time  `yaml:"deleted_at,omitempty"`
-	}
-)
+// 		Roles:      UserRoles{UserRoleUser},
+// 		Characters: make(Characters),
+// 		Logins:     Logins{},
+// 		Bans:       Bans{},
+// 	}
 
-func NewUser(s ssh.Session) *User {
-	pty, ptyWindow, isActive := s.Pty()
-	if !isActive {
-		logrus.Error("Session is not active")
-		return nil
-	}
+// 	u.log = logrus.WithFields(logrus.Fields{
+// 		"package": "common",
+// 		"type":    "user",
+// 	})
 
-	u := &User{
-		Session: s,
-		Pty:     pty,
-		Window:  ptyWindow,
-		Term:    term.NewTerminal(s, ""),
+// 	u.AddUserRoles(UserRoleUser)
 
-		Roles:      UserRoles{UserRoleUser},
-		Characters: make(Characters),
-		Logins:     Logins{},
-		Bans:       Bans{},
-	}
+// 	return u
+// }
 
-	u.log = logrus.WithFields(logrus.Fields{
-		"package": "common",
-		"type":    "user",
-	})
+// // LoadUser loads a user from the filesystem
+// func LoadUser(username string, u *User) error {
+// 	username = strings.ToLower(username)
+// 	filepath := fmt.Sprintf("%s/%s.yaml", UsersFilepath, username)
 
-	u.AddUserRoles(UserRoleUser)
+// 	// Check if the user file exists
+// 	if _, err := os.Stat(filepath); os.IsNotExist(err) {
+// 		return err
+// 	}
 
-	return u
-}
+// 	if err := utils.LoadStructFromYAML(filepath, &u); err != nil {
+// 		return err
+// 	}
 
-// LoadUser loads a user from the filesystem
-func LoadUser(username string, u *User) error {
-	username = strings.ToLower(username)
-	filepath := fmt.Sprintf("%s/%s.yaml", UsersFilepath, username)
+// 	return nil
+// }
 
-	// Check if the user file exists
-	if _, err := os.Stat(filepath); os.IsNotExist(err) {
-		return err
-	}
+// func (u *User) AddUserRoles(roles ...UserRole) {
+// 	defer u.Unlock()
+// 	u.Lock()
 
-	if err := utils.LoadStructFromYAML(filepath, &u); err != nil {
-		return err
-	}
+// 	u.Roles = append(u.Roles, roles...)
+// }
 
-	return nil
-}
+// func (u *User) RemoveUserRoles(roles ...UserRole) {
+// 	defer u.Unlock()
+// 	u.Lock()
 
-func (u *User) AddUserRoles(roles ...UserRole) {
-	defer u.Unlock()
-	u.Lock()
+// 	for _, role := range roles {
+// 		for i, r := range u.Roles {
+// 			if r == role {
+// 				u.Roles = append(u.Roles[:i], u.Roles[i+1:]...)
+// 			}
+// 		}
+// 	}
+// }
 
-	u.Roles = append(u.Roles, roles...)
-}
+// func (u *User) HasRole(role UserRole) bool {
+// 	defer u.Unlock()
+// 	u.Lock()
 
-func (u *User) RemoveUserRoles(roles ...UserRole) {
-	defer u.Unlock()
-	u.Lock()
+// 	for _, r := range u.Roles {
+// 		if r == role {
+// 			return true
+// 		}
+// 	}
 
-	for _, role := range roles {
-		for i, r := range u.Roles {
-			if r == role {
-				u.Roles = append(u.Roles[:i], u.Roles[i+1:]...)
-			}
-		}
-	}
-}
+// 	return false
+// }
 
-func (u *User) HasRole(role UserRole) bool {
-	defer u.Unlock()
-	u.Lock()
+// func (u *User) SetActiveCharacterByID(id string) {
+// 	defer u.Unlock()
+// 	u.Lock()
 
-	for _, r := range u.Roles {
-		if r == role {
-			return true
-		}
-	}
+// 	if c, ok := u.Characters[id]; ok {
+// 		u.Character = c
 
-	return false
-}
+// 		return
+// 	}
 
-func (u *User) SetActiveCharacterByID(id string) {
-	defer u.Unlock()
-	u.Lock()
+// 	logrus.WithFields(logrus.Fields{"id": id}).Error("Character not found")
+// }
 
-	if c, ok := u.Characters[id]; ok {
-		u.Character = c
+// func (u *User) AddCharacter(c *Character) {
+// 	logrus.WithFields(logrus.Fields{"id": c.ID, "name": c.Name}).Debug("Adding character to user")
+// 	defer u.Unlock()
+// 	u.Lock()
 
-		return
-	}
+// 	u.Characters[c.ID] = c
+// 	logrus.Debug("Character added to user")
+// }
 
-	logrus.WithFields(logrus.Fields{"id": id}).Error("Character not found")
-}
+// func (u *User) RemoveCharacterByID(id string) {
+// 	logrus.WithField("id", id).Debug("Removing character by ID")
+// 	defer u.Unlock()
+// 	u.Lock()
 
-func (u *User) AddCharacter(c *Character) {
-	logrus.WithFields(logrus.Fields{"id": c.ID, "name": c.Name}).Debug("Adding character to user")
-	defer u.Unlock()
-	u.Lock()
+// 	if _, ok := u.Characters[id]; !ok {
+// 		logrus.WithField("id", id).Error("Character not found")
 
-	u.Characters[c.ID] = c
-	logrus.Debug("Character added to user")
-}
+// 		return
+// 	}
 
-func (u *User) RemoveCharacterByID(id string) {
-	logrus.WithField("id", id).Debug("Removing character by ID")
-	defer u.Unlock()
-	u.Lock()
+// 	delete(u.Characters, id)
+// 	logrus.WithField("id", id).Debug("Character removed")
+// }
 
-	if _, ok := u.Characters[id]; !ok {
-		logrus.WithField("id", id).Error("Character not found")
+// func (u *User) GetCharacterByID(id string) *Character {
+// 	logrus.WithField("id", id).Debug("Getting character by ID")
+// 	defer u.Unlock()
+// 	u.Lock()
 
-		return
-	}
+// 	if c, ok := u.Characters[id]; ok {
+// 		logrus.WithField("id", id).Debug("Character found")
+// 		return c
+// 	}
 
-	delete(u.Characters, id)
-	logrus.WithField("id", id).Debug("Character removed")
-}
+// 	logrus.WithField("id", id).Error("Character not found")
 
-func (u *User) GetCharacterByID(id string) *Character {
-	logrus.WithField("id", id).Debug("Getting character by ID")
-	defer u.Unlock()
-	u.Lock()
+// 	return nil
+// }
 
-	if c, ok := u.Characters[id]; ok {
-		logrus.WithField("id", id).Debug("Character found")
-		return c
-	}
+// func (u *User) ChangePassword(password string) {
+// 	defer u.Unlock()
+// 	u.Lock()
 
-	logrus.WithField("id", id).Error("Character not found")
+// 	bcryptPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+// 	if err != nil {
+// 		logrus.WithError(err).Error("Error hashing password")
 
-	return nil
-}
+// 		return
+// 	}
 
-func (u *User) ChangePassword(password string) {
-	defer u.Unlock()
-	u.Lock()
+// 	u.Password = string(bcryptPassword)
+// }
 
-	bcryptPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		logrus.WithError(err).Error("Error hashing password")
+// func (u *User) SetActiveCharacter(c *Character) {
+// 	logrus.WithFields(logrus.Fields{"id": c.ID, "name": c.Name}).Debug("Setting active character")
+// 	defer u.Unlock()
+// 	u.Lock()
 
-		return
-	}
+// 	u.Character = c
+// 	logrus.WithFields(logrus.Fields{"id": c.ID, "name": c.Name}).Debug("Active character set")
+// }
 
-	u.Password = string(bcryptPassword)
-}
+// func (u *User) Validate() error {
+// 	if u.Username == "" {
+// 		return fmt.Errorf("username is required")
+// 	}
 
-func (u *User) SetActiveCharacter(c *Character) {
-	logrus.WithFields(logrus.Fields{"id": c.ID, "name": c.Name}).Debug("Setting active character")
-	defer u.Unlock()
-	u.Lock()
+// 	if u.Password == "" {
+// 		return fmt.Errorf("password is required")
+// 	}
 
-	u.Character = c
-	logrus.WithFields(logrus.Fields{"id": c.ID, "name": c.Name}).Debug("Active character set")
-}
+// 	return nil
 
-func (u *User) Validate() error {
-	if u.Username == "" {
-		return fmt.Errorf("username is required")
-	}
+// }
 
-	if u.Password == "" {
-		return fmt.Errorf("password is required")
-	}
+// func (u *User) Filepath() string {
+// 	return fmt.Sprintf("%s/%s.yaml", UsersFilepath, strings.ToLower(u.Username))
+// }
 
-	return nil
+// func (u *User) Save() error {
+// 	u.log.Debug("Saving user")
 
-}
+// 	defer u.Unlock()
+// 	u.Lock()
 
-func (u *User) Filepath() string {
-	return fmt.Sprintf("%s/%s.yaml", UsersFilepath, strings.ToLower(u.Username))
-}
+// 	u.UpdatedAt = time.Now()
 
-func (u *User) Save() error {
-	u.log.Debug("Saving user")
+// 	if err := utils.SaveStructToYAML(u.Filepath(), u); err != nil {
+// 		u.log.WithError(err).Error("Error saving user")
+// 		return err
+// 	}
 
-	defer u.Unlock()
-	u.Lock()
+// 	u.log.Debug("Saved user")
 
-	u.UpdatedAt = time.Now()
+// 	return nil
+// }
 
-	if err := utils.SaveStructToYAML(u.Filepath(), u); err != nil {
-		u.log.WithError(err).Error("Error saving user")
-		return err
-	}
+// func (u *User) GameLoop() error {
+// 	io.WriteString(u.Session, cfmt.Sprintf("{{> }}::#ffffff|bold"))
+// 	line, err := u.Term.ReadLine()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	logrus.WithField("line", line).Debug("Received line")
+// 	io.WriteString(u.Session, cfmt.Sprintf("{{You typed:}}::#ffffff|bold %s\n", line))
 
-	u.log.Debug("Saved user")
-
-	return nil
-}
-
-func (u *User) GameLoop() error {
-	io.WriteString(u.Session, cfmt.Sprintf("{{> }}::#ffffff|bold"))
-	line, err := u.Term.ReadLine()
-	if err != nil {
-		return err
-	}
-	logrus.WithField("line", line).Debug("Received line")
-	io.WriteString(u.Session, cfmt.Sprintf("{{You typed:}}::#ffffff|bold %s\n", line))
-
-	return nil
-}
+// 	return nil
+// }

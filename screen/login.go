@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Jasrags/ShadowMUD/common"
+	"github.com/Jasrags/ShadowMUD/common/user"
 
 	"github.com/i582/cfmt/cmd/cfmt"
 	"github.com/sirupsen/logrus"
@@ -15,7 +15,7 @@ import (
 func (s *Screens) PromptLoginUser() int {
 promptUsername:
 	// Collect new username
-	username, errUsername := PromptUserInput(s.user, usernamePrompt)
+	username, errUsername := s.PromptUserInput(usernamePrompt)
 	if errUsername != nil {
 		logrus.WithError(errUsername).Error("Error reading username")
 		io.WriteString(s.user.Session, cfmt.Sprintf(inputErrorMsg))
@@ -37,7 +37,7 @@ promptUsername:
 
 promptPassword:
 	// Collect new password
-	password, errPassword := PromptUserPasswordInput(s.user, passwordPrompt)
+	password, errPassword := s.PromptUserPasswordInput(passwordPrompt)
 	if errPassword != nil {
 		logrus.WithError(errPassword).Error("Error reading password")
 		return StateQuit
@@ -56,11 +56,11 @@ promptPassword:
 		goto promptUsername
 	}
 
-	// Try  the user from the file
-	if err := common.LoadUser(username, s.user); err != nil {
-		logrus.WithError(err).Error("Error loading user")
-		return StatePromptLoginUser
-	}
+	// Try the user from the file
+	// if err := common.LoadUser(username, s.user); err != nil {
+	// 	logrus.WithError(err).Error("Error loading user")
+	// 	return StatePromptLoginUser
+	// }
 
 	logrus.WithFields(logrus.Fields{"username": s.user.Username, "id": s.user.ID}).Debug("Loaded user")
 
@@ -92,7 +92,7 @@ promptPassword:
 	}
 
 	// Add a login record
-	s.user.Logins = append(s.user.Logins, common.Login{
+	s.user.Logins = append(s.user.Logins, user.Login{
 		Time: time.Now(),
 		IP:   s.user.Session.RemoteAddr().String(),
 	})

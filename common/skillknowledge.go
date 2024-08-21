@@ -1,33 +1,33 @@
 package common
 
-const (
-	KnowledgeSkillsFilepath = "_data/skills/knowledge"
-)
+// const (
+// 	KnowledgeSkillsFilepath = "_data/skills/knowledge"
+// )
 
-type (
-	KnowledgeSkillSpec struct {
-		ID              string     `yaml:"id,omitempty"`
-		Name            string     `yaml:"name"`
-		Description     string     `yaml:"description"`
-		IsCommon        bool       `yaml:"is_common"`
-		Specializations []string   `yaml:"specializations"`
-		RuleSource      RuleSource `yaml:"rule_source"`
-	}
-	KnowledgeSkill struct {
-		ID                     string             `yaml:"id,omitempty"`
-		SelectedSpecialization string             `yaml:"selected_specialization,omitempty"`
-		Rating                 int                `yaml:"rating,omitempty"`
-		Spec                   KnowledgeSkillSpec `yaml:"-"`
-	}
-)
+// type (
+// 	KnowledgeSkillSpec struct {
+// 		ID              string     `yaml:"id,omitempty"`
+// 		Name            string     `yaml:"name"`
+// 		Description     string     `yaml:"description"`
+// 		IsCommon        bool       `yaml:"is_common"`
+// 		Specializations []string   `yaml:"specializations"`
+// 		RuleSource      RuleSource `yaml:"rule_source"`
+// 	}
+// 	KnowledgeSkill struct {
+// 		ID                     string             `yaml:"id,omitempty"`
+// 		SelectedSpecialization string             `yaml:"selected_specialization,omitempty"`
+// 		Rating                 int                `yaml:"rating,omitempty"`
+// 		Spec                   KnowledgeSkillSpec `yaml:"-"`
+// 	}
+// )
 
-var CoreKnowledgeSkills = []KnowledgeSkillSpec{
-	{
-		ID:              "astronomy",
-		Name:            "Astronomy",
-		Description:     "The study of celestial bodies and their movements.",
-		IsCommon:        true,
-		Specializations: []string{"astrophysics", "astrology"},
-		RuleSource:      RuleSourceSR5Core,
-	},
-}
+// var CoreKnowledgeSkills = []KnowledgeSkillSpec{
+// 	{
+// 		ID:              "astronomy",
+// 		Name:            "Astronomy",
+// 		Description:     "The study of celestial bodies and their movements.",
+// 		IsCommon:        true,
+// 		Specializations: []string{"astrophysics", "astrology"},
+// 		RuleSource:      RuleSourceSR5Core,
+// 	},
+// }

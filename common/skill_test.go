@@ -1,7 +1,7 @@
 package common_test
 
-const ActiveSkillsFile = "/Users/jrags/Code/Jasrags/ShadowMUD/_data/skills/active.yaml"
-const KnowledgeSkillsFile = "/Users/jrags/Code/Jasrags/ShadowMUD/_data/skills/knowledge.yaml"
+// const ActiveSkillsFile = "/Users/jrags/Code/Jasrags/ShadowMUD/_data/skills/active.yaml"
+// const KnowledgeSkillsFile = "/Users/jrags/Code/Jasrags/ShadowMUD/_data/skills/knowledge.yaml"
 
 // const SkillXmlFile = "/Users/jrags/Code/Jasrags/ShadowMUD/chummer_data/skills.xml"
 

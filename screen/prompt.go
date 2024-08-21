@@ -5,17 +5,15 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Jasrags/ShadowMUD/common"
-
 	"github.com/i582/cfmt/cmd/cfmt"
 	"github.com/sirupsen/logrus"
 )
 
-func PromptConfirmInput(u *common.User, prompt string) (bool, error) {
+func (s *Screens) PromptConfirmInput(prompt string) (bool, error) {
 	var input string
 
-	io.WriteString(u.Session, cfmt.Sprint(prompt))
-	input, err := u.Term.ReadLine()
+	io.WriteString(s.user.Session, cfmt.Sprint(prompt))
+	input, err := s.user.Term.ReadLine()
 	if err != nil {
 		logrus.WithError(err).Error("Error reading input")
 		return false, err
@@ -30,15 +28,15 @@ func PromptConfirmInput(u *common.User, prompt string) (bool, error) {
 		return false, nil
 	}
 
-	io.WriteString(u.Session, cfmt.Sprintf("Invalid input, please try again\n"))
-	return PromptConfirmInput(u, prompt)
+	io.WriteString(s.user.Session, cfmt.Sprintf("Invalid input, please try again\n"))
+	return s.PromptConfirmInput(prompt)
 }
 
-func PromptUserInput(u *common.User, prompt string) (string, error) {
+func (s *Screens) PromptUserInput(prompt string) (string, error) {
 	var input string
 
-	io.WriteString(u.Session, cfmt.Sprint(prompt))
-	input, err := u.Term.ReadLine()
+	io.WriteString(s.user.Session, cfmt.Sprint(prompt))
+	input, err := s.user.Term.ReadLine()
 	if err != nil {
 		logrus.WithError(err).Error("Error reading input")
 
@@ -46,25 +44,25 @@ func PromptUserInput(u *common.User, prompt string) (string, error) {
 	}
 
 	if input == "" {
-		io.WriteString(u.Session, cfmt.Sprintf(requiredInputMsg))
-		return PromptUserInput(u, prompt)
+		io.WriteString(s.user.Session, cfmt.Sprintf(requiredInputMsg))
+		return s.PromptUserInput(prompt)
 	}
 
 	return input, nil
 }
 
-func PromptUserPasswordInput(u *common.User, prompt string) (string, error) {
+func (s *Screens) PromptUserPasswordInput(prompt string) (string, error) {
 	var input string
 
-	input, err := u.Term.ReadPassword(cfmt.Sprint(prompt))
+	input, err := s.user.Term.ReadPassword(cfmt.Sprint(prompt))
 	if err != nil {
 		logrus.WithError(err).Error("Error reading input")
 		return "", err
 	}
 
 	if input == "" {
-		io.WriteString(u.Session, cfmt.Sprintf(requiredInputMsg))
-		return PromptUserPasswordInput(u, prompt)
+		io.WriteString(s.user.Session, cfmt.Sprintf(requiredInputMsg))
+		return s.PromptUserPasswordInput(prompt)
 	}
 
 	return input, nil
@@ -75,15 +73,15 @@ type SelectOption struct {
 	Value string
 }
 
-func PromptUserSelect(u *common.User, title, prompt string, options []SelectOption) (string, error) {
-	io.WriteString(u.Session, cfmt.Sprintf(title))
+func (s *Screens) PromptUserSelect(title, prompt string, options []SelectOption) (string, error) {
+	io.WriteString(s.user.Session, cfmt.Sprintf(title))
 
 	for i, option := range options {
-		io.WriteString(u.Session, cfmt.Sprintf("%d. %s", i+1, option.Text))
+		io.WriteString(s.user.Session, cfmt.Sprintf("%d. %s", i+1, option.Text))
 	}
 
-	io.WriteString(u.Session, cfmt.Sprintf(prompt))
-	choice, err := u.Term.ReadLine()
+	io.WriteString(s.user.Session, cfmt.Sprintf(prompt))
+	choice, err := s.user.Term.ReadLine()
 	if err != nil {
 		logrus.WithError(err).Error("Error reading input")
 		return "", err
@@ -92,8 +90,8 @@ func PromptUserSelect(u *common.User, title, prompt string, options []SelectOpti
 	choice = strings.TrimSpace(choice)
 	index, err := strconv.Atoi(choice)
 	if err != nil || index < 1 || index > len(options) {
-		io.WriteString(u.Session, cfmt.Sprintf("Invalid input, please try again\n"))
-		return PromptUserSelect(u, title, prompt, options)
+		io.WriteString(s.user.Session, cfmt.Sprintf("Invalid input, please try again\n"))
+		return s.PromptUserSelect(title, prompt, options)
 	}
 
 	return options[index-1].Value, nil

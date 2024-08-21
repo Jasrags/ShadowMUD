@@ -1,140 +1,128 @@
 package common
 
-import (
-	"fmt"
-	"strings"
-	"sync"
-	"time"
+// const (
+// 	CharactersFilepath = "_data/characters"
+// )
 
-	"github.com/Jasrags/ShadowMUD/utils"
+// type (
+// 	// Attributes struct {
+// 	// 	Body      Attribute[int]     `yaml:"body"`
+// 	// 	Agility   Attribute[int]     `yaml:"agility"`
+// 	// 	Reaction  Attribute[int]     `yaml:"reaction"`
+// 	// 	Strength  Attribute[int]     `yaml:"strength"`
+// 	// 	Willpower Attribute[int]     `yaml:"willpower"`
+// 	// 	Logic     Attribute[int]     `yaml:"logic"`
+// 	// 	Intuition Attribute[int]     `yaml:"intuition"`
+// 	// 	Charisma  Attribute[int]     `yaml:"charisma"`
+// 	// 	Edge      Attribute[int]     `yaml:"edge"`
+// 	// 	Essence   Attribute[float64] `yaml:"essence"`
+// 	// 	Magic     Attribute[int]     `yaml:"magic"`
+// 	// 	Resonance Attribute[int]     `yaml:"resonance"`
+// 	// }
+// 	// Attribute[T int | float64] struct {
+// 	// 	Value       T `yaml:"value"`
+// 	// 	AugModifier T `yaml:"aug_modifier"`
+// 	// 	TotalValue  T `yaml:"total_value"`
+// 	// }
+// 	// InitiativeDice struct {
+// 	// 	Physical AttributesInfo `yaml:"physical"`
+// 	// 	// Astral          AttributesInfo `yaml:"astral"`
+// 	// 	// MatrixAR        AttributesInfo `yaml:"matrix_ar"`
+// 	// 	// MatrixVRHotSim  AttributesInfo `yaml:"matrix_vr"`
+// 	// 	// MatrixVRColdSim AttributesInfo `yaml:"hot_sim"`
+// 	// 	// RiggerAR        AttributesInfo `yaml:"rigger_ar"`
+// 	// }
+// 	// Equipment struct {
+// 	// 	Head          Armor  `yaml:"head,omitempty"`
+// 	// 	Body          Armor  `yaml:"body,omitempty"`
+// 	// 	Weapon        Weapon `yaml:"primary_weapon,omitempty"`
+// 	// 	OffHandWeapon Weapon `yaml:"off_hand_weapon,omitempty"`
+// 	// 	// Weapons   map[string]Weapon    `yaml:"weapons"`
+// 	// 	// Armor     map[string]Armor     `yaml:"armor"`
+// 	// 	// Cyberware map[string]Cyberware `yaml:"cyberware"`
+// 	// 	// Gear      map[string]Gear      `yaml:"gear"`
+// 	// }
+// 	// ConditionDamage struct {
+// 	// 	Physical int `yaml:"physical"`
+// 	// 	Stun     int `yaml:"stun"`
+// 	// }
+// 	// Initiatives struct {
+// 	// 	Initiative                int // (Reaction + Intuition) + 1D6
+// 	// 	AstralInitiative          int // (Intuition x 2) + 2D6
+// 	// 	MatrixARInitiative        int // (Reaction + Intuition) + 1D6
+// 	// 	MatrixVRHotSimInitiative  int // (Data Processing + Intuition) + 4D6
+// 	// 	MatrixVRColdSimInitiative int // (Data Processing + Intuition) + 3D6
+// 	// 	RiggerARInitiative        int // (Reaction + Intuition) + 1D6
+// 	// }
+// 	Characters map[string]*Character
+// 	Character  struct {
+// 		sync.RWMutex `yaml:"-"`
+// 		log          *logrus.Entry `yaml:"-"`
 
-	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
-)
+// 		// Personal Data
+// 		ID         string    `yaml:"id"`
+// 		Name       string    `yaml:"name"`
+// 		RoomID     string    `yaml:"room_id"`
+// 		Room       *Room     `yaml:"-"`
+// 		MetatypeID string    `yaml:"metatype_id"`
+// 		Metatype   *Metatype `yaml:"-"`
+// 		// Ethnicity       string          `yaml:"ethnicity"`
+// 		// Age             int             `yaml:"age"`
+// 		// Sex             string          `yaml:"sex"`
+// 		// Height          int             `yaml:"height"`
+// 		// Weight          int             `yaml:"weight"`
+// 		// StreetCred      int             `yaml:"street_cred"`
+// 		// Notoriety       int             `yaml:"notoriety"`
+// 		// PublicAwareness int             `yaml:"public_awareness"`
+// 		// Karma           int             `yaml:"karma"`
+// 		// TotalKarma      int             `yaml:"total_karma"`
+// 		// ConditionDamage ConditionDamage `yaml:"condition_damage"`
+// 		// Attributes
+// 		Attributes Attributes `yaml:"attributes"`
+// 		// InitiativeDice InitiativeDice `yaml:"initiative_dice"`
+// 		// Equipment      Equipment      `yaml:"equipment"`
+// 		// EdgePoints     int            `yaml:"edge_points"`
+// 		// Derived Attributes
+// 		// PhysicalLimit int `yaml:"-"`
+// 		// MentalLimit   int `yaml:"-"`
+// 		// SocialLimit   int `yaml:"-"`
+// 		// Initiative       int
+// 		// MatrixInitiative int `yaml:"-"`
+// 		// AstralInitiative int
+// 		// Composure       int `yaml:"-"`
+// 		// JudgeIntentions int `yaml:"-"`
+// 		// Memory          int `yaml:"-"`
+// 		// LiftCarry       int `yaml:"-"`
+// 		// Movement        int `yaml:"-"`
+// 		// Skills
+// 		ActiveSkills    Skills    `yaml:"active_skills"`
+// 		LanguageSkills  Skills    `yaml:"language_skills"`
+// 		KnowledgeSkills Skills    `yaml:"knowledge_skills"`
+// 		Qualities       Qualities `yaml:"qualities"`
+// 		// Contacts        map[string]Contact        `yaml:"contacts"`
+// 		// Identities      map[string]string         `yaml:"identities"`
+// 		// Lifestyles      map[string]string         `yaml:"lifestyles"`
+// 		// Currancy        map[string]int            `yaml:"currancy"`
+// 		// Weapons Weapons `yaml:"weapons"`
+// 		// RangedWeapons map[string]WeaponRanged `yaml:"ranged_weapons"`
+// 		// MeleeWeapons  map[string]WeaponMelee  `yaml:"melee_weapons"`
+// 		// Armor []Armor `yaml:"armor"`
+// 		// Cyberware     map[string]Cyberware    `yaml:"cyberware"`
+// 		// Bioware       map[string]Bioware      `yaml:"bioware"`
+// 		// Cyberdecks      map[string]string         `yaml:"cyberdecks"`
+// 		// Augmentations   map[string]string         `yaml:"augmentations"`
+// 		// Vehicals        map[string]string         `yaml:"vehicals"`
+// 		// Gear map[string]string `yaml:"gear"`
+// 		// AdeptPowers     map[string]string         `yaml:"adept_powers"`
+// 		CreatedAt time.Time `yaml:"created_at"`
+// 		UpdatedAt time.Time `yaml:"updated_at,omitempty"`
+// 		DeletedAt time.Time `yaml:"deleted_at,omitempty"`
+// 	}
+// )
 
-const (
-	CharactersFilepath = "_data/characters"
-)
-
-type (
-	// Attributes struct {
-	// 	Body      Attribute[int]     `yaml:"body"`
-	// 	Agility   Attribute[int]     `yaml:"agility"`
-	// 	Reaction  Attribute[int]     `yaml:"reaction"`
-	// 	Strength  Attribute[int]     `yaml:"strength"`
-	// 	Willpower Attribute[int]     `yaml:"willpower"`
-	// 	Logic     Attribute[int]     `yaml:"logic"`
-	// 	Intuition Attribute[int]     `yaml:"intuition"`
-	// 	Charisma  Attribute[int]     `yaml:"charisma"`
-	// 	Edge      Attribute[int]     `yaml:"edge"`
-	// 	Essence   Attribute[float64] `yaml:"essence"`
-	// 	Magic     Attribute[int]     `yaml:"magic"`
-	// 	Resonance Attribute[int]     `yaml:"resonance"`
-	// }
-	// Attribute[T int | float64] struct {
-	// 	Value       T `yaml:"value"`
-	// 	AugModifier T `yaml:"aug_modifier"`
-	// 	TotalValue  T `yaml:"total_value"`
-	// }
-	// InitiativeDice struct {
-	// 	Physical AttributesInfo `yaml:"physical"`
-	// 	// Astral          AttributesInfo `yaml:"astral"`
-	// 	// MatrixAR        AttributesInfo `yaml:"matrix_ar"`
-	// 	// MatrixVRHotSim  AttributesInfo `yaml:"matrix_vr"`
-	// 	// MatrixVRColdSim AttributesInfo `yaml:"hot_sim"`
-	// 	// RiggerAR        AttributesInfo `yaml:"rigger_ar"`
-	// }
-	// Equipment struct {
-	// 	Head          Armor  `yaml:"head,omitempty"`
-	// 	Body          Armor  `yaml:"body,omitempty"`
-	// 	Weapon        Weapon `yaml:"primary_weapon,omitempty"`
-	// 	OffHandWeapon Weapon `yaml:"off_hand_weapon,omitempty"`
-	// 	// Weapons   map[string]Weapon    `yaml:"weapons"`
-	// 	// Armor     map[string]Armor     `yaml:"armor"`
-	// 	// Cyberware map[string]Cyberware `yaml:"cyberware"`
-	// 	// Gear      map[string]Gear      `yaml:"gear"`
-	// }
-	// ConditionDamage struct {
-	// 	Physical int `yaml:"physical"`
-	// 	Stun     int `yaml:"stun"`
-	// }
-	// Initiatives struct {
-	// 	Initiative                int // (Reaction + Intuition) + 1D6
-	// 	AstralInitiative          int // (Intuition x 2) + 2D6
-	// 	MatrixARInitiative        int // (Reaction + Intuition) + 1D6
-	// 	MatrixVRHotSimInitiative  int // (Data Processing + Intuition) + 4D6
-	// 	MatrixVRColdSimInitiative int // (Data Processing + Intuition) + 3D6
-	// 	RiggerARInitiative        int // (Reaction + Intuition) + 1D6
-	// }
-	Characters map[string]*Character
-	Character  struct {
-		sync.RWMutex `yaml:"-"`
-		log          *logrus.Entry `yaml:"-"`
-
-		// Personal Data
-		ID         string    `yaml:"id"`
-		Name       string    `yaml:"name"`
-		RoomID     string    `yaml:"room_id"`
-		Room       *Room     `yaml:"-"`
-		MetatypeID string    `yaml:"metatype_id"`
-		Metatype   *Metatype `yaml:"-"`
-		// Ethnicity       string          `yaml:"ethnicity"`
-		// Age             int             `yaml:"age"`
-		// Sex             string          `yaml:"sex"`
-		// Height          int             `yaml:"height"`
-		// Weight          int             `yaml:"weight"`
-		// StreetCred      int             `yaml:"street_cred"`
-		// Notoriety       int             `yaml:"notoriety"`
-		// PublicAwareness int             `yaml:"public_awareness"`
-		// Karma           int             `yaml:"karma"`
-		// TotalKarma      int             `yaml:"total_karma"`
-		// ConditionDamage ConditionDamage `yaml:"condition_damage"`
-		// Attributes
-		Attributes Attributes `yaml:"attributes"`
-		// InitiativeDice InitiativeDice `yaml:"initiative_dice"`
-		// Equipment      Equipment      `yaml:"equipment"`
-		// EdgePoints     int            `yaml:"edge_points"`
-		// Derived Attributes
-		// PhysicalLimit int `yaml:"-"`
-		// MentalLimit   int `yaml:"-"`
-		// SocialLimit   int `yaml:"-"`
-		// Initiative       int
-		// MatrixInitiative int `yaml:"-"`
-		// AstralInitiative int
-		// Composure       int `yaml:"-"`
-		// JudgeIntentions int `yaml:"-"`
-		// Memory          int `yaml:"-"`
-		// LiftCarry       int `yaml:"-"`
-		// Movement        int `yaml:"-"`
-		// Skills
-		ActiveSkills    Skills    `yaml:"active_skills"`
-		LanguageSkills  Skills    `yaml:"language_skills"`
-		KnowledgeSkills Skills    `yaml:"knowledge_skills"`
-		Qualities       Qualities `yaml:"qualities"`
-		// Contacts        map[string]Contact        `yaml:"contacts"`
-		// Identities      map[string]string         `yaml:"identities"`
-		// Lifestyles      map[string]string         `yaml:"lifestyles"`
-		// Currancy        map[string]int            `yaml:"currancy"`
-		// Weapons Weapons `yaml:"weapons"`
-		// RangedWeapons map[string]WeaponRanged `yaml:"ranged_weapons"`
-		// MeleeWeapons  map[string]WeaponMelee  `yaml:"melee_weapons"`
-		// Armor []Armor `yaml:"armor"`
-		// Cyberware     map[string]Cyberware    `yaml:"cyberware"`
-		// Bioware       map[string]Bioware      `yaml:"bioware"`
-		// Cyberdecks      map[string]string         `yaml:"cyberdecks"`
-		// Augmentations   map[string]string         `yaml:"augmentations"`
-		// Vehicals        map[string]string         `yaml:"vehicals"`
-		// Gear map[string]string `yaml:"gear"`
-		// AdeptPowers     map[string]string         `yaml:"adept_powers"`
-		CreatedAt time.Time `yaml:"created_at"`
-		UpdatedAt time.Time `yaml:"updated_at,omitempty"`
-		DeletedAt time.Time `yaml:"deleted_at,omitempty"`
-	}
-)
-
-func (c *Character) Recalculate() {
-	c.Attributes.Recalculate()
-}
+// func (c *Character) Recalculate() {
+// 	c.Attributes.Recalculate()
+// }
 
 // func (ai *AttributesInfo) Reset() {
 // 	ai.Mods = 0
@@ -166,20 +154,20 @@ Body attribute. One point over that limit and his memory will be toasted
 at their favorite shadowrunner bar.
 */
 
-func NewCharacter() *Character {
-	c := &Character{
-		ID: uuid.New().String(),
-	}
+// func NewCharacter() *Character {
+// 	c := &Character{
+// 		ID: uuid.New().String(),
+// 	}
 
-	c.log = logrus.WithFields(logrus.Fields{
-		"package": "common",
-		"type":    "character",
-		"id":      c.ID,
-		"name":    c.Name,
-	})
+// 	c.log = logrus.WithFields(logrus.Fields{
+// 		"package": "common",
+// 		"type":    "character",
+// 		"id":      c.ID,
+// 		"name":    c.Name,
+// 	})
 
-	return c
-}
+// 	return c
+// }
 
 // // LoadUser loads a user from the filesystem
 // func LoadCharacter(username string, c *Character) error {
@@ -292,21 +280,21 @@ func NewCharacter() *Character {
 // 	}
 // }
 
-func (c *Character) Validate() error {
-	if c.ID == "" {
-		return fmt.Errorf("id is required")
-	}
+// func (c *Character) Validate() error {
+// 	if c.ID == "" {
+// 		return fmt.Errorf("id is required")
+// 	}
 
-	if c.Name == "" {
-		return fmt.Errorf("name is required")
-	}
+// 	if c.Name == "" {
+// 		return fmt.Errorf("name is required")
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
-func (c *Character) Filepath() string {
-	return fmt.Sprintf("%s/%s.yaml", CharactersFilepath, strings.ToLower(c.Name))
-}
+// func (c *Character) Filepath() string {
+// 	return fmt.Sprintf("%s/%s.yaml", CharactersFilepath, strings.ToLower(c.Name))
+// }
 
 // func (c *Character) MeleeAttack(target *Character) {
 // 	attackPool := c.Attributes.Agility.Value + c.Skills.CloseCombat + c.Weapon.Accuracy
@@ -533,23 +521,23 @@ Composure is a Willpower + Charisma Test, with a threshold based on the severity
 // 	// c.InitiativeDice.RiggerAR.Recalculate()
 // }
 
-func (c *Character) Save() error {
-	c.log.Debug("Saving character")
+// func (c *Character) Save() error {
+// 	c.log.Debug("Saving character")
 
-	defer c.Unlock()
-	c.Lock()
+// 	defer c.Unlock()
+// 	c.Lock()
 
-	c.UpdatedAt = time.Now()
+// 	c.UpdatedAt = time.Now()
 
-	if err := utils.SaveStructToYAML(c.Filepath(), c); err != nil {
-		c.log.WithError(err).Error("Error saving character")
-		return err
-	}
+// 	if err := utils.SaveStructToYAML(c.Filepath(), c); err != nil {
+// 		c.log.WithError(err).Error("Error saving character")
+// 		return err
+// 	}
 
-	c.log.Debug("Saved character")
+// 	c.log.Debug("Saved character")
 
-	return nil
-}
+// 	return nil
+// }
 
 // LoadMetatypes loads metatypes from YAML files in a specified directory.
 // It populates the global `Metatypes` map with the loaded metatypes.
@@ -634,25 +622,25 @@ Notoriety							Public Awareness 											Street Cred
 // Public Awareness
 // Street Cred
 
-var CoreCharacters = []*Character{
-	// {
-	// 	ID:         "1",
-	// 	Name:       "Test",
-	// 	MetatypeID: "elf",
-	// 	Attributes: Attributes{
-	// 		Body:      Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Agility:   Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Reaction:  Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Strength:  Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Willpower: Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Logic:     Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Intuition: Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Charisma:  Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Edge:      Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Essence:   Attribute[float64]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Magic:     Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 		Resonance: Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
-	// 	},
-	// 	CreatedAt: time.Now(),
-	// },
-}
+// var CoreCharacters = []*Character{
+// {
+// 	ID:         "1",
+// 	Name:       "Test",
+// 	MetatypeID: "elf",
+// 	Attributes: Attributes{
+// 		Body:      Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Agility:   Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Reaction:  Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Strength:  Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Willpower: Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Logic:     Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Intuition: Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Charisma:  Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Edge:      Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Essence:   Attribute[float64]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Magic:     Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 		Resonance: Attribute[int]{Base: 1, Delta: 0, TotalValue: 1},
+// 	},
+// 	CreatedAt: time.Now(),
+// },
+// }

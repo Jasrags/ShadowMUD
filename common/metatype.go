@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/Jasrags/ShadowMUD/utils"
+	"golang.org/x/exp/maps"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -27,26 +29,45 @@ const (
 )
 
 type MetatypeManager struct {
+	log       *logrus.Entry
 	Metatypes Metatypes
 }
 
 func NewMetatypeManager() *MetatypeManager {
-	return &MetatypeManager{
-		Metatypes: LoadMetatypes(),
+	m := &MetatypeManager{
+		Metatypes: make(Metatypes),
 	}
+
+	return m
 }
 
-func (mm *MetatypeManager) LoadChummerData(name string, v *Metatype) error {
-	// filepath := fmt.Sprintf("%s/%s.json", MetatypesFilepath, name)
-	// if err := utils.LoadStructFromJSON(filepath, &v); err != nil {
-	// 	return err
-	// }
+func (m *MetatypeManager) Load() error {
+	for _, v := range CoreMetatypes {
+		m.Metatypes[v.ID] = &v
+	}
+	logrus.Infof("Loaded %d metatypes", len(m.Metatypes))
+
 	return nil
 }
 
-type (
-	MetatypeCategory string
+func (m *MetatypeManager) GetByID(id string) *Metatype {
+	if v, ok := m.Metatypes[id]; ok {
+		return v
+	}
 
+	return nil
+}
+
+func (m *MetatypeManager) GetIDs() []string {
+	return maps.Keys(m.Metatypes)
+}
+
+func (m *MetatypeManager) GetAll() Metatypes {
+	return m.Metatypes
+}
+
+type (
+	MetatypeCategory                   string
 	RacialTrait                        string
 	RacialTraits                       []RacialTrait
 	MetatypeAttribute[T int | float64] struct {

@@ -1,37 +1,37 @@
 package common
 
-const (
-	ContactsFilepath = "_data/contacts"
+// const (
+// 	ContactsFilepath = "_data/contacts"
 
-	ContactTypeFixer ContactType = "Fixer"
-)
+// 	ContactTypeFixer ContactType = "Fixer"
+// )
 
-type (
-	ContactType string
-	ContactSpec struct {
-		ID          string      `yaml:"id,omitempty"`
-		Name        string      `yaml:"name"`
-		Description string      `yaml:"description"`
-		Type        ContactType `yaml:"type"`
-		RuleSource  RuleSource  `yaml:"rule_source"`
-	}
-	Contact struct {
-		ID         string      `yaml:"id,omitempty"`
-		Spec       ContactSpec `yaml:"-"`
-		Connection int         `yaml:"connection"`
-		Loyalty    int         `yaml:"loyalty"`
-	}
-)
+// type (
+// 	ContactType string
+// 	ContactSpec struct {
+// 		ID          string      `yaml:"id,omitempty"`
+// 		Name        string      `yaml:"name"`
+// 		Description string      `yaml:"description"`
+// 		Type        ContactType `yaml:"type"`
+// 		RuleSource  RuleSource  `yaml:"rule_source"`
+// 	}
+// 	Contact struct {
+// 		ID         string      `yaml:"id,omitempty"`
+// 		Spec       ContactSpec `yaml:"-"`
+// 		Connection int         `yaml:"connection"`
+// 		Loyalty    int         `yaml:"loyalty"`
+// 	}
+// )
 
-var CoreContacts = []ContactSpec{
-	{
-		ID:          "brian_flannigan",
-		Name:        "Brian Flannigan",
-		Description: "A fixer is a person who arranges illicit goods or services for characters. Fixers are the go-to people for characters who need to buy or sell illegal goods, find a buyer for a stolen item, or hire a shadowrunner for a job.",
-		Type:        ContactTypeFixer,
-		RuleSource:  RuleSourceSR5Core,
-	},
-}
+// var CoreContacts = []ContactSpec{
+// 	{
+// 		ID:          "brian_flannigan",
+// 		Name:        "Brian Flannigan",
+// 		Description: "A fixer is a person who arranges illicit goods or services for characters. Fixers are the go-to people for characters who need to buy or sell illegal goods, find a buyer for a stolen item, or hire a shadowrunner for a job.",
+// 		Type:        ContactTypeFixer,
+// 		RuleSource:  RuleSourceSR5Core,
+// 	},
+// }
 
 // func LoadContacts(dataPath string) map[string]Contact {
 // 	data := make(map[string]Contact)

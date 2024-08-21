@@ -6,8 +6,8 @@ import (
 
 	"github.com/Jasrags/ShadowMUD/config"
 	"github.com/Jasrags/ShadowMUD/utils"
-	"github.com/fatih/structs"
 
+	"github.com/fatih/structs"
 	"github.com/gliderlabs/ssh"
 	"github.com/sirupsen/logrus"
 )

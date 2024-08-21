@@ -1,65 +1,65 @@
 package common
 
-type (
-	TestAttribute struct {
-		Base  int
-		Mods  int
-		Value int
-	}
-	TestChar struct {
-		Body      TestAttribute
-		Agility   TestAttribute
-		Reaction  TestAttribute
-		Strength  TestAttribute
-		Willpower TestAttribute
-		Logic     TestAttribute
-		Intuition TestAttribute
-		Charisma  TestAttribute
-		Essence   float32
-		Skills    []TestSkill
-	}
-	TestSkill struct {
-		Name      string
-		Attribute string
-		Rank      int
-	}
-)
+// type (
+// 	TestAttribute struct {
+// 		Base  int
+// 		Mods  int
+// 		Value int
+// 	}
+// 	TestChar struct {
+// 		Body      TestAttribute
+// 		Agility   TestAttribute
+// 		Reaction  TestAttribute
+// 		Strength  TestAttribute
+// 		Willpower TestAttribute
+// 		Logic     TestAttribute
+// 		Intuition TestAttribute
+// 		Charisma  TestAttribute
+// 		Essence   float32
+// 		Skills    []TestSkill
+// 	}
+// 	TestSkill struct {
+// 		Name      string
+// 		Attribute string
+// 		Rank      int
+// 	}
+// )
 
-func (ta *TestAttribute) Reset() {
-	ta.Value = 0
-	ta.Mods = 0
-}
-func (ta *TestAttribute) Recalculate() {
-	ta.Value = ta.Base + ta.Mods
-}
+// func (ta *TestAttribute) Reset() {
+// 	ta.Value = 0
+// 	ta.Mods = 0
+// }
+// func (ta *TestAttribute) Recalculate() {
+// 	ta.Value = ta.Base + ta.Mods
+// }
 
-func (tc *TestChar) Recalculate() {
-	tc.Body.Reset()
-	tc.Agility.Reset()
-	tc.Reaction.Reset()
-	tc.Strength.Reset()
-	tc.Willpower.Reset()
-	tc.Logic.Reset()
-	tc.Intuition.Reset()
-	tc.Charisma.Reset()
+// func (tc *TestChar) Recalculate() {
+// 	tc.Body.Reset()
+// 	tc.Agility.Reset()
+// 	tc.Reaction.Reset()
+// 	tc.Strength.Reset()
+// 	tc.Willpower.Reset()
+// 	tc.Logic.Reset()
+// 	tc.Intuition.Reset()
+// 	tc.Charisma.Reset()
 
-	for _, skill := range tc.Skills {
-		switch skill.Attribute {
-		case "Agility":
-			tc.Agility.Mods += skill.Rank
-		}
-	}
+// 	for _, skill := range tc.Skills {
+// 		switch skill.Attribute {
+// 		case "Agility":
+// 			tc.Agility.Mods += skill.Rank
+// 		}
+// 	}
 
-	tc.Body.Recalculate()
-	tc.Agility.Recalculate()
-	tc.Reaction.Recalculate()
-	tc.Strength.Recalculate()
-	tc.Willpower.Recalculate()
-	tc.Logic.Recalculate()
-	tc.Intuition.Recalculate()
-	tc.Charisma.Recalculate()
+// 	tc.Body.Recalculate()
+// 	tc.Agility.Recalculate()
+// 	tc.Reaction.Recalculate()
+// 	tc.Strength.Recalculate()
+// 	tc.Willpower.Recalculate()
+// 	tc.Logic.Recalculate()
+// 	tc.Intuition.Recalculate()
+// 	tc.Charisma.Recalculate()
 
-}
+// }
 
 // var (
 // 	tsk = TestSkill{

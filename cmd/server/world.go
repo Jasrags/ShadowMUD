@@ -4,7 +4,10 @@ import (
 	"io"
 	"sync"
 
-	"github.com/Jasrags/ShadowMUD/common"
+	"github.com/Jasrags/ShadowMUD/common/metatype"
+	"github.com/Jasrags/ShadowMUD/common/room"
+	"github.com/Jasrags/ShadowMUD/common/user"
+	"github.com/Jasrags/ShadowMUD/common/zone"
 	"github.com/Jasrags/ShadowMUD/config"
 	"github.com/Jasrags/ShadowMUD/screen"
 
@@ -19,14 +22,21 @@ type (
 		lock sync.Mutex
 		cfg  *config.Server
 
-		users    common.Users
+		// users    common.Users
 		sessions Sessions
 
 		// Loaded data
-		zones     common.Zones
-		rooms     common.Rooms
-		metatypes common.Metatypes
-		pregens   common.Pregens
+		// zones     common.Zones
+		// rooms     common.Rooms
+		// metatypes *common.MetatypeManager
+		// pregens   common.Pregens
+
+		zones zone.Zones
+		rooms room.Rooms
+
+		userManager     *user.Manager
+		metatypeManager *metatype.Manager
+		// pregens   common.Pregens
 
 		broadcast    chan string
 		userChannels map[string]chan string
@@ -36,11 +46,14 @@ type (
 
 func NewWorld(cfg *config.Server) *World {
 	w := &World{
-		cfg:          cfg,
-		users:        make(common.Users),
+		cfg:             cfg,
+		metatypeManager: metatype.NewManager(),
+		userManager:     user.NewManager(),
+
 		sessions:     make(Sessions),
 		broadcast:    make(chan string),
 		userChannels: make(map[string]chan string),
+
 		// commandQueue: make(chan Command),
 	}
 	go w.broadcastMessages()
@@ -69,6 +82,8 @@ func (w *World) LoadData() {
 
 	// w.zones = common.LoadZones()
 	// w.rooms = common.LoadRooms()
+	w.userManager.Load()
+	w.metatypeManager.Load()
 	// w.metatypes = common.LoadMetatypes()
 	// // w.pregens = common.LoadPregens()
 	// sm := common.NewSkillManager()
@@ -88,7 +103,7 @@ func (w *World) TurnTick() {
 func (w *World) Handler(s ssh.Session) {
 	logrus.WithFields(logrus.Fields{"user": s.User(), "remote_addr": s.RemoteAddr()}).Info("New connection")
 
-	u := common.NewUser(s)
+	u := user.New(s)
 	screens := screen.New(u, w.cfg)
 	state := screen.StateBanner
 	for {
@@ -127,7 +142,8 @@ func (w *World) Handler(s ssh.Session) {
 			u.Save()
 			io.WriteString(u.Session, cfmt.Sprint("Goodbye!\n"))
 			w.RemoveSession(u.ID)
-			w.RemoveUser(u.Username)
+			w.userManager.RemoveByID(u.ID)
+			// w.RemoveUser(u.Username)
 			u.Session.Close()
 			return
 		default:
@@ -135,7 +151,6 @@ func (w *World) Handler(s ssh.Session) {
 			state = screen.StateBanner
 		}
 	}
-
 }
 
 // TODO: Match against commands, users, etc...
@@ -160,25 +175,25 @@ func (w *World) SendMessageToAllUsers(message string) {
 	w.broadcast <- cfmt.Sprintf("Brodcast: {{%s}}::#00ff00\n", message)
 }
 
-func (w *World) GetUser(username string) *common.User {
-	w.lock.Lock()
-	defer w.lock.Unlock()
-	return w.users[username]
-}
+// func (w *World) GetUser(username string) *user.User {
+// 	w.lock.Lock()
+// 	defer w.lock.Unlock()
+// 	return w.users[username]
+// }
 
-func (w *World) AddUser(u *common.User) {
-	w.lock.Lock()
-	defer w.lock.Unlock()
-	w.users[u.Username] = u
-	w.userChannels[u.Username] = make(chan string)
-}
+// func (w *World) AddUser(u *user.User) {
+// 	w.lock.Lock()
+// 	defer w.lock.Unlock()
+// 	w.users[u.Username] = u
+// 	w.userChannels[u.Username] = make(chan string)
+// }
 
-func (w *World) RemoveUser(username string) {
-	w.lock.Lock()
-	defer w.lock.Unlock()
-	delete(w.users, username)
-	delete(w.userChannels, username)
-}
+// func (w *World) RemoveUser(username string) {
+// 	w.lock.Lock()
+// 	defer w.lock.Unlock()
+// 	delete(w.users, username)
+// 	delete(w.userChannels, username)
+// }
 
 func (w *World) GetSession(id string) *ssh.Session {
 	w.lock.Lock()

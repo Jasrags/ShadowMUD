@@ -38,23 +38,16 @@ func SaveStructToYAML[T any](filename string, data T) error {
 }
 
 func LoadStructFromYAML[T any](filename string, data T) error {
-	log := logrus.WithFields(logrus.Fields{"filename": filename})
-	log.Debug("Loading from YAML")
-
 	file, err := os.Open(filename)
 	if err != nil {
-		log.WithError(err).Error("Could not open file")
 		return err
 	}
 	defer file.Close()
 
 	decoder := yaml.NewDecoder(file)
 	if err := decoder.Decode(data); err != nil {
-		log.WithError(err).Error("Could not decode file")
 		return err
 	}
-
-	log.Debug("Loaded from YAML")
 
 	return nil
 }

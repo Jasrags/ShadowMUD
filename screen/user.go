@@ -11,7 +11,7 @@ import (
 func (s *Screens) PromptChangePassword() int {
 promptChangePassword:
 	// Collect new password
-	password, errPassword := PromptUserPasswordInput(s.user, passwordNewPrompt)
+	password, errPassword := s.PromptUserPasswordInput(passwordNewPrompt)
 	if errPassword != nil {
 		s.log.WithError(errPassword).Error("Error reading password")
 		return StateQuit
@@ -27,7 +27,7 @@ promptChangePassword:
 	}
 
 	// Confirm the password
-	passwordConfirm, errPasswordConfirm := PromptUserPasswordInput(s.user, passwordConfirmPrompt)
+	passwordConfirm, errPasswordConfirm := s.PromptUserPasswordInput(passwordConfirmPrompt)
 	if errPasswordConfirm != nil {
 		s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID}).
 			WithError(errPasswordConfirm).Error("Error reading confirm password")

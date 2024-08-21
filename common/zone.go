@@ -1,107 +1,96 @@
 package common
 
-import (
-	"fmt"
-	"os"
-	"strings"
-	"sync"
+// const (
+// 	ZonesFilepath = "_data/zones"
+// )
 
-	"github.com/Jasrags/ShadowMUD/utils"
-	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
-)
+// type (
+// 	Zones map[string]*Zone
+// 	Zone  struct {
+// 		sync.Mutex `yaml:"-"`
+// 		log        *logrus.Entry `yaml:"-"`
 
-const (
-	ZonesFilepath = "_data/zones"
-)
+// 		ID          string     `yaml:"id"`
+// 		Name        string     `yaml:"name"`
+// 		Description string     `yaml:"description"`
+// 		RuleSource  RuleSource `yaml:"rule_source"`
+// 	}
+// )
 
-type (
-	Zones map[string]*Zone
-	Zone  struct {
-		sync.Mutex `yaml:"-"`
-		log        *logrus.Entry `yaml:"-"`
+// func NewZone() *Zone {
+// 	z := &Zone{
+// 		ID: uuid.New().String(),
+// 	}
+// 	z.log = logrus.WithFields(logrus.Fields{"package": "common", "type": "zone", "zone_id": z.ID, "zone_name": z.Name})
 
-		ID          string     `yaml:"id"`
-		Name        string     `yaml:"name"`
-		Description string     `yaml:"description"`
-		RuleSource  RuleSource `yaml:"rule_source"`
-	}
-)
+// 	return z
+// }
 
-func NewZone() *Zone {
-	z := &Zone{
-		ID: uuid.New().String(),
-	}
-	z.log = logrus.WithFields(logrus.Fields{"package": "common", "type": "zone", "zone_id": z.ID, "zone_name": z.Name})
+// func (z *Zone) Filepath() string {
+// 	return fmt.Sprintf("%s/%s.yaml", ZonesFilepath, strings.ToLower(z.ID))
 
-	return z
-}
+// }
 
-func (z *Zone) Filepath() string {
-	return fmt.Sprintf("%s/%s.yaml", ZonesFilepath, strings.ToLower(z.ID))
+// func (z *Zone) Validate() error {
+// 	if z.ID == "" {
+// 		return fmt.Errorf("id is required")
+// 	}
+// 	if z.Name == "" {
+// 		return fmt.Errorf("name is required")
+// 	}
 
-}
+// 	return nil
+// }
 
-func (z *Zone) Validate() error {
-	if z.ID == "" {
-		return fmt.Errorf("id is required")
-	}
-	if z.Name == "" {
-		return fmt.Errorf("name is required")
-	}
+// func LoadZone(id string, v *Zone) error {
+// 	id = strings.ToLower(id)
+// 	filepath := fmt.Sprintf("%s/%s.yaml", ZonesFilepath, id)
 
-	return nil
-}
+// 	if err := utils.LoadStructFromYAML(filepath, &v); err != nil {
+// 		return err
+// 	}
 
-func LoadZone(id string, v *Zone) error {
-	id = strings.ToLower(id)
-	filepath := fmt.Sprintf("%s/%s.yaml", ZonesFilepath, id)
+// 	return nil
+// }
 
-	if err := utils.LoadStructFromYAML(filepath, &v); err != nil {
-		return err
-	}
+// func LoadZones() Zones {
+// 	logrus.Info("Started loading zones")
+// 	list := make(Zones)
 
-	return nil
-}
+// 	files, errReadDir := os.ReadDir(ZonesFilepath)
+// 	if errReadDir != nil {
+// 		logrus.WithError(errReadDir).Fatal("Could not read zones directory")
+// 	}
 
-func LoadZones() Zones {
-	logrus.Info("Started loading zones")
-	list := make(Zones)
+// 	for _, file := range files {
+// 		var v Zone
+// 		if strings.HasSuffix(file.Name(), ".yaml") {
 
-	files, errReadDir := os.ReadDir(ZonesFilepath)
-	if errReadDir != nil {
-		logrus.WithError(errReadDir).Fatal("Could not read zones directory")
-	}
+// 			name := strings.TrimSuffix(file.Name(), ".yaml")
+// 			if err := LoadZone(name, &v); err != nil {
+// 				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load zone")
+// 			}
 
-	for _, file := range files {
-		var v Zone
-		if strings.HasSuffix(file.Name(), ".yaml") {
+// 			list[v.ID] = &v
+// 			logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded zone file")
+// 		}
+// 	}
 
-			name := strings.TrimSuffix(file.Name(), ".yaml")
-			if err := LoadZone(name, &v); err != nil {
-				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load zone")
-			}
+// 	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading zone")
 
-			list[v.ID] = &v
-			logrus.WithFields(logrus.Fields{"filename": file.Name()}).Debug("Loaded zone file")
-		}
-	}
+// 	return list
+// }
 
-	logrus.WithFields(logrus.Fields{"count": len(list)}).Info("Done loading zone")
-
-	return list
-}
-
-var CoreZones = []*Zone{
-	{
-		ID:          "the_void",
-		Name:        "The Void",
-		Description: "The Void is a place of nothingness. It is a place where the laws of physics do not apply. It is a place where time and space are meaningless. It is a place where the mind can wander and the soul can rest. It is a place where the universe is born and where it dies. It is a place where the gods dwell and where the demons lurk. It is a place where the past, present, and future are one. It is a place where the light and the dark are one. It is a place where the living and the dead are one. It is a place where the mind and the body are one. It is a place where the self and the other are one. It is a place where the dream and the reality are one. It is a place where the truth and the lie are one. It is a place where the beginning and the end are one. It is a place where the alpha and the omega are one. It is a place where the light and the dark are one. It is a place where the living and the dead are one. It is a place where the mind and the body are one. It is a place where the self and the other are one. It is a place where the dream and the reality are one. It is a place where the truth and the lie are one. It is a place where the beginning and the end are one. It is a place where the alpha and the omega are one. It is a place where the light and the dark are one. It is a place where the living and the dead are one. It is a place where the mind and the body are one. It is a place where the self and the other are one. It is a place where the dream and the reality are one. It is a place where the truth and the lie are one. It is a place where the beginning and the end are one. It is a place where the alpha and the omega are one. It is a place where the light and the dark are one. It is a place where the living and the dead are one. It is a place where the mind and the body are one. It is a place where the self and the other are one. It is a place where the dream and the reality are one. It is a place where the truth and the lie are one. It is a place where the beginning and the end are one.",
-	},
-	{
-		ID:          "seattle",
-		Name:        "Seattle",
-		Description: "Seattle is a city in the UCAS, located in the Pacific Northwest. It is the largest city in the UCAS and the largest metroplex in the world. Seattle is a major hub for trade, commerce, and cult ure, and is home to a number of megacorporations, including Ares Macrotechnology, Aztechnology, and NeoNET.",
-		RuleSource:  RuleSourceSR5Core,
-	},
-}
+// var CoreZones = []*Zone{
+// 	{
+// 		ID:          "the_void",
+// 		Name:        "The Void",
+// 		Description: "The Void is a place of nothingness. It is a place where the laws of physics do not apply. It is a place where time and space are meaningless. It is a place where the mind can wander and the soul can rest. It is a place where the universe is born and where it dies. It is a place where the gods dwell and where the demons lurk. It is a place where the past, present, and future are one. It is a place where the light and the dark are one. It is a place where the living and the dead are one. It is a place where the mind and the body are one. It is a place where the self and the other are one. It is a place where the dream and the reality are one. It is a place where the truth and the lie are one. It is a place where the beginning and the end are one. It is a place where the alpha and the omega are one. It is a place where the light and the dark are one. It is a place where the living and the dead are one. It is a place where the mind and the body are one. It is a place where the self and the other are one. It is a place where the dream and the reality are one. It is a place where the truth and the lie are one. It is a place where the beginning and the end are one. It is a place where the alpha and the omega are one. It is a place where the light and the dark are one. It is a place where the living and the dead are one. It is a place where the mind and the body are one. It is a place where the self and the other are one. It is a place where the dream and the reality are one. It is a place where the truth and the lie are one. It is a place where the beginning and the end are one. It is a place where the alpha and the omega are one. It is a place where the light and the dark are one. It is a place where the living and the dead are one. It is a place where the mind and the body are one. It is a place where the self and the other are one. It is a place where the dream and the reality are one. It is a place where the truth and the lie are one. It is a place where the beginning and the end are one.",
+// 	},
+// 	{
+// 		ID:          "seattle",
+// 		Name:        "Seattle",
+// 		Description: "Seattle is a city in the UCAS, located in the Pacific Northwest. It is the largest city in the UCAS and the largest metroplex in the world. Seattle is a major hub for trade, commerce, and cult ure, and is home to a number of megacorporations, including Ares Macrotechnology, Aztechnology, and NeoNET.",
+// 		RuleSource:  RuleSourceSR5Core,
+// 	},
+// }

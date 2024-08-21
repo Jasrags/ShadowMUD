@@ -21,7 +21,7 @@ func (s *Screens) PromptRegisterUser() int {
 
 promptRegisterUsername:
 	// Collect new username
-	username, errUsername := PromptUserInput(s.user, usernameNewPrompt)
+	username, errUsername := s.PromptUserInput(usernameNewPrompt)
 	if errUsername != nil {
 		logrus.WithError(errUsername).Error("Error reading username")
 		io.WriteString(s.user.Session, cfmt.Sprintf(inputErrorMsg))
@@ -48,7 +48,7 @@ promptRegisterUsername:
 	}
 
 	// Confirm the username
-	usernameConfirm, errUsernameConfirm := PromptConfirmInput(s.user, cfmt.Sprintf(usernameConfirmPrompt, username))
+	usernameConfirm, errUsernameConfirm := s.PromptConfirmInput(cfmt.Sprintf(usernameConfirmPrompt, username))
 	// usernameConfirm, errUsernameConfirm := PromptUserInput(s.user,
 	// cfmt.Sprintf(usernameConfirmPrompt, username))
 	if errUsernameConfirm != nil {
@@ -71,7 +71,7 @@ promptRegisterUsername:
 
 promptRegisterPassword:
 	// Collect new password
-	password, errPassword := PromptUserPasswordInput(s.user, passwordNewPrompt)
+	password, errPassword := s.PromptUserPasswordInput(passwordNewPrompt)
 	if errPassword != nil {
 		logrus.WithError(errPassword).Error("Error reading password")
 		return StateQuit
@@ -86,7 +86,7 @@ promptRegisterPassword:
 	}
 
 	// Confirm the password
-	passwordConfirm, errPasswordConfirm := PromptUserPasswordInput(s.user, passwordConfirmPrompt)
+	passwordConfirm, errPasswordConfirm := s.PromptUserPasswordInput(passwordConfirmPrompt)
 	if errPasswordConfirm != nil {
 		logrus.WithError(errPasswordConfirm).Error("Error reading confirm password")
 		return StateQuit

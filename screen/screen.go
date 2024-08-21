@@ -1,18 +1,19 @@
 package screen
 
 import (
-	"github.com/Jasrags/ShadowMUD/common"
+	"github.com/Jasrags/ShadowMUD/common/user"
 	"github.com/Jasrags/ShadowMUD/config"
+
 	"github.com/sirupsen/logrus"
 )
 
 type Screens struct {
 	log  *logrus.Entry
-	user *common.User
+	user *user.User
 	cfg  *config.Server
 }
 
-func New(u *common.User, cfg *config.Server) *Screens {
+func New(u *user.User, cfg *config.Server) *Screens {
 	s := &Screens{
 		user: u,
 		cfg:  cfg,

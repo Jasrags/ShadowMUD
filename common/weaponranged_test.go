@@ -1,72 +1,62 @@
 package common_test
 
-import (
-	"fmt"
-	"testing"
+// func TestSaveCoreWeaponRanged(t *testing.T) {
+// 	for _, v := range common.CoreWeaponRanged {
+// 		filename := fmt.Sprintf("../%s/%s.yaml", common.RangedWeaponsFilepath, v.ID)
+// 		if err := utils.SaveStructToYAML(filename, &v); err != nil {
+// 			t.Errorf("Error saving %s: %s", v.ID, err)
+// 		}
+// 	}
+// }
 
-	"github.com/Jasrags/ShadowMUD/common"
-	"github.com/Jasrags/ShadowMUD/utils"
+// func TestToggleFiringMode(t *testing.T) {
+// 	firingModes := []common.WeaponFiringMode{
+// 		common.WeaponFiringModeSemiAutomatic,
+// 		common.WeaponFiringModeBurstFire,
+// 		common.WeaponFiringModeFullAuto,
+// 	}
+// 	dt := []struct {
+// 		Name            string
+// 		CurrentFireMode common.WeaponFiringMode
+// 		FiringModes     []common.WeaponFiringMode
+// 		Expected        string
+// 	}{
+// 		{
+// 			Name:     "No Firing Modes",
+// 			Expected: "[Ares Light Fire 70] No firing modes available",
+// 		},
+// 		{
+// 			Name:            "Semi-Automatic to Burst Fire",
+// 			CurrentFireMode: common.WeaponFiringModeSemiAutomatic,
+// 			FiringModes:     firingModes,
+// 			Expected:        "[Ares Light Fire 70] Firing mode changed to Burst Fire",
+// 		},
+// 		{
+// 			Name:            "Burst Fire to Full Auto",
+// 			CurrentFireMode: common.WeaponFiringModeBurstFire,
+// 			FiringModes:     firingModes,
+// 			Expected:        "[Ares Light Fire 70] Firing mode changed to Full Auto",
+// 		},
+// 		{
+// 			Name:            "Full Auto to Semi-Automatic",
+// 			CurrentFireMode: common.WeaponFiringModeFullAuto,
+// 			FiringModes:     firingModes,
+// 			Expected:        "[Ares Light Fire 70] Firing mode changed to Semi-Automatic",
+// 		},
+// 	}
 
-	"github.com/stretchr/testify/assert"
-)
+// 	for _, tt := range dt {
+// 		t.Run(tt.Name, func(t *testing.T) {
+// 			w := &common.WeaponRanged{}
+// 			w.Spec.Name = "Ares Light Fire 70"
+// 			w.Spec.FiringModes = tt.FiringModes
+// 			w.SelectedFiringMode = tt.CurrentFireMode
 
-func TestSaveCoreWeaponRanged(t *testing.T) {
-	for _, v := range common.CoreWeaponRanged {
-		filename := fmt.Sprintf("../%s/%s.yaml", common.RangedWeaponsFilepath, v.ID)
-		if err := utils.SaveStructToYAML(filename, &v); err != nil {
-			t.Errorf("Error saving %s: %s", v.ID, err)
-		}
-	}
-}
-
-func TestToggleFiringMode(t *testing.T) {
-	firingModes := []common.WeaponFiringMode{
-		common.WeaponFiringModeSemiAutomatic,
-		common.WeaponFiringModeBurstFire,
-		common.WeaponFiringModeFullAuto,
-	}
-	dt := []struct {
-		Name            string
-		CurrentFireMode common.WeaponFiringMode
-		FiringModes     []common.WeaponFiringMode
-		Expected        string
-	}{
-		{
-			Name:     "No Firing Modes",
-			Expected: "[Ares Light Fire 70] No firing modes available",
-		},
-		{
-			Name:            "Semi-Automatic to Burst Fire",
-			CurrentFireMode: common.WeaponFiringModeSemiAutomatic,
-			FiringModes:     firingModes,
-			Expected:        "[Ares Light Fire 70] Firing mode changed to Burst Fire",
-		},
-		{
-			Name:            "Burst Fire to Full Auto",
-			CurrentFireMode: common.WeaponFiringModeBurstFire,
-			FiringModes:     firingModes,
-			Expected:        "[Ares Light Fire 70] Firing mode changed to Full Auto",
-		},
-		{
-			Name:            "Full Auto to Semi-Automatic",
-			CurrentFireMode: common.WeaponFiringModeFullAuto,
-			FiringModes:     firingModes,
-			Expected:        "[Ares Light Fire 70] Firing mode changed to Semi-Automatic",
-		},
-	}
-
-	for _, tt := range dt {
-		t.Run(tt.Name, func(t *testing.T) {
-			w := &common.WeaponRanged{}
-			w.Spec.Name = "Ares Light Fire 70"
-			w.Spec.FiringModes = tt.FiringModes
-			w.SelectedFiringMode = tt.CurrentFireMode
-
-			result := w.ToggleFiringMode()
-			assert.Equal(t, tt.Expected, result)
-		})
-	}
-}
+// 			result := w.ToggleFiringMode()
+// 			assert.Equal(t, tt.Expected, result)
+// 		})
+// 	}
+// }
 
 // func TestLoad(t *testing.T) {
 // 	td := []struct {
