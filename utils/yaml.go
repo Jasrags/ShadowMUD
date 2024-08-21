@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -50,4 +51,26 @@ func LoadStructFromYAML[T any](filename string, data T) error {
 	}
 
 	return nil
+}
+
+func LoadStructsFromDir[T any](filepath string) ([]T, error) {
+	var list []T
+
+	files, errReadDir := os.ReadDir(filepath)
+	if errReadDir != nil {
+		return list, errReadDir
+	}
+
+	for _, file := range files {
+		var v T
+		if strings.HasSuffix(file.Name(), ".yaml") {
+			if err := LoadStructFromYAML(fmt.Sprintf("%s/%s", filepath, file.Name()), &v); err != nil {
+				return list, err
+			}
+
+			list = append(list, v)
+		}
+	}
+
+	return list, nil
 }

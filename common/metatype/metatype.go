@@ -43,7 +43,7 @@ type (
 		Magic      Attribute[int]     `yaml:"magic"`
 		Resonance  Attribute[int]     `yaml:"resonance"`
 	}
-	Metatypes map[string]*Metatype
+	Metatypes map[string]Metatype
 	Metatype  struct {
 		ID                  string            `yaml:"id"`
 		Name                string            `yaml:"name"`

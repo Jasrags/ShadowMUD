@@ -4,6 +4,7 @@ import (
 	"io"
 	"sync"
 
+	"github.com/Jasrags/ShadowMUD/common/armor"
 	"github.com/Jasrags/ShadowMUD/common/metatype"
 	"github.com/Jasrags/ShadowMUD/common/room"
 	"github.com/Jasrags/ShadowMUD/common/user"
@@ -35,6 +36,7 @@ type (
 		rooms room.Rooms
 
 		userManager     *user.Manager
+		armorManager    *armor.Manager
 		metatypeManager *metatype.Manager
 		// pregens   common.Pregens
 
@@ -49,6 +51,7 @@ func NewWorld(cfg *config.Server) *World {
 		cfg:             cfg,
 		metatypeManager: metatype.NewManager(),
 		userManager:     user.NewManager(),
+		armorManager:    armor.NewManager(),
 
 		sessions:     make(Sessions),
 		broadcast:    make(chan string),
@@ -84,6 +87,7 @@ func (w *World) LoadData() {
 	// w.rooms = common.LoadRooms()
 	w.userManager.Load()
 	w.metatypeManager.Load()
+	w.armorManager.Load()
 	// w.metatypes = common.LoadMetatypes()
 	// // w.pregens = common.LoadPregens()
 	// sm := common.NewSkillManager()

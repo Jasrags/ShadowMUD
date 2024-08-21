@@ -3,8 +3,6 @@ package bioware
 import "github.com/Jasrags/ShadowMUD/common/shared"
 
 const (
-	BiowareFilepath = "_data/items/bioware"
-
 	BiowareTypeBasic    Type = "Basic"
 	BiowareTypeCultured Type = "Cultured"
 )
@@ -16,7 +14,7 @@ type (
 		Delta      int `yaml:"delta"`
 		TotalValue int `yaml:"total_value"`
 	}
-	Specs map[string]*Spec
+	Specs map[string]Spec
 	Spec  struct {
 		ID           string              `yaml:"id"`
 		Name         string              `yaml:"name"`
@@ -42,30 +40,6 @@ type (
 		Spec      Spec             `yaml:"-"`
 	}
 )
-
-var CoreBioware = []Bioware{
-	{
-		ID:     "adrenaline_pump",
-		Rating: 1,
-		// Modifiers: []Modifier{},
-		Spec: Spec{
-			ID:           "adrenaline_pump",
-			Name:         "Adrenaline Pump",
-			Description:  "Adrenaline Pump Description",
-			BiowareType:  BiowareTypeBasic,
-			EssenceCost:  0.75, // Rating * 0.75
-			Capacity:     Capacity{},
-			ToggleAction: shared.ActionFree,
-			IsActive:     false,
-			// Modifiers:    []Modifier{},
-			Cost:         55000, // Rating * 55,000¥
-			Availability: 0,     // (Rating * 6)F
-			Legality:     shared.LegalityTypeLegal,
-			Notes:        "",
-			RuleSource:   shared.RuleSourceSR5Core,
-		},
-	},
-}
 
 // BASIC
 // Type 	Device 	Essence 	Avail 	Cost 	Source

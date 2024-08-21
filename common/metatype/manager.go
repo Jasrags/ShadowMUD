@@ -1,9 +1,6 @@
 package metatype
 
 import (
-	"fmt"
-	"os"
-	"strings"
 	"sync"
 
 	"github.com/Jasrags/ShadowMUD/utils"
@@ -32,38 +29,39 @@ func NewManager() *Manager {
 	return m
 }
 
-func (m *Manager) Load() {
-	logrus.Info("Loading metatypes")
-	defer m.Unlock()
+func (m *Manager) Load() error {
 	m.Lock()
+	defer m.Unlock()
 
-	files, errReadDir := os.ReadDir(Filepath)
-	if errReadDir != nil {
-		logrus.WithFields(logrus.Fields{"filepath": Filepath}).WithError(errReadDir).Fatal("Could not read directory")
-	}
-
-	for _, file := range files {
-		var v Metatype
-		if strings.HasSuffix(file.Name(), ".yaml") {
-			if err := utils.LoadStructFromYAML(fmt.Sprintf("%s/%s", Filepath, file.Name()), &v); err != nil {
-				logrus.WithFields(logrus.Fields{"filename": file.Name()}).WithError(err).Fatal("Could not load file to struct")
-			}
-
-			m.Metatypes[v.ID] = &v
-			logrus.WithFields(logrus.Fields{"filename": file.Name(), "id": v.ID, "username": v.Name}).Debug("Loaded file")
-		}
-	}
-
-	logrus.WithFields(logrus.Fields{"count": len(m.Metatypes)}).Info("Done loading metatypes")
-}
-
-func (m *Manager) GetByID(id string) *Metatype {
-	if v, ok := m.Metatypes[id]; ok {
-		return v
+	if err := m.loadMetatypes(); err != nil {
+		return err
 	}
 
 	return nil
 }
+
+func (m *Manager) loadMetatypes() error {
+	m.log.Info("Loading metatypes")
+	list, err := utils.LoadStructsFromDir[Metatype](Filepath)
+	if err != nil {
+		m.log.WithError(err).Fatal("Could not load metatypes")
+		return err
+	}
+
+	for _, item := range list {
+		m.Metatypes[item.ID] = item
+	}
+	m.log.WithFields(logrus.Fields{"count": len(m.Metatypes)}).Info("Done loading metatypes")
+	return nil
+}
+
+// func (m *Manager) GetByID(id string) *Metatype {
+// 	if v, ok := m.Metatypes[id]; ok {
+// 		return v
+// 	}
+
+// 	return nil
+// }
 
 func (m *Manager) GetIDs() []string {
 	return maps.Keys(m.Metatypes)
