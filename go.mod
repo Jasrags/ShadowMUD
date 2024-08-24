@@ -1,6 +1,6 @@
 module github.com/Jasrags/ShadowMUD
 
-go 1.22.3
+go 1.23
 
 require (
 	github.com/fatih/structs v1.1.0

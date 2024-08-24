@@ -11,6 +11,7 @@ import (
 	"github.com/Jasrags/ShadowMUD/common/user"
 	"github.com/Jasrags/ShadowMUD/config"
 	"github.com/google/uuid"
+	"github.com/i582/cfmt/cmd/cfmt"
 
 	"github.com/gliderlabs/ssh"
 	"github.com/sirupsen/logrus"
@@ -33,6 +34,7 @@ type World struct {
 	srv *ssh.Server
 
 	userManager *user.Manager
+	users       user.Users
 
 	sessions        map[string]*ssh.Session
 	inputChan       chan InputMessage
@@ -44,6 +46,7 @@ func NewWorld(cfg *config.Server) *World {
 		cfg: cfg,
 
 		userManager: user.NewManager(),
+		users:       make(user.Users),
 
 		sessions:        make(map[string]*ssh.Session),
 		inputChan:       make(chan InputMessage),
@@ -122,6 +125,30 @@ func (w *World) RemoveSession(id string) {
 	delete(w.sessions, id)
 }
 
+func (w *World) AddUser(u *user.User) {
+	logrus.WithField("id", u.ID).Debug("Adding user")
+	w.Lock()
+	defer w.Unlock()
+
+	w.users[u.ID] = u
+}
+
+func (w *World) GetUser(id string) *user.User {
+	logrus.WithField("id", id).Debug("Getting user")
+	w.Lock()
+	defer w.Unlock()
+
+	return w.users[id]
+}
+
+func (w *World) RemoveUser(id string) {
+	logrus.WithField("id", id).Debug("Removing user")
+	w.Lock()
+	defer w.Unlock()
+
+	delete(w.users, id)
+}
+
 type State int
 
 const (
@@ -132,6 +159,8 @@ const (
 	StateEnterGame
 	StateGameLoop
 	StatePromptCreateCharacter
+	StatePromptCreatePregenCharacter
+	StatePromptCreateCustomCharacter
 	StatePromptListCharacters
 	StatePromptDeleteCharacter
 	StatePromptChangePassword
@@ -156,12 +185,18 @@ func (w *World) sshHandler(s ssh.Session) {
 			state = w.banner(s)
 		case StateLoginUser:
 			state, u = w.promptLoginUser(s)
+		case StateRegisterUser:
+			state, u = w.promptRegisterUser(s)
 		case StateMainMenu:
 			state = w.promptMainMenu(s, u)
 		case StateEnterGame:
 			state = w.enterGame(s, u)
 		case StatePromptCreateCharacter:
 			state = w.promptCreateCharacter(s, u)
+		case StatePromptCreatePregenCharacter:
+			state = w.promptCreatePregenCharacter(s, u)
+		case StatePromptCreateCustomCharacter:
+			state = w.promptCreateCustomCharacter(s, u)
 		case StatePromptListCharacters:
 			state = w.promptListCharacters(s, u)
 		case StatePromptDeleteCharacter:
@@ -169,13 +204,14 @@ func (w *World) sshHandler(s ssh.Session) {
 		case StatePromptChangePassword:
 			state = w.promptChangePassword(s, u)
 		case StateMOTD:
-			state = w.promptMOTD(s, u)
+			state = w.promptMOTD(s)
 		case StateGameLoop:
 			state = w.gameLoop(s, u)
 		case StateQuit:
-			io.WriteString(s, "Goodbye\n")
 			w.RemoveMessageChannel(u.ID)
 			w.RemoveSession(sessionID)
+			w.RemoveUser(u.ID)
+			io.WriteString(s, cfmt.Sprintf(quitMsg))
 			return
 		default:
 			l.WithField("state", state).Error("Unknown state")

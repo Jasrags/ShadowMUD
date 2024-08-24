@@ -2,19 +2,16 @@ package user
 
 import (
 	"fmt"
-	"io"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/Jasrags/ShadowMUD/common/character"
 	"github.com/Jasrags/ShadowMUD/utils"
+	"github.com/google/uuid"
 
-	"github.com/gliderlabs/ssh"
-	"github.com/i582/cfmt/cmd/cfmt"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/term"
 )
 
 const (
@@ -42,10 +39,6 @@ type (
 	User  struct {
 		sync.Mutex `yaml:"-"`
 		log        *logrus.Entry        `yaml:"-"`
-		Session    ssh.Session          `yaml:"-"`
-		Pty        ssh.Pty              `yaml:"-"`
-		Window     <-chan ssh.Window    `yaml:"-"`
-		Term       *term.Terminal       `yaml:"-"`
 		Character  *character.Character `yaml:"-"` // Set to the active character
 
 		// Saved fields
@@ -63,33 +56,29 @@ type (
 	}
 )
 
-func New(s ssh.Session) *User {
-	pty, ptyWindow, isActive := s.Pty()
-	if !isActive {
-		logrus.Error("Session is not active")
-		return nil
-	}
-
+func New() *User {
 	u := &User{
-		Session: s,
-		Pty:     pty,
-		Window:  ptyWindow,
-		Term:    term.NewTerminal(s, ""),
-
-		Roles:      Roles{RoleUser},
-		Characters: make(character.Characters),
-		Logins:     Logins{},
-		Bans:       Bans{},
+		Roles:      Roles{},
+		Characters: character.Characters{},
+		// Characters: make(character.Characters),
+		Logins: Logins{},
+		Bans:   Bans{},
 	}
 
 	u.log = logrus.WithFields(logrus.Fields{
-		"package": "common",
+		"package": "user",
 		"type":    "user",
 	})
 
-	u.AddUserRoles(RoleUser)
-
 	return u
+}
+
+func (u *User) Load() error {
+	u.log.Debug("Loading user")
+	u.ID = uuid.New().String()
+	u.Username = utils.GenerateRandomUsername()
+
+	return nil
 }
 
 func (u *User) AddUserRoles(roles ...Role) {
@@ -235,14 +224,14 @@ func (u *User) Save() error {
 	return nil
 }
 
-func (u *User) GameLoop() error {
-	io.WriteString(u.Session, cfmt.Sprintf("{{> }}::#ffffff|bold"))
-	line, err := u.Term.ReadLine()
-	if err != nil {
-		return err
-	}
-	logrus.WithField("line", line).Debug("Received line")
-	io.WriteString(u.Session, cfmt.Sprintf("{{You typed:}}::#ffffff|bold %s\n", line))
+// func (u *User) GameLoop() error {
+// 	io.WriteString(u.Session, cfmt.Sprintf("{{> }}::#ffffff|bold"))
+// 	line, err := u.Term.ReadLine()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	logrus.WithField("line", line).Debug("Received line")
+// 	io.WriteString(u.Session, cfmt.Sprintf("{{You typed:}}::#ffffff|bold %s\n", line))
 
-	return nil
-}
+// 	return nil
+// }

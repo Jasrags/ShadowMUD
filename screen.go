@@ -21,8 +21,8 @@ var (
 	// Prompt/Message strings
 	// Character Creation
 	// Game loop
-	inputEchoMsg        = "{{You typed:}}::#ffffff|bold %s\n"
-	gameLoopPrompt      = "{{> }}::#ffffff|bold"
+	// inputEchoMsg        = "{{You typed:}}::#ffffff|bold %s\n"
+	// gameLoopPrompt      = "{{> }}::#ffffff|bold"
 	characterListOption = "{{%d.}}::#00ff00 %s\n"
 	// Login
 	loginClosedMsg     = "{{Login is currently closed.}}::#ff8700\n"
@@ -41,7 +41,7 @@ var (
 	usernameNewPrompt       = "{{Enter your desired username: }}::#ffffff|bold"
 	usernameConfirmPrompt   = "{{Confirm username '%s'}}::#ffffff|bold {{(y/n)}}::#00ff00|bold{{:}}::#ffffff|bold"
 	usernameMixMaxLengthMsg = "{{Username must be between %d and %d characters.}}::#ff8700\n"
-	// usernameDeclinedMsg     = "{{Username '%s' was not confirmed.}}::#ff8700\n"
+	usernameDeclinedMsg     = "{{Username '%s' was not confirmed.}}::#ff8700\n"
 	passwordNewPrompt       = "{{Enter new password: }}::#ffffff|bold"
 	passwordConfirmPrompt   = "{{Confirm password: }}::#ffffff|bold"
 	passwordMismatchMsg     = "{{Passwords do not match.}}::#ff8700\n"
@@ -60,7 +60,9 @@ var (
 	menuOptionQuit            = "{{0.}}::#00ff00 Quit\n"
 
 	// Character Creation
+	characterNamePrompt              = "{{Enter the name of your character: }}::#ffffff|bold"
 	noCharactersCreatedMsg           = "\n{{You have no characters created, let's make one now!}}::#ff8700\n"
+	characterNameDeclinedMsg         = "{{Character name '%s' was not confirmed.}}::#ff8700\n"
 	characterNoneCreatedMsg          = "{{You have no characters created.}}::#ff8700\n"
 	characterMaxCharactersMsg        = "{{You have reached the maximum number of characters allowed.}}::#ff8700\n"
 	characterNameMixMaxLengthMsg     = "{{Character name must be between %d and %d characters.}}::#ff8700\n"
@@ -71,7 +73,9 @@ var (
 	createCharacterMenuOptionReturn  = "{{4.}}::#00ff00 Return to the main menu\n"
 	createCharacterNamePrompt        = "{{Enter the name of your character: }}::#ffffff|bold"
 	createCharacterConfirmNamePrompt = "{{Confirm character name '%s'}}::#ffffff|bold {{(y/n)}}::#00ff00|bold{{:}}::#ffffff|bold"
+	chooseCharacterPrompt            = "{{Choose a character to enter the game:}}::#00ff00\n"
 
+	quitMsg                  = "{{Goodbye!}}::#00ff00\n"
 	passwordChangedMsg       = "{{Password has been changed.}}::#0000ff\n"
 	featureNotImplementedMsg = "{{Feature not implemented}}::#ff0000\n"
 )
@@ -184,7 +188,7 @@ promptPassword:
 			l.WithFields(logrus.Fields{"username": username}).WithError(err).Error("Password error")
 		}
 
-		goto promptPassword
+		goto promptUsername
 	}
 
 	// Add a login record
@@ -199,7 +203,140 @@ promptPassword:
 	// 	return StatePromptLoginUser, nil
 	// }
 
+	// Add the user to the world users
+	w.AddUser(u)
+
 	io.WriteString(s, cfmt.Sprintf(loginSuccessfulMsg))
+
+	return StateMainMenu, u
+}
+
+func (w *World) promptRegisterUser(s ssh.Session) (State, *user.User) {
+	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "package": "main", "screen": "register_user"})
+	l.Debug("Prompting for registration")
+
+promptUsername:
+	// Is registration enabled?
+	if !w.cfg.RegistrationEnabled {
+		l.Warn("Registration is disabled")
+		io.WriteString(s, cfmt.Sprint(registrationClosedMsg))
+		return StateBanner, nil
+	}
+
+	// Collect new username
+	username, errUsername := utils.PromptUserInput(s, usernameNewPrompt)
+	if errUsername != nil {
+		l.WithError(errUsername).Error("Error reading username")
+		io.WriteString(s, cfmt.Sprintf(inputErrorMsg))
+		goto promptUsername
+	}
+
+	if username == "" {
+		io.WriteString(s, cfmt.Sprintf(requiredInputMsg))
+		goto promptUsername
+	}
+
+	if len(username) < w.cfg.UsernameMinLength || len(username) > w.cfg.UsernameMaxLength {
+		io.WriteString(s, cfmt.Sprintf(usernameMixMaxLengthMsg, w.cfg.UsernameMinLength, w.cfg.UsernameMaxLength))
+		goto promptUsername
+	}
+
+	l.WithField("username", username).Debug("Received username")
+
+	// Check if the username is banned
+	for _, ban := range w.cfg.BannedNames {
+		if strings.EqualFold(username, ban) {
+			l.WithField("username", username).Warn("Username is banned")
+			io.WriteString(s, cfmt.Sprintf(usernameBannedMsg, username))
+			goto promptUsername
+		}
+	}
+
+	confirmed, errUsernameConfirm := utils.PromptConfirmInput(s, cfmt.Sprintf(usernameConfirmPrompt, username))
+	if errUsernameConfirm != nil {
+		l.WithError(errUsernameConfirm).Error("Error reading confirm username")
+		io.WriteString(s, cfmt.Sprintf(inputErrorMsg))
+		goto promptUsername
+	}
+
+	if !confirmed {
+		io.WriteString(s, cfmt.Sprintf(usernameDeclinedMsg, username))
+		goto promptUsername
+	}
+
+	l.WithField("username", username).Debug("Confirmed username")
+
+promptPassword:
+	// Collect new password
+	password, errPassword := utils.PromptUserPasswordInput(s, passwordNewPrompt)
+	if errPassword != nil {
+		l.WithError(errPassword).Error("Error reading password")
+		io.WriteString(s, cfmt.Sprintf(inputErrorMsg))
+		goto promptPassword
+	}
+
+	if password == "" {
+		io.WriteString(s, cfmt.Sprintf(requiredInputMsg))
+		goto promptPassword
+	}
+
+	l.WithFields(logrus.Fields{"username": username, "password": password}).Debug("Received password")
+
+	// Is the password in the min/max lengths?
+	if len(password) < w.cfg.PasswordMinLength || len(password) > w.cfg.PasswordMaxLength {
+		io.WriteString(s, cfmt.Sprintf(passwordMinMaxLengthMsg, w.cfg.PasswordMinLength, w.cfg.PasswordMaxLength))
+		goto promptPassword
+	}
+
+	// Confirm the password
+	passwordConfirm, errPasswordConfirm := utils.PromptUserPasswordInput(s, passwordConfirmPrompt)
+	if errPasswordConfirm != nil {
+		l.WithError(errPasswordConfirm).Error("Error reading confirm password")
+		io.WriteString(s, cfmt.Sprintf(inputErrorMsg))
+		return StateQuit, nil
+	}
+
+	if passwordConfirm == "" {
+		io.WriteString(s, cfmt.Sprintf(requiredInputMsg))
+		goto promptPassword
+	}
+
+	l.WithFields(logrus.Fields{"username": username, "password": password}).Debug("Received confirm password")
+
+	// Do the passwords match?
+	if password != passwordConfirm {
+		io.WriteString(s, cfmt.Sprintf(passwordMismatchMsg))
+		goto promptPassword
+	}
+
+	// Hash the password with bcrypt
+	hashedPassword, errHashPassword := bcrypt.GenerateFromPassword([]byte(password), w.cfg.PasswordBcryptCost)
+	if errHashPassword != nil {
+		l.WithError(errHashPassword).Error("Error hashing password")
+		io.WriteString(s, cfmt.Sprintf(inputErrorMsg))
+		return StateQuit, nil
+	}
+
+	l.WithFields(logrus.Fields{"username": username, "password": string(hashedPassword)}).Debug("Created password hash")
+
+	// Create the user
+	u := user.New()
+	u.Username = username
+	u.Password = string(hashedPassword)
+	u.AddUserRoles(user.RoleUser)
+
+	// Save the user
+	if err := u.Save(); err != nil {
+		l.WithError(err).Error("Error saving user")
+		io.WriteString(s, cfmt.Sprintf(inputErrorMsg))
+		return StateQuit, nil
+	}
+
+	// Add the user to the world users
+	w.AddUser(u)
+	w.userManager.Add(u)
+
+	io.WriteString(s, cfmt.Sprintf(userCreatedMsg, username))
 
 	return StateMainMenu, u
 }
@@ -264,8 +401,10 @@ func (w *World) enterGame(s ssh.Session, u *user.User) State {
 		u.SetActiveCharacter(u.GetCharacterByID(u.CharacterIDs[0]))
 		return StateGameLoop
 	}
+
+promptChooseCharacter:
 	// Otherwise, prompt the user to choose a character
-	io.WriteString(s, cfmt.Sprintf("{{Choose a character to enter the game:}}::#00ff00\n"))
+	io.WriteString(s, cfmt.Sprintf(chooseCharacterPrompt))
 
 	i := 0
 	choiceIdMap := make(map[string]string)
@@ -283,8 +422,11 @@ func (w *World) enterGame(s ssh.Session, u *user.User) State {
 	choice, errReadLine := t.ReadLine()
 	if errReadLine != nil {
 		logrus.WithError(errReadLine).Error("Error reading menu choice")
+		goto promptChooseCharacter
+	}
 
-		return StateQuit
+	if choice == "" {
+		goto promptChooseCharacter
 	}
 
 	choice = strings.ToLower(strings.TrimSpace(choice))
@@ -302,8 +444,6 @@ func (w *World) enterGame(s ssh.Session, u *user.User) State {
 	// }
 
 	// r.AddCharacter(c)
-
-	return StateGameLoop
 
 	// u.ActiveCharacter = c
 
@@ -324,6 +464,7 @@ func (w *World) enterGame(s ssh.Session, u *user.User) State {
 	// logrus.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
 
 	// return StatePromptMainMenu
+	return StateMOTD
 }
 
 func (w *World) promptMOTD(s ssh.Session) State {
@@ -336,7 +477,91 @@ func (w *World) promptMOTD(s ssh.Session) State {
 func (w *World) promptCreateCharacter(s ssh.Session, u *user.User) State {
 	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_character"})
 	l.Debug("Prompting for character creation")
+
+promptCreateCharacterMenu:
+	// If the user has reached the maximum number of characters, return to the main menu
+	if len(u.Characters) >= w.cfg.UserCharacterMaxCount {
+		io.WriteString(s, cfmt.Sprintf(characterMaxCharactersMsg))
+		return StateMainMenu
+	}
+
+	// Prompt the user to choose a character creation method
+	io.WriteString(s, cfmt.Sprintf(createCharacterMenuTitle))
+	io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionPregen))
+	io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionCustom))
+	// io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionLearn))
+	// io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionReturn))
+	t := term.NewTerminal(s, cfmt.Sprint(menuPrompt))
+	choice, errReadLine := t.ReadLine()
+	if errReadLine != nil {
+		l.WithError(errReadLine).Error("Error reading menu choice")
+		goto promptCreateCharacterMenu
+	}
+
+	choice = strings.ToLower(strings.TrimSpace(choice))
+	l.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
+
+	switch choice {
+	case "1":
+		return StatePromptCreatePregenCharacter
+	case "2":
+		return StatePromptCreateCustomCharacter
+	// case "3":
+	// return StatePromptCreateCharacterLearn
+	// case "4":
+	default:
+		io.WriteString(s, cfmt.Sprintf(menuInvalidChoice, choice))
+		goto promptCreateCharacterMenu
+	}
+}
+
+func (w *World) promptCreatePregenCharacter(s ssh.Session, u *user.User) State {
+	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_pregen_character"})
+	l.Debug("Prompting for pre-generated character creation")
 	io.WriteString(s, cfmt.Sprint(featureNotImplementedMsg))
+
+	return StateMainMenu
+}
+
+func (w *World) promptCreateCustomCharacter(s ssh.Session, u *user.User) State {
+	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_custom_character"})
+	l.Debug("Prompting for custom character creation")
+promptCharacterName:
+	name, errUsername := utils.PromptUserInput(s, characterNamePrompt)
+	if errUsername != nil {
+		l.WithError(errUsername).Error("Error reading character name")
+		io.WriteString(s, cfmt.Sprintf(inputErrorMsg))
+		goto promptCharacterName
+	}
+
+	if name == "" {
+		io.WriteString(s, cfmt.Sprintf(requiredInputMsg))
+		goto promptCharacterName
+	}
+
+	if len(name) < w.cfg.CharacterNameMinLength || len(name) > w.cfg.CharacterNameMaxLength {
+		io.WriteString(s, cfmt.Sprintf(characterNameMixMaxLengthMsg, w.cfg.CharacterNameMinLength, w.cfg.CharacterNameMaxLength))
+		goto promptCharacterName
+	}
+
+	// Check if the character name is already taken
+
+	confirm, errConfirmName := utils.PromptConfirmInput(s, cfmt.Sprintf(createCharacterConfirmNamePrompt, name))
+	if errConfirmName != nil {
+		l.WithError(errConfirmName).Error("Error reading confirm character name")
+		io.WriteString(s, cfmt.Sprintf(inputErrorMsg))
+		goto promptCharacterName
+	}
+
+	if !confirm {
+		io.WriteString(s, cfmt.Sprintf(characterNameDeclinedMsg, name))
+		goto promptCharacterName
+	}
+
+	l.WithField("name", name).Debug("Received character name")
+
+	// TODO: Custome creation
+
 	return StateMainMenu
 }
 
@@ -357,7 +582,51 @@ func (w *World) promptDeleteCharacter(s ssh.Session, u *user.User) State {
 func (w *World) promptChangePassword(s ssh.Session, u *user.User) State {
 	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "change_password"})
 	l.Debug("Prompting for password change")
-	io.WriteString(s, cfmt.Sprint(featureNotImplementedMsg))
+
+promptChangePassword:
+	// Collect new password
+	password, errPassword := utils.PromptUserPasswordInput(s, passwordNewPrompt)
+	if errPassword != nil {
+		l.WithError(errPassword).Error("Error reading password")
+		goto promptChangePassword
+	}
+	l.WithFields(logrus.Fields{"user": u.Username, "id": u.ID, "password": password}).Debug("Received password")
+
+	// Is the password in the min/max lengths?
+	if len(password) < w.cfg.PasswordMinLength || len(password) > w.cfg.PasswordMaxLength {
+		io.WriteString(s, cfmt.Sprintf(passwordMinMaxLengthMsg, w.cfg.PasswordMinLength, w.cfg.PasswordMaxLength))
+		goto promptChangePassword
+	}
+
+	// Confirm the password
+	passwordConfirm, errPasswordConfirm := utils.PromptUserPasswordInput(s, passwordConfirmPrompt)
+	if errPasswordConfirm != nil {
+		l.WithFields(logrus.Fields{"user": u.Username, "id": u.ID}).WithError(errPasswordConfirm).Error("Error reading confirm password")
+		goto promptChangePassword
+	}
+	l.WithFields(logrus.Fields{"user": u.Username, "id": u.ID, "password": password}).Debug("Received confirm password")
+
+	// Do the passwords match?
+	if password != passwordConfirm {
+		io.WriteString(s, cfmt.Sprintf(passwordMismatchMsg))
+		l.WithFields(logrus.Fields{"user": u.Username, "id": u.ID, "password": password}).Warn("Passwords do not match")
+		goto promptChangePassword
+	}
+
+	// Hash the password with bcrypt
+	hashedPassword, errHashPassword := bcrypt.GenerateFromPassword([]byte(password), w.cfg.PasswordBcryptCost)
+	if errHashPassword != nil {
+		l.WithFields(logrus.Fields{"user": u.Username, "id": u.ID}).WithError(errHashPassword).Error("Error hashing password")
+		goto promptChangePassword
+	}
+	l.WithFields(logrus.Fields{"user": u.Username, "id": u.ID, "hashedPassword": string(hashedPassword)}).Debug("Created password hash")
+
+	// Save the new password
+	u.Password = string(hashedPassword)
+	u.Save()
+
+	io.WriteString(s, cfmt.Sprintf(passwordChangedMsg))
+
 	return StateMainMenu
 }
 

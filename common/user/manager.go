@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/Jasrags/ShadowMUD/utils"
+	"golang.org/x/exp/maps"
 
 	"github.com/sirupsen/logrus"
 )
@@ -17,7 +18,8 @@ const (
 
 type Manager struct {
 	sync.Mutex
-	log           *logrus.Entry
+	log *logrus.Entry
+
 	Users         Users
 	UsernameIDMap map[string]string
 }
@@ -51,10 +53,13 @@ func (m *Manager) Load() {
 			}
 
 			m.Users[v.ID] = &v
-			m.UsernameIDMap[v.Username] = v.ID
+			m.UsernameIDMap[strings.ToLower(v.Username)] = v.ID
 			logrus.WithFields(logrus.Fields{"filename": file.Name(), "id": v.ID, "username": v.Username}).Debug("Loaded file")
 		}
 	}
+
+	usernames := maps.Keys(m.UsernameIDMap)
+	logrus.WithField("usernames", usernames).Info("Loaded usernames")
 
 	logrus.WithFields(logrus.Fields{"count": len(m.Users)}).Info("Done loading users")
 }
@@ -64,12 +69,24 @@ func (m *Manager) Add(u *User) {
 	m.Lock()
 
 	m.Users[u.ID] = u
-	m.UsernameIDMap[u.Username] = u.ID
+	m.UsernameIDMap[strings.ToLower(u.Username)] = u.ID
 }
 
 func (m *Manager) GetByID(id string) *User {
 	defer m.Unlock()
 	m.Lock()
+
+	return m.Users[id]
+}
+
+func (m *Manager) GetByUsername(username string) *User {
+	defer m.Unlock()
+	m.Lock()
+
+	id, ok := m.UsernameIDMap[username]
+	if !ok {
+		return nil
+	}
 
 	return m.Users[id]
 }
@@ -100,7 +117,7 @@ func (m *Manager) GetIdByUsername(username string) string {
 	defer m.Unlock()
 	m.Lock()
 
-	id, ok := m.UsernameIDMap[username]
+	id, ok := m.UsernameIDMap[strings.ToLower(username)]
 	if !ok {
 		return ""
 	}

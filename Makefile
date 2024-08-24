@@ -1,5 +1,5 @@
 # Change these variables as necessary.
-MAIN_PACKAGE_PATH := ./cmd/server
+MAIN_PACKAGE_PATH := .
 BINARY_NAME := main
 
 # ==================================================================================== #
