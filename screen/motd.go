@@ -1,5 +1,5 @@
 package screen
 
-func (s *Screens) MOTD() int {
-	return StateGameLoop
-}
+// func (s *Screens) MOTD() int {
+// 	return StateGameLoop
+// }

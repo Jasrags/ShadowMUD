@@ -1,65 +1,57 @@
 package screen
 
-import (
-	"io"
+// func (s *Screens) PromptChangePassword() int {
+// promptChangePassword:
+// 	// Collect new password
+// 	password, errPassword := s.PromptUserPasswordInput(passwordNewPrompt)
+// 	if errPassword != nil {
+// 		s.log.WithError(errPassword).Error("Error reading password")
+// 		return StateQuit
+// 	}
+// 	s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID, "password": password}).
+// 		Debug("Received password")
 
-	"github.com/i582/cfmt/cmd/cfmt"
-	"github.com/sirupsen/logrus"
-	"golang.org/x/crypto/bcrypt"
-)
+// 	// Is the password in the min/max lengths?
+// 	if len(password) < s.cfg.PasswordMinLength || len(password) > s.cfg.PasswordMaxLength {
+// 		io.WriteString(s.user.Session,
+// 			cfmt.Sprintf(passwordMinMaxLengthMsg, s.cfg.PasswordMinLength, s.cfg.PasswordMaxLength))
+// 		goto promptChangePassword
+// 	}
 
-func (s *Screens) PromptChangePassword() int {
-promptChangePassword:
-	// Collect new password
-	password, errPassword := s.PromptUserPasswordInput(passwordNewPrompt)
-	if errPassword != nil {
-		s.log.WithError(errPassword).Error("Error reading password")
-		return StateQuit
-	}
-	s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID, "password": password}).
-		Debug("Received password")
+// 	// Confirm the password
+// 	passwordConfirm, errPasswordConfirm := s.PromptUserPasswordInput(passwordConfirmPrompt)
+// 	if errPasswordConfirm != nil {
+// 		s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID}).
+// 			WithError(errPasswordConfirm).Error("Error reading confirm password")
+// 		return StateQuit
+// 	}
+// 	s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID, "password": password}).
+// 		Debug("Received confirm password")
 
-	// Is the password in the min/max lengths?
-	if len(password) < s.cfg.PasswordMinLength || len(password) > s.cfg.PasswordMaxLength {
-		io.WriteString(s.user.Session,
-			cfmt.Sprintf(passwordMinMaxLengthMsg, s.cfg.PasswordMinLength, s.cfg.PasswordMaxLength))
-		goto promptChangePassword
-	}
+// 	// Do the passwords match?
+// 	if password != passwordConfirm {
+// 		io.WriteString(s.user.Session, cfmt.Sprintf(passwordMismatchMsg))
+// 		s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID, "password": password}).
+// 			Warn("Passwords do not match")
+// 		goto promptChangePassword
+// 	}
 
-	// Confirm the password
-	passwordConfirm, errPasswordConfirm := s.PromptUserPasswordInput(passwordConfirmPrompt)
-	if errPasswordConfirm != nil {
-		s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID}).
-			WithError(errPasswordConfirm).Error("Error reading confirm password")
-		return StateQuit
-	}
-	s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID, "password": password}).
-		Debug("Received confirm password")
+// 	// Hash the password with bcrypt
+// 	hashedPassword, errHashPassword := bcrypt.GenerateFromPassword([]byte(password), s.cfg.PasswordBcryptCost)
+// 	if errHashPassword != nil {
+// 		s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID}).
+// 			WithError(errHashPassword).
+// 			Error("Error hashing password")
+// 		return StateQuit
+// 	}
+// 	s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID, "hashedPassword": string(hashedPassword)}).
+// 		Debug("Created password hash")
 
-	// Do the passwords match?
-	if password != passwordConfirm {
-		io.WriteString(s.user.Session, cfmt.Sprintf(passwordMismatchMsg))
-		s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID, "password": password}).
-			Warn("Passwords do not match")
-		goto promptChangePassword
-	}
+// 	// Save the new password
+// 	s.user.Password = string(hashedPassword)
+// 	s.user.Save()
 
-	// Hash the password with bcrypt
-	hashedPassword, errHashPassword := bcrypt.GenerateFromPassword([]byte(password), s.cfg.PasswordBcryptCost)
-	if errHashPassword != nil {
-		s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID}).
-			WithError(errHashPassword).
-			Error("Error hashing password")
-		return StateQuit
-	}
-	s.log.WithFields(logrus.Fields{"user": s.user.Username, "id": s.user.ID, "hashedPassword": string(hashedPassword)}).
-		Debug("Created password hash")
+// 	io.WriteString(s.user.Session, cfmt.Sprintf(passwordChangedMsg))
 
-	// Save the new password
-	s.user.Password = string(hashedPassword)
-	s.user.Save()
-
-	io.WriteString(s.user.Session, cfmt.Sprintf(passwordChangedMsg))
-
-	return StatePromptMainMenu
-}
+// 	return StatePromptMainMenu
+// }

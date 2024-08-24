@@ -1,138 +1,140 @@
 package screen
 
-import (
-	"io"
-	"strconv"
-	"strings"
+// import (
+// 	"io"
+// 	"strconv"
+// 	"strings"
 
-	"github.com/i582/cfmt/cmd/cfmt"
-	"github.com/sirupsen/logrus"
-)
+// 	"github.com/Jasrags/ShadowMUD/common/user"
 
-type (
-	Commands map[string]Command
-	Command  struct {
-		Name   string   // Command name, e.g., "say", "look"
-		Args   []string // Arguments for the command
-		Sender struct {
-			ID   string
-			Name string
-		}
-		Recipient struct {
-			ID   string
-			Name string
-		}
-	}
-)
+// 	"github.com/i582/cfmt/cmd/cfmt"
+// 	"github.com/sirupsen/logrus"
+// )
 
-func (s *Screens) EnterGame() int {
-	// c := common.NewCharacter()
-	// c.Name = "Test Character"
-	// c.MetatypeID = "human"
-	// c.Metatype = w.metatypes[c.MetatypeID]
-	// c.UserID = u.ID
-	// c.RoomID = r.ID
-	// c.Room = r
+// type (
+// 	Commands map[string]Command
+// 	Command  struct {
+// 		Name   string   // Command name, e.g., "say", "look"
+// 		Args   []string // Arguments for the command
+// 		Sender struct {
+// 			ID   string
+// 			Name string
+// 		}
+// 		Recipient struct {
+// 			ID   string
+// 			Name string
+// 		}
+// 	}
+// )
 
-	// u.AddCharacter(c)
-	// // s.user.Characters[c.ID] = c
-	// // u.Character = c
-	// u.SetActiveCharacterByID(c.ID)
-	// c.Room.AddCharacter(c)
+// func (s *Screens) EnterGame(u *user.User) int {
+// 	// c := common.NewCharacter()
+// 	// c.Name = "Test Character"
+// 	// c.MetatypeID = "human"
+// 	// c.Metatype = w.metatypes[c.MetatypeID]
+// 	// c.UserID = u.ID
+// 	// c.RoomID = r.ID
+// 	// c.Room = r
 
-	if len(s.user.Characters) == 0 {
-		io.WriteString(s.user.Session, cfmt.Sprintf(noCharactersCreatedMsg))
-		return StatePromptCreateCharacter
-	}
+// 	// u.AddCharacter(c)
+// 	// // s.user.Characters[c.ID] = c
+// 	// // u.Character = c
+// 	// u.SetActiveCharacterByID(c.ID)
+// 	// c.Room.AddCharacter(c)
 
-	io.WriteString(s.user.Session, cfmt.Sprintf("{{Choose a character to enter the game:}}::#00ff00\n"))
+// 	if len(u.Characters) == 0 {
+// 		io.WriteString(s.session, cfmt.Sprintf(noCharactersCreatedMsg))
+// 		return StatePromptCreateCharacter
+// 	}
 
-	i := 0
-	choiceIdMap := make(map[string]string)
-	for _, c := range s.user.Characters {
-		choiceIdMap[strconv.Itoa(i+1)] = c.ID
-		io.WriteString(s.user.Session, cfmt.Sprintf(characterListOption, i+1, c.Name))
-		i++
-	}
+// 	io.WriteString(s.session, cfmt.Sprintf("{{Choose a character to enter the game:}}::#00ff00\n"))
 
-	for k, v := range choiceIdMap {
-		logrus.WithFields(logrus.Fields{"key": k, "value": v}).Info("Choice ID Map")
-	}
+// 	i := 0
+// 	choiceIdMap := make(map[string]string)
+// 	for _, c := range u.Characters {
+// 		choiceIdMap[strconv.Itoa(i+1)] = c.ID
+// 		io.WriteString(s.session, cfmt.Sprintf(characterListOption, i+1, c.Name))
+// 		i++
+// 	}
 
-	choice, errReadLine := s.user.Term.ReadLine()
-	if errReadLine != nil {
-		logrus.WithError(errReadLine).Error("Error reading menu choice")
+// 	for k, v := range choiceIdMap {
+// 		logrus.WithFields(logrus.Fields{"key": k, "value": v}).Info("Choice ID Map")
+// 	}
 
-		return StateQuit
-	}
+// 	choice, errReadLine := s.term.ReadLine()
+// 	if errReadLine != nil {
+// 		logrus.WithError(errReadLine).Error("Error reading menu choice")
 
-	choice = strings.ToLower(strings.TrimSpace(choice))
-	logrus.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
+// 		return StateQuit
+// 	}
 
-	c := s.user.GetCharacterByID(choiceIdMap[choice])
-	s.user.SetActiveCharacter(c)
+// 	choice = strings.ToLower(strings.TrimSpace(choice))
+// 	logrus.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
 
-	// var r *common.Room
-	if s.user.Character.RoomID == "" {
-		logrus.Warn("Character has no room, adding to default room")
+// 	c := u.GetCharacterByID(choiceIdMap[choice])
+// 	u.SetActiveCharacter(c)
 
-		// r := common.NewRoom(&common.CoreRooms[0])
-		// r.AddCharacter(c)
-	}
+// 	// var r *common.Room
+// 	if u.Character.RoomID == "" {
+// 		logrus.Warn("Character has no room, adding to default room")
 
-	// r.AddCharacter(c)
+// 		// r := common.NewRoom(&common.CoreRooms[0])
+// 		// r.AddCharacter(c)
+// 	}
 
-	return StateGameLoop
+// 	// r.AddCharacter(c)
 
-	// u.ActiveCharacter = c
+// 	return StateGameLoop
 
-	// i := 1
-	// for _, c := range s.user.Characters {
-	// 	io.WriteString(s.user.Session, cfmt.Sprintf(characterListOption, i+1, c.Name))
-	// 	i++
-	// }
+// 	// u.ActiveCharacter = c
 
-	// choice, errReadLine := u.Term.ReadLine()
-	// if errReadLine != nil {
-	// 	logrus.WithError(errReadLine).Error("Error reading menu choice")
+// 	// i := 1
+// 	// for _, c := range s.user.Characters {
+// 	// 	io.WriteString(s.session, cfmt.Sprintf(characterListOption, i+1, c.Name))
+// 	// 	i++
+// 	// }
 
-	// 	return StateQuit
-	// }
+// 	// choice, errReadLine := u.Term.ReadLine()
+// 	// if errReadLine != nil {
+// 	// 	logrus.WithError(errReadLine).Error("Error reading menu choice")
 
-	// choice = strings.ToLower(strings.TrimSpace(choice))
-	// logrus.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
+// 	// 	return StateQuit
+// 	// }
 
-	// return StatePromptMainMenu
-}
+// 	// choice = strings.ToLower(strings.TrimSpace(choice))
+// 	// logrus.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
 
-// TODO: Add the AutocompleteCallback
-func (s *Screens) GameLoop() int {
-	// s.user.Term.AutoCompleteCallback = w.AutoCompleteCallback
+// 	// return StatePromptMainMenu
+// }
 
-	for {
-		io.WriteString(s.user.Session, cfmt.Sprintf(gameLoopPrompt))
-		line, err := s.user.Term.ReadLine()
-		if err != nil {
-			logrus.WithError(err).Error("Error reading line")
+// // TODO: Add the AutocompleteCallback
+// func (s *Screens) GameLoop() int {
+// 	// s.user.Term.AutoCompleteCallback = w.AutoCompleteCallback
 
-			return StateQuit
+// 	for {
+// 		io.WriteString(s.session, cfmt.Sprintf(gameLoopPrompt))
+// 		line, err := s.user.Term.ReadLine()
+// 		if err != nil {
+// 			logrus.WithError(err).Error("Error reading line")
 
-		}
-		line = strings.TrimSpace(line)
-		logrus.WithField("line", line).Debug("Received line")
-		io.WriteString(s.user.Session, cfmt.Sprintf(inputEchoMsg, line))
+// 			return StateQuit
 
-		// Parse the input into a command and its arguments
-		// parts := strings.SplitN(line, " ", 2)
-		// name := strings.ToLower(parts[0])
-		// var cmd Command
-		// if len(parts) == 1 {
-		// 	cmd = Command{Name: name}
-		// } else if len(parts) == 2 {
-		// 	cmd = Command{Name: name, Args: strings.Split(parts[1], " ")}
-		// }
+// 		}
+// 		line = strings.TrimSpace(line)
+// 		logrus.WithField("line", line).Debug("Received line")
+// 		io.WriteString(s.session, cfmt.Sprintf(inputEchoMsg, line))
 
-		// Send the command to the input queue
-		// w.commandQueue <- cmd
-	}
-}
+// 		// Parse the input into a command and its arguments
+// 		// parts := strings.SplitN(line, " ", 2)
+// 		// name := strings.ToLower(parts[0])
+// 		// var cmd Command
+// 		// if len(parts) == 1 {
+// 		// 	cmd = Command{Name: name}
+// 		// } else if len(parts) == 2 {
+// 		// 	cmd = Command{Name: name, Args: strings.Split(parts[1], " ")}
+// 		// }
+
+// 		// Send the command to the input queue
+// 		// w.commandQueue <- cmd
+// 	}
+// }
