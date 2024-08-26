@@ -24,9 +24,21 @@ import (
 
 const (
 	CharactersFilepath = "_data/characters"
+
+	MagicTypeNone             MagicType = "none"
+	MagicTypeAdept            MagicType = "adept"
+	MagicTypeMagician         MagicType = "magician"
+	MagicTypeAspectedMagician MagicType = "aspected_magician"
+	MagicTypeMysticAdept      MagicType = "mystic_adept"
+	MagicTypeTechnomancer     MagicType = "technomancer"
+
+	StateComplete   State = "complete"
+	StateIncomplete State = "incomplete"
 )
 
 type (
+	State     string
+	MagicType string
 	// InitiativeDice struct {
 	// 	Physical AttributesInfo `yaml:"physical"`
 	// 	// Astral          AttributesInfo `yaml:"astral"`
@@ -70,6 +82,7 @@ type (
 		// Room       *room.Room         `yaml:"-"`
 		MetatypeID string             `yaml:"metatype_id"`
 		Metatype   *metatype.Metatype `yaml:"-"`
+		// MagicType  string             `yaml:"magic_type"`
 		// Ethnicity       string          `yaml:"ethnicity"`
 		// Age             int             `yaml:"age"`
 		// Sex             string          `yaml:"sex"`

@@ -17,9 +17,16 @@ const (
 	CategoryMetavariant  Category = "Metavariant"
 	CategoryMetasapient  Category = "Metasapient"
 	CategoryShapeshifter Category = "Shapeshifter"
+
+	MetatypeNameHuman MetatypeName = "Human"
+	MetatypeNameElf   MetatypeName = "Elf"
+	MetatypeNameDwarf MetatypeName = "Dwarf"
+	MetatypeNameOrk   MetatypeName = "Ork"
+	MetatypeNameTroll MetatypeName = "Troll"
 )
 
 type (
+	MetatypeName               string
 	Category                   string
 	RacialTrait                string
 	RacialTraits               []RacialTrait
@@ -46,6 +53,7 @@ type (
 	Metatypes map[string]Metatype
 	Metatype  struct {
 		ID                  string            `yaml:"id"`
+		PointCost           int               `yaml:"point_cost"`
 		Name                string            `yaml:"name"`
 		Category            Category          `yaml:"category"`
 		Description         string            `yaml:"description"`
@@ -69,6 +77,7 @@ var CoreMetatypes = []Metatype{
 	{
 		ID:          "human",
 		Name:        "Human",
+		PointCost:   0,
 		Category:    CategoryMetahuman,
 		Description: "Humans are the most common metatype in the world. They are known for their adaptability and versatility.",
 		Attributes: Attributes{
@@ -93,6 +102,7 @@ var CoreMetatypes = []Metatype{
 	{
 		ID:          "elf",
 		Name:        "Elf",
+		PointCost:   40,
 		Category:    CategoryMetahuman,
 		Description: "Elves are known for their grace, beauty, and long lifespans.",
 		Attributes: Attributes{
@@ -117,6 +127,7 @@ var CoreMetatypes = []Metatype{
 	{
 		ID:          "dwarf",
 		Name:        "Dwarf",
+		PointCost:   50,
 		Category:    CategoryMetahuman,
 		Description: "Dwarves are known for their toughness, resilience, and their ability to see in the dark.",
 		Attributes: Attributes{
@@ -144,6 +155,7 @@ var CoreMetatypes = []Metatype{
 	{
 		ID:          "ork",
 		Name:        "Ork",
+		PointCost:   50,
 		Category:    CategoryMetahuman,
 		Description: "Orks are known for their strength, toughness, and tusks.",
 		Attributes: Attributes{
@@ -168,6 +180,7 @@ var CoreMetatypes = []Metatype{
 	{
 		ID:          "troll",
 		Name:        "Troll",
+		PointCost:   90,
 		Category:    CategoryMetahuman,
 		Description: "Trolls are known for their size, strength, and toughness.",
 		Attributes: Attributes{
