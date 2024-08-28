@@ -48,12 +48,22 @@ There are two ways for a character to pick up new qualities. First, they can be 
 
 const (
 	TotalBuildPoints          = 800
-	AttributeCost             = 5
-	SkillCost                 = 5
-	PositiveQualityCostFactor = 2
-	NegativeQualityCostFactor = 2
+	KarmaNuyenConversionRate  = 2000
+	KarmaNuyenConversionLimit = 200
+	AttributeCost             = 5 // New rating * 5
+	ActiveSkillCost           = 2 // New rating * 2
+	KnowledgeSkillCost        = 1 // New rating * 2
+	ActiveSkillGroupCost      = 5 // New rating * 5
+	SpellCost                 = 5 // New spell
+	ComplexFormCost           = 4 // New complex form
+	PositiveQualityCostFactor = 2 // 2 * Karma
+	NegativeQualityCostFactor = 2 // Remove 2 * Karma
 
-	// BuildKarma                      = 800
+	ChangeActiveSkill    = "active"
+	ChangeKnowledgeSkill = "knowledge"
+	ChangeSkillGroup     = "group"
+	ChangeAttribute      = "attribute"
+
 	// KarmaSpendMetatype   KarmaSpend = "metatype"
 	// KarmaSpendAttributes KarmaSpend = "attributes"
 	// KarmaSpendSkills     KarmaSpend = "skills"
@@ -76,6 +86,39 @@ type (
 // MetatypeCosts  map[metatype.MetatypeName]int
 )
 
+func CalculateChangeCost(changeType string, currentValue, desiredValue int) int {
+	if desiredValue == currentValue {
+		return 0
+	}
+
+	var cost int
+	switch changeType {
+	case ChangeAttribute:
+		cost = AttributeCost
+	case ChangeActiveSkill:
+		cost = ActiveSkillCost
+	case ChangeKnowledgeSkill:
+		cost = KnowledgeSkillCost
+	case ChangeSkillGroup:
+		cost = ActiveSkillGroupCost
+	default:
+		cost = 0
+	}
+
+	totalCost := 0
+	if desiredValue < currentValue {
+		for i := currentValue; i > desiredValue; i-- {
+			totalCost -= i * cost
+		}
+	} else {
+		for i := currentValue + 1; i <= desiredValue; i++ {
+			totalCost += i * cost
+		}
+	}
+
+	return totalCost
+}
+
 func GetMagicTypeCost(m MagicType) int {
 	v, ok := magicTypeCosts[m]
 	if !ok {
@@ -85,9 +128,6 @@ func GetMagicTypeCost(m MagicType) int {
 }
 
 var (
-	// karmaAttributeCosts = [][]int{
-	// {1,2,3,4,5,6,7,8,9,10},
-	// }
 	// MagicTypeCosts is a map of magic type to the cost of that magic type
 	magicTypeCosts = map[MagicType]int{
 		MagicTypeNone:             0,
@@ -216,42 +256,53 @@ func (pb *PointBuilder) RemoveMagicType() {
 	pb.MagicType = MagicTypeNone
 }
 
-// Allocate build points to attributes
-// TODO: Limit to 1 mental/physcial attribute at max
-func (pb *PointBuilder) IncreaseAttribute(attribute shared.AttributeType) error {
+// TODO: Add more detailed info into error messages (i.e. what is the current value, what is the max, etc.)
+func (pb *PointBuilder) AdjustAttribute(attribute shared.AttributeType, newValue int) error {
+	// Check if metatype is set
 	if pb.Metatype == nil {
 		return fmt.Errorf("metatype not set")
 	}
+	// Check if magic type is set
 	if pb.MagicType == "" {
 		return fmt.Errorf("magic type not set")
 	}
+	// Check if attribute is valid
+	if _, ok := pb.Attributes[attribute]; !ok {
+		return fmt.Errorf("'%s' is not a valid attribute", attribute)
+	}
+	// Check if magic type is set for magic
 	if attribute == shared.AttributeMagic && pb.MagicType == MagicTypeNone {
 		return fmt.Errorf("can not adjust magic without being a magic user")
 	}
+	// Check if magic type is set for resonance
 	if attribute == shared.AttributeResonance && pb.MagicType != MagicTypeTechnomancer {
 		return fmt.Errorf("can not adjust resonance without being a technomancer")
 	}
 
-	current := pb.Attributes[attribute]
-	next := current + 1
+	min, max := getMetatypeMinMax(attribute, pb)
 
-	_, max := getMetatypeMinMax(attribute, pb)
-
-	if next > max {
-		return fmt.Errorf("attribute can not be raised above metatype maximum")
+	// Check if the attribute is at the metatype minimum
+	if newValue < min {
+		return fmt.Errorf("'%s' (%d) can not be lowered below metatype minimum (%d)", attribute, newValue, min)
 	}
-
-	if next == max && pb.MaxedAttribute != "" {
+	// Check if the attribute is at the metatype maximum
+	if newValue > max {
+		return fmt.Errorf("'%s' (%d) can not be raised above metatype maximum (%d)", attribute, newValue, max)
+	}
+	// Check if there is already an attribute at the metatype maximum
+	if newValue == max && pb.MaxedAttribute != "" {
 		return fmt.Errorf("you may only have one attribute at the metatype maximum")
 	}
 
-	cost := next * AttributeCost
+	currentValue := pb.Attributes[attribute]
+	cost := CalculateChangeCost(ChangeAttribute, currentValue, newValue)
 
+	// Check if there are enough build points remaining
 	if pb.BuildPoints < cost {
-		return fmt.Errorf("not enough build points")
+		return fmt.Errorf("not enough remaining build points (%d) for this change (%d)", pb.BuildPoints, cost)
 	}
 
-	pb.Attributes[attribute]++
+	pb.Attributes[attribute] = newValue
 	pb.BuildPoints -= cost
 	pb.MaxedAttribute = attribute
 
@@ -302,49 +353,78 @@ func getMetatypeMinMax(attribute shared.AttributeType, pb *PointBuilder) (int, i
 	return min, max
 }
 
-func (pb *PointBuilder) DecreaseAttribute(attribute shared.AttributeType, points int) error {
+// // TODO: Add more detailed info into error messages (i.e. what is the current value, what is the max, etc.)
+// func (pb *PointBuilder) DecreaseAttribute(attribute shared.AttributeType) error {
+// 	if pb.Metatype == nil {
+// 		return fmt.Errorf("metatype not set")
+// 	}
+// 	if pb.MagicType == "" {
+// 		return fmt.Errorf("magic type not set")
+// 	}
+// 	if attribute == shared.AttributeMagic && pb.MagicType == MagicTypeNone {
+// 		return fmt.Errorf("can not adjust magic without being a magic user")
+// 	}
+// 	if attribute == shared.AttributeResonance && pb.MagicType != MagicTypeTechnomancer {
+// 		return fmt.Errorf("can not adjust resonance without being a technomancer")
+// 	}
+
+// 	current := pb.Attributes[attribute]
+// 	next := current - 1
+
+// 	min, _ := getMetatypeMinMax(attribute, pb)
+
+// 	if next < min {
+// 		return fmt.Errorf("attribute can not be lowered below metatype minimum")
+// 	}
+
+// 	// If this is the attribute at the max, clear it
+// 	if attribute == pb.MaxedAttribute {
+// 		pb.MaxedAttribute = ""
+// 	}
+
+// 	cost := current * AttributeCost
+// 	pb.Attributes[attribute] -= next
+// 	pb.BuildPoints += cost
+
+// 	return nil
+// }
+
+// Allocate build points to skills
+// TODO: Restrict advancement of magic and resonance skills to the required magic type
+func (pb *PointBuilder) AdjustSkill(changeType, skill string, value int) error {
 	if pb.Metatype == nil {
 		return fmt.Errorf("metatype not set")
 	}
 	if pb.MagicType == "" {
 		return fmt.Errorf("magic type not set")
 	}
-	if attribute == shared.AttributeMagic && pb.MagicType == MagicTypeNone {
-		return fmt.Errorf("can not adjust magic without being a magic user")
-	}
-	if attribute == shared.AttributeResonance && pb.MagicType != MagicTypeTechnomancer {
-		return fmt.Errorf("can not adjust resonance without being a technomancer")
-	}
 
-	current := pb.Attributes[attribute]
-	next := current - 1
-
-	min, _ := getMetatypeMinMax(attribute, pb)
-
-	if next < min {
-		return fmt.Errorf("attribute can not be lowered below metatype minimum")
+	current, ok := pb.Skills[skill]
+	if !ok {
+		current = 0
 	}
 
-	// If this is the attribute at the max, clear it
-	if attribute == pb.MaxedAttribute {
-		pb.MaxedAttribute = ""
+	if value < 0 {
+		return fmt.Errorf("skill value can not be negative")
 	}
 
-	cost := points * AttributeCost
-	pb.Attributes[attribute] += points
-	pb.BuildPoints -= cost
+	if value == current {
+		return nil
+	}
 
-	return nil
-}
+	if value > 13 {
+		return fmt.Errorf("skill value can not be greater than 13")
+	}
 
-// Allocate build points to skills
-func (pb *PointBuilder) AllocateSkill(skill string, points int) error {
-	cost := points * SkillCost
+	cost := CalculateChangeCost(changeType, current, value)
+
 	if pb.BuildPoints < cost {
 		return fmt.Errorf("not enough build points")
 	}
-	pb.Skills[skill] += points
+
+	pb.Skills[skill] = value
 	pb.BuildPoints -= cost
+
 	return nil
 }
 

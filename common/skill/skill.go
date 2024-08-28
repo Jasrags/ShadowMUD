@@ -7,6 +7,10 @@ import (
 const (
 	SkillsFilepath = "_data/skills"
 
+	SkillTypeActive    SkillType = "Active"
+	SkillTypeKnowledge SkillType = "Knowledge"
+	SkillTypeGroup     SkillType = "Group"
+
 	// Skill Categories
 	SkillCategoryCombat        Category = "Combat Active"
 	SkillCategoryPhysical      Category = "Physical Active"
@@ -26,9 +30,10 @@ const (
 
 type (
 	// SkillID       string
-	Category string
-	Specs    map[string]*Spec
-	Spec     struct {
+	SkillType string
+	Category  string
+	Specs     map[string]*Spec
+	Spec      struct {
 		ID                     string               `yaml:"id"`
 		Name                   string               `yaml:"name"`
 		Hidden                 bool                 `yaml:"hidden"`
