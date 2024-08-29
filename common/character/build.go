@@ -48,16 +48,18 @@ There are two ways for a character to pick up new qualities. First, they can be 
 
 const (
 	TotalBuildPoints          = 800
+	MaxNueynCarrover          = 5000
 	KarmaNuyenConversionRate  = 2000
 	KarmaNuyenConversionLimit = 200
-	AttributeCost             = 5 // New rating * 5
-	ActiveSkillCost           = 2 // New rating * 2
-	KnowledgeSkillCost        = 1 // New rating * 2
-	ActiveSkillGroupCost      = 5 // New rating * 5
-	SpellCost                 = 5 // New spell
-	ComplexFormCost           = 4 // New complex form
-	PositiveQualityCostFactor = 2 // 2 * Karma
-	NegativeQualityCostFactor = 2 // Remove 2 * Karma
+	AttributeCost             = 5  // New rating * 5
+	ActiveSkillCost           = 2  // New rating * 2
+	KnowledgeSkillCost        = 1  // New rating * 2
+	ActiveSkillGroupCost      = 5  // New rating * 5
+	SpellCost                 = 5  // New spell
+	ComplexFormCost           = 4  // New complex form
+	PositiveQualityCostFactor = 2  // 2 * Karma
+	NegativeQualityCostFactor = 2  // Remove Bonus karma * 2
+	InitiateLevel             = 10 // 10 + Grade * 3
 
 	ChangeActiveSkill    = "active"
 	ChangeKnowledgeSkill = "knowledge"
@@ -147,6 +149,10 @@ type PointBuilder struct {
 	Attributes     map[shared.AttributeType]int
 	Skills         map[string]int
 	Qualities      map[string]int
+	Spells         map[string]int
+	ComplexForms   map[string]int
+	Nuyen          int
+	KarmaForNuyen  int
 	BuildPoints    int
 }
 
@@ -167,9 +173,11 @@ func NewPointBuilder() *PointBuilder {
 			shared.AttributeMagic:     0,
 			shared.AttributeResonance: 0,
 		},
-		Skills:      make(map[string]int),
-		Qualities:   make(map[string]int),
-		BuildPoints: TotalBuildPoints,
+		Skills:       make(map[string]int),
+		Qualities:    make(map[string]int),
+		Spells:       make(map[string]int),
+		ComplexForms: make(map[string]int),
+		BuildPoints:  TotalBuildPoints,
 	}
 }
 
@@ -201,9 +209,9 @@ func (pb *PointBuilder) SetMetatype(m *metatype.Metatype) error {
 	return nil
 }
 
-func (pb *PointBuilder) RemoveMetatype() {
+func (pb *PointBuilder) RemoveMetatype() error {
 	if pb.Metatype == nil {
-		return
+		return fmt.Errorf("metatype not set")
 	}
 
 	// Set attributes to 0
@@ -221,6 +229,8 @@ func (pb *PointBuilder) RemoveMetatype() {
 
 	pb.BuildPoints += pb.Metatype.PointCost
 	pb.Metatype = nil
+
+	return nil
 }
 
 func (pb *PointBuilder) SetMagicType(magicType MagicType) error {
@@ -353,42 +363,6 @@ func getMetatypeMinMax(attribute shared.AttributeType, pb *PointBuilder) (int, i
 	return min, max
 }
 
-// // TODO: Add more detailed info into error messages (i.e. what is the current value, what is the max, etc.)
-// func (pb *PointBuilder) DecreaseAttribute(attribute shared.AttributeType) error {
-// 	if pb.Metatype == nil {
-// 		return fmt.Errorf("metatype not set")
-// 	}
-// 	if pb.MagicType == "" {
-// 		return fmt.Errorf("magic type not set")
-// 	}
-// 	if attribute == shared.AttributeMagic && pb.MagicType == MagicTypeNone {
-// 		return fmt.Errorf("can not adjust magic without being a magic user")
-// 	}
-// 	if attribute == shared.AttributeResonance && pb.MagicType != MagicTypeTechnomancer {
-// 		return fmt.Errorf("can not adjust resonance without being a technomancer")
-// 	}
-
-// 	current := pb.Attributes[attribute]
-// 	next := current - 1
-
-// 	min, _ := getMetatypeMinMax(attribute, pb)
-
-// 	if next < min {
-// 		return fmt.Errorf("attribute can not be lowered below metatype minimum")
-// 	}
-
-// 	// If this is the attribute at the max, clear it
-// 	if attribute == pb.MaxedAttribute {
-// 		pb.MaxedAttribute = ""
-// 	}
-
-// 	cost := current * AttributeCost
-// 	pb.Attributes[attribute] -= next
-// 	pb.BuildPoints += cost
-
-// 	return nil
-// }
-
 // Allocate build points to skills
 // TODO: Restrict advancement of magic and resonance skills to the required magic type
 func (pb *PointBuilder) AdjustSkill(changeType, skill string, value int) error {
@@ -430,20 +404,109 @@ func (pb *PointBuilder) AdjustSkill(changeType, skill string, value int) error {
 
 // Allocate build points to qualities
 func (pb *PointBuilder) AllocateQuality(quality string, cost int, positive bool) error {
-	var totalCost int
-	if positive {
-		totalCost = cost * PositiveQualityCostFactor
-	} else {
-		totalCost = cost * NegativeQualityCostFactor
-	}
-	if pb.BuildPoints < totalCost {
+	if pb.BuildPoints < cost {
 		return fmt.Errorf("not enough build points")
 	}
+
+	if _, ok := pb.Qualities[quality]; ok {
+		return fmt.Errorf("quality already added")
+	}
+
 	pb.Qualities[quality] = cost
-	pb.BuildPoints -= totalCost
+	if positive {
+		pb.BuildPoints -= cost
+	} else {
+		pb.BuildPoints += cost
+	}
+
 	return nil
 }
 
+func (pb *PointBuilder) RemoveQuality(quality string) error {
+	cost, ok := pb.Qualities[quality]
+	if !ok {
+		return fmt.Errorf("quality not found")
+	}
+
+	delete(pb.Qualities, quality)
+	pb.BuildPoints += cost
+	// pb.BuildPoints -= cost
+
+	return nil
+}
+
+func (pb *PointBuilder) AddSpell(spell string) error {
+	if pb.BuildPoints < SpellCost {
+		return fmt.Errorf("not enough build points")
+	}
+
+	if _, ok := pb.Spells[spell]; ok {
+		return fmt.Errorf("spell already added")
+	}
+
+	pb.Spells[spell] = SpellCost
+	pb.BuildPoints -= SpellCost
+
+	return nil
+}
+
+func (pb *PointBuilder) RemoveSpell(spell string) error {
+	if _, ok := pb.Spells[spell]; !ok {
+		return fmt.Errorf("spell not found")
+	}
+
+	delete(pb.Spells, spell)
+	pb.BuildPoints += SpellCost
+
+	return nil
+}
+
+func (pb *PointBuilder) AddComplexForm(complexForm string) error {
+	if pb.BuildPoints < ComplexFormCost {
+		return fmt.Errorf("not enough build points")
+	}
+
+	if _, ok := pb.ComplexForms[complexForm]; ok {
+		return fmt.Errorf("complex form already added")
+	}
+
+	pb.ComplexForms[complexForm] = ComplexFormCost
+	pb.BuildPoints -= ComplexFormCost
+
+	return nil
+}
+
+func (pb *PointBuilder) RemoveComplexForm(complexForm string) error {
+	if _, ok := pb.ComplexForms[complexForm]; !ok {
+		return fmt.Errorf("complex form not found")
+	}
+
+	delete(pb.ComplexForms, complexForm)
+	pb.BuildPoints += ComplexFormCost
+
+	return nil
+}
+
+// Purchase nuyen with build points
+// TODO: Add a limit to the amount of nuyen that can be purchased (200 karma)
+func (pb *PointBuilder) PurchaseNuyen(cost int) error {
+	if pb.BuildPoints < cost {
+		return fmt.Errorf("not enough build points")
+	}
+
+	if pb.KarmaForNuyen+cost > KarmaNuyenConversionLimit {
+		return fmt.Errorf("can not convert more than %d karma to nuyen", KarmaNuyenConversionLimit)
+	}
+
+	pb.Nuyen += cost * KarmaNuyenConversionRate
+	pb.KarmaForNuyen += cost
+	pb.BuildPoints -= cost
+
+	return nil
+}
+
+// TODO: No more than 5000 nuyen can be carried over from character creation
+// TODO: Leftover build karma can not be carried over from character creation
 // Build the final Character
 // func (pb *PointBuilder) Build() *Character {
 // 	return &Character{
