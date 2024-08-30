@@ -34,6 +34,7 @@ type (
 	Range      string
 	Category   string
 	Duration   string
+	Spells     map[string]*Spell
 	Spell      struct {
 		ID          string
 		Name        string

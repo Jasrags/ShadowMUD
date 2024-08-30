@@ -100,15 +100,15 @@ type (
 		Modifiers    shared.Modifiers    `yaml:"modifiers"`
 		RuleSource   shared.RuleSource   `yaml:"rule_source"`
 	}
-	Gears map[string]*Gear
-	Gear  struct {
-		ID        string           `yaml:"id"`
-		Rating    int              `yaml:"rating"`
-		Modifiers shared.Modifiers `yaml:"modifiers"`
-		Spec      *Spec            `yaml:"-"`
-	}
+	// Gears map[string]*Gear
+	// Gear  struct {
+	// 	ID        string           `yaml:"id"`
+	// 	Rating    int              `yaml:"rating"`
+	// 	Modifiers shared.Modifiers `yaml:"modifiers"`
+	// 	Spec      *Spec            `yaml:"-"`
+	// }
 )
 
-var CoreGear = []Gear{
+var CoreGear = []Spec{
 	{},
 }

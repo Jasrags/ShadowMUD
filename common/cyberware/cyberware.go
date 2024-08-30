@@ -48,14 +48,14 @@ type (
 		Notes         string                    `yaml:"notes"`
 		RuleSource    shared.RuleSource         `yaml:"rule_source"`
 	}
-	Cyberwares map[string]*Cyberware
-	Cyberware  struct {
-		ID            string           `yaml:"id,omitempty"`
-		Rating        int              `yaml:"rating,omitempty"`
-		Modifications []Modifications  `yaml:"modifications"`
-		Modifiers     shared.Modifiers `yaml:"modifiers"`
-		Spec          Spec             `yaml:"-"`
-	}
+	// Cyberwares map[string]*Cyberware
+	// Cyberware  struct {
+	// 	ID            string           `yaml:"id,omitempty"`
+	// 	Rating        int              `yaml:"rating,omitempty"`
+	// 	Modifications []Modifications  `yaml:"modifications"`
+	// 	Modifiers     shared.Modifiers `yaml:"modifiers"`
+	// 	Spec          Spec             `yaml:"-"`
+	// }
 )
 
 var (
@@ -111,34 +111,31 @@ func GetCyberwareGradeModifiers(grade Grade) (float64, int, float64, error) {
 // 	}
 // }
 
-var CoreCyberware = []Cyberware{
+var CoreCyberware = []Spec{
 	{
-		ID:     "wired_reflexes_r1",
-		Rating: 1,
-		Spec: Spec{
-			Name:        "Wired Reflexes R1",
-			Description: "Wired reflexes increase the user's reaction time, allowing them to react more quickly to threats.",
-			EssenceCost: shared.Attribute[float64]{
-				Base: 2.0,
-			},
-			Capacity: shared.Attribute[int]{
-				Base: 0,
-			},
-			Rating:        1,
-			CyberwarePart: CyberwarePartBody,
-			Grade:         CyberwareGradeStandard,
-			ToggleAction:  shared.ActionFree,
-			IsActive:      false,
-			Modifications: []Modifications{},
-			// Modifiers:     []Modifier{},
-			Cost: shared.Attribute[int]{
-				Base: 39000,
-			},
-			Availability: 8,
-			Legality:     shared.LegalityTypeLegal,
-			Notes:        "",
-			RuleSource:   shared.RuleSourceSR5Core,
+		ID:          "wired_reflexes_r1",
+		Name:        "Wired Reflexes R1",
+		Description: "Wired reflexes increase the user's reaction time, allowing them to react more quickly to threats.",
+		EssenceCost: shared.Attribute[float64]{
+			Base: 2.0,
 		},
+		Capacity: shared.Attribute[int]{
+			Base: 0,
+		},
+		Rating:        1,
+		CyberwarePart: CyberwarePartBody,
+		Grade:         CyberwareGradeStandard,
+		ToggleAction:  shared.ActionFree,
+		IsActive:      false,
+		Modifications: []Modifications{},
+		// Modifiers:     []Modifier{},
+		Cost: shared.Attribute[int]{
+			Base: 39000,
+		},
+		Availability: 8,
+		Legality:     shared.LegalityTypeLegal,
+		Notes:        "",
+		RuleSource:   shared.RuleSourceSR5Core,
 	},
 }
 

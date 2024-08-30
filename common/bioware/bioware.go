@@ -32,13 +32,13 @@ type (
 		Notes        string              `yaml:"notes"`
 		RuleSource   shared.RuleSource   `yaml:"rule_source"`
 	}
-	Biowares map[string]*Bioware
-	Bioware  struct {
-		ID        string           `yaml:"id,omitempty"`
-		Rating    int              `yaml:"rating,omitempty,omitempty"`
-		Modifiers shared.Modifiers `yaml:"modifiers"`
-		Spec      Spec             `yaml:"-"`
-	}
+	// Biowares map[string]*Bioware
+	// Bioware  struct {
+	// 	ID        string           `yaml:"id,omitempty"`
+	// 	Rating    int              `yaml:"rating,omitempty,omitempty"`
+	// 	Modifiers shared.Modifiers `yaml:"modifiers"`
+	// 	Spec      Spec             `yaml:"-"`
+	// }
 )
 
 // BASIC

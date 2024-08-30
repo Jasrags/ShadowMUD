@@ -54,7 +54,7 @@ func (sm *SkillManager) LoadSkills() error {
 	return nil
 }
 
-func (sm *SkillManager) SaveSkill(skill *Skill) error {
+func (sm *SkillManager) SaveSkill(skill *Spec) error {
 	logrus.WithFields(logrus.Fields{"id": skill.ID}).Debug("Saving skill")
 	return nil
 }
@@ -75,7 +75,7 @@ func (sm *SkillManager) SaveSkills() error {
 	return nil
 }
 
-func (sm *SkillManager) GetInstance(id string) (*Skill, error) {
+func (sm *SkillManager) GetInstance(id string) (*Spec, error) {
 	logrus.WithFields(logrus.Fields{"id": id}).Debug("Getting skill instance")
 
 	return nil, nil

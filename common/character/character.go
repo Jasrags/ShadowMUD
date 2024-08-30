@@ -69,6 +69,57 @@ type (
 	// 	MatrixVRColdSimInitiative int // (Data Processing + Intuition) + 3D6
 	// 	RiggerARInitiative        int // (Reaction + Intuition) + 1D6
 	// }
+	Armors map[string]*Armor
+	Armor  struct {
+		ID            string               `yaml:"id"`
+		Rating        int                  `yaml:"rating"`
+		Modifications []armor.Modification `yaml:"modifications"`
+		Modifiers     shared.Modifiers     `yaml:"modifiers"`
+		Spec          *armor.Spec          `yaml:"-"`
+	}
+	Biowares map[string]*Bioware
+	Bioware  struct {
+		ID        string           `yaml:"id,omitempty"`
+		Rating    int              `yaml:"rating,omitempty,omitempty"`
+		Modifiers shared.Modifiers `yaml:"modifiers"`
+		Spec      *bioware.Spec    `yaml:"-"`
+	}
+	Skills map[string]*Skill
+	Skill  struct {
+		ID             string      `yaml:"id"`
+		Specialization string      `yaml:"specialization"`
+		Rating         int         `yaml:"rating"`
+		Spec           *skill.Spec `yaml:"-"`
+	}
+	Qualities map[string]*Quality
+	Quality   struct {
+		ID     string        `yaml:"id"`
+		Rating int           `yaml:"rating"`
+		Spec   *quality.Spec `yaml:"-"`
+	}
+	Contacts map[string]*Contact
+	Contact  struct {
+		ID         string        `yaml:"id"`
+		Connection int           `yaml:"connection"`
+		Loyalty    int           `yaml:"loyalty"`
+		Spec       *contact.Spec `yaml:"-"`
+	}
+	Cyberwares map[string]*Cyberware
+	Cyberware  struct {
+		ID            string                    `yaml:"id,omitempty"`
+		Rating        int                       `yaml:"rating,omitempty"`
+		Modifications []cyberware.Modifications `yaml:"modifications"`
+		Modifiers     shared.Modifiers          `yaml:"modifiers"`
+		Spec          *cyberware.Spec           `yaml:"-"`
+	}
+	Gears map[string]*Gear
+	Gear  struct {
+		ID        string           `yaml:"id"`
+		Rating    int              `yaml:"rating"`
+		Modifiers shared.Modifiers `yaml:"modifiers"`
+		Spec      *gear.Spec       `yaml:"-"`
+	}
+
 	Characters map[string]*Character
 	Character  struct {
 		sync.RWMutex `yaml:"-"`
@@ -112,25 +163,26 @@ type (
 		// LiftCarry       int `yaml:"-"`
 		// Movement        int `yaml:"-"`
 		// Skills
-		Skills skill.Skills `yaml:"skills"`
+
+		Skills Skills `yaml:"skills"`
 		// ActiveSkills    Skills    `yaml:"active_skills"`
 		// LanguageSkills  Skills    `yaml:"language_skills"`
 		// KnowledgeSkills Skills    `yaml:"knowledge_skills"`
-		Qualities quality.Qualities `yaml:"qualities"`
-		Contacts  contact.Contacts  `yaml:"contacts"`
+		Qualities Qualities `yaml:"qualities"`
+		Contacts  Contacts  `yaml:"contacts"`
 		// Identities      map[string]string         `yaml:"identities"`
 		// Lifestyles      map[string]string         `yaml:"lifestyles"`
 		// Currancy        map[string]int            `yaml:"currancy"`
 		Weapons weapon.Weapons `yaml:"weapons"`
 		// RangedWeapons map[string]WeaponRanged `yaml:"ranged_weapons"`
 		// MeleeWeapons  map[string]WeaponMelee  `yaml:"melee_weapons"`
-		Armor     armor.Armors         `yaml:"armor"`
-		Cyberware cyberware.Cyberwares `yaml:"cyberware"`
-		Bioware   bioware.Biowares     `yaml:"bioware"`
+		Armor     Armor      `yaml:"armor"`
+		Cyberware Cyberwares `yaml:"cyberware"`
+		Bioware   Biowares   `yaml:"bioware"`
 		// Cyberdecks      map[string]string         `yaml:"cyberdecks"`
 		// Augmentations   map[string]string         `yaml:"augmentations"`
 		// Vehicals        map[string]string         `yaml:"vehicals"`
-		Gear gear.Gears `yaml:"gear"`
+		Gear Gears `yaml:"gear"`
 		// AdeptPowers     map[string]string         `yaml:"adept_powers"`
 		CreatedAt time.Time `yaml:"created_at"`
 		UpdatedAt time.Time `yaml:"updated_at,omitempty"`
@@ -175,6 +227,9 @@ at their favorite shadowrunner bar.
 func NewCharacter() *Character {
 	c := &Character{
 		ID: uuid.New().String(),
+		// Skills: skill.Skills{},
+		Qualities: Qualities{},
+		// Contacts: contact.Contacts{},
 	}
 
 	c.log = logrus.WithFields(logrus.Fields{

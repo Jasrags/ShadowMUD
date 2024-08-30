@@ -28,14 +28,14 @@ type (
 		Cost          int                 `yaml:"cost"`
 		RuleSource    shared.RuleSource   `yaml:"rule_source"`
 	}
-	Armors map[string]*Armor
-	Armor  struct {
-		ID            string           `yaml:"id"`
-		Rating        int              `yaml:"rating"`
-		Modifications []Modification   `yaml:"modifications"`
-		Modifiers     shared.Modifiers `yaml:"modifiers"`
-		Spec          *Spec            `yaml:"-"`
-	}
+	// Armors map[string]*Armor
+	// Armor  struct {
+	// 	ID            string           `yaml:"id"`
+	// 	Rating        int              `yaml:"rating"`
+	// 	Modifications []Modification   `yaml:"modifications"`
+	// 	Modifiers     shared.Modifiers `yaml:"modifiers"`
+	// 	Spec          *Spec            `yaml:"-"`
+	// }
 	Category    string
 	ModCategory string
 )

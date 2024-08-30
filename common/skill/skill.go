@@ -49,14 +49,14 @@ type (
 		Specializations        []string             `yaml:"specializations"`
 		RuleSource             shared.RuleSource    `yaml:"rule_source"`
 	}
-	Skills map[string]*Skill
-	Skill  struct {
-		ID             string `yaml:"id"`
-		Specialization string `yaml:"specialization"`
-		Rating         int    `yaml:"rating"`
-		// Modifiers              Modifiers  `yaml:"modifiers"`
-		Spec *Spec `yaml:"-"`
-	}
+	// Skills map[string]*Skill
+	// Skill  struct {
+	// 	ID             string `yaml:"id"`
+	// 	Specialization string `yaml:"specialization"`
+	// 	Rating         int    `yaml:"rating"`
+	// 	// Modifiers              Modifiers  `yaml:"modifiers"`
+	// 	Spec *Spec `yaml:"-"`
+	// }
 )
 
 var CoreSkills = []Spec{

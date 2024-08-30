@@ -1,8 +1,6 @@
 package quality
 
 import (
-	"sync"
-
 	"github.com/Jasrags/ShadowMUD/common/shared"
 )
 
@@ -28,20 +26,22 @@ type (
 		RuleSource    shared.RuleSource `yaml:"rule_source"`
 		Hidden        bool              `yaml:"hidden"`
 	}
-	Qualities map[string]*Quality
-	Quality   struct {
-		sync.Mutex `yaml:"-"`
-		ID         string `yaml:"id"`
-		Rating     int    `yaml:"rating"`
-		Spec       *Spec  `yaml:"-"`
-	}
+
+// Qualities map[string]*Quality
+//
+//	Quality   struct {
+//		sync.Mutex `yaml:"-"`
+//		ID         string `yaml:"id"`
+//		Rating     int    `yaml:"rating"`
+//		Spec       *Spec  `yaml:"-"`
+//	}
 )
 
-func NewQuality(spec *Spec) *Quality {
-	q := &Quality{
-		ID:   spec.ID,
-		Spec: spec,
-	}
+// func NewQuality(spec *Spec) * {
+// 	q := &Quality{
+// 		ID:   spec.ID,
+// 		Spec: spec,
+// 	}
 
-	return q
-}
+// 	return q
+// }

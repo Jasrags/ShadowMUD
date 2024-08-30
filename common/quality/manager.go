@@ -12,8 +12,7 @@ type (
 		sync.Mutex
 		log *logrus.Entry
 
-		Specs     Specs
-		Qualities Qualities
+		Specs Specs
 	}
 )
 
@@ -33,15 +32,6 @@ func (m *Manager) GetSpec(id string) (*Spec, error) {
 	}
 
 	return &s, nil
-}
-
-func (m *Manager) GetQuality(id string) (*Quality, error) {
-	s, ok := m.Specs[id]
-	if !ok {
-		return nil, fmt.Errorf("quality '%s' not found", id)
-	}
-
-	return NewQuality(&s), nil
 }
 
 func NewManager() *Manager {
