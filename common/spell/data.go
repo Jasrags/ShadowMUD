@@ -16,4 +16,16 @@ var CoreSpells = []Spell{
 		Range:       RangeLOS,
 		Category:    CategoryCombat,
 	},
+	{
+		ID:          "toxic_wave",
+		Name:        "Toxic Wave",
+		Description: "A wave of toxic gas that deals mana damage.",
+		Duration:    DurationInstantaneous,
+		Drain:       5,
+		DamageValue: -1,
+		DamageType:  shared.DamageTypePhysical,
+		Type:        TypeDirect,
+		Range:       RangeLOSArea,
+		Category:    CategoryCombat,
+	},
 }
