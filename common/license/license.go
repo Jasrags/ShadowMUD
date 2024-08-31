@@ -1,4 +1,6 @@
-package licenses
+package license
+
+import "github.com/Jasrags/ShadowMUD/common/shared"
 
 const (
 	TypeAdeptLicense               Type = "Adept License"
@@ -41,4 +43,12 @@ const (
 
 type (
 	Type string
+	Spec struct {
+		ID          string            `yaml:"id"`
+		Name        string            `yaml:"name"`
+		Description string            `yaml:"description"`
+		Type        Type              `yaml:"type"`
+		Cost        int               `yaml:"cost"`
+		RuleSource  shared.RuleSource `yaml:"rule_source"`
+	}
 )

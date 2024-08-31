@@ -8,13 +8,24 @@ import (
 
 	"github.com/Jasrags/ShadowMUD/common/armor"
 	"github.com/Jasrags/ShadowMUD/common/bioware"
+	"github.com/Jasrags/ShadowMUD/common/complexform"
 	"github.com/Jasrags/ShadowMUD/common/contact"
 	"github.com/Jasrags/ShadowMUD/common/cyberware"
+	"github.com/Jasrags/ShadowMUD/common/echo"
 	"github.com/Jasrags/ShadowMUD/common/gear"
+	"github.com/Jasrags/ShadowMUD/common/license"
+	"github.com/Jasrags/ShadowMUD/common/martialart"
+	"github.com/Jasrags/ShadowMUD/common/metamagic"
 	"github.com/Jasrags/ShadowMUD/common/metatype"
+	"github.com/Jasrags/ShadowMUD/common/paragon"
+	"github.com/Jasrags/ShadowMUD/common/power"
+	"github.com/Jasrags/ShadowMUD/common/program"
 	"github.com/Jasrags/ShadowMUD/common/quality"
 	"github.com/Jasrags/ShadowMUD/common/shared"
 	"github.com/Jasrags/ShadowMUD/common/skill"
+	"github.com/Jasrags/ShadowMUD/common/tradition"
+	"github.com/Jasrags/ShadowMUD/common/vehicle"
+	"github.com/Jasrags/ShadowMUD/common/vessel"
 	"github.com/Jasrags/ShadowMUD/common/weapon"
 	"github.com/Jasrags/ShadowMUD/utils"
 
@@ -84,18 +95,11 @@ type (
 		Modifiers shared.Modifiers `yaml:"modifiers"`
 		Spec      *bioware.Spec    `yaml:"-"`
 	}
-	Skills map[string]*Skill
-	Skill  struct {
-		ID             string      `yaml:"id"`
-		Specialization string      `yaml:"specialization"`
-		Rating         int         `yaml:"rating"`
-		Spec           *skill.Spec `yaml:"-"`
-	}
-	Qualities map[string]*Quality
-	Quality   struct {
-		ID     string        `yaml:"id"`
-		Rating int           `yaml:"rating"`
-		Spec   *quality.Spec `yaml:"-"`
+	ComplexForms map[string]*ComplexForm
+	ComplexForm  struct {
+		ID     string            `yaml:"id"`
+		Rating int               `yaml:"rating"`
+		Spec   *complexform.Spec `yaml:"-"`
 	}
 	Contacts map[string]*Contact
 	Contact  struct {
@@ -112,12 +116,98 @@ type (
 		Modifiers     shared.Modifiers          `yaml:"modifiers"`
 		Spec          *cyberware.Spec           `yaml:"-"`
 	}
+	Echos map[string]*Echo
+	Echo  struct {
+		ID   string     `yaml:"id"`
+		Spec *echo.Spec `yaml:"-"`
+	}
 	Gears map[string]*Gear
 	Gear  struct {
 		ID        string           `yaml:"id"`
 		Rating    int              `yaml:"rating"`
 		Modifiers shared.Modifiers `yaml:"modifiers"`
 		Spec      *gear.Spec       `yaml:"-"`
+	}
+	Licenses map[string]*License
+	License  struct {
+		ID     string        `yaml:"id"`
+		Rating int           `yaml:"rating"`
+		Spec   *license.Spec `yaml:"-"`
+	}
+	Lifestyles map[string]*Lifestyle
+	Lifestyle  struct {
+		ID     string `yaml:"id"`
+		Rating int    `yaml:"rating"`
+	}
+	MartialArts map[string]*MartialArt
+	MartialArt  struct {
+		ID     string           `yaml:"id"`
+		Rating int              `yaml:"rating"`
+		Spec   *martialart.Spec `yaml:"-"`
+	}
+	Metamagics map[string]*Metamagic
+	Metamagic  struct {
+		ID   string          `yaml:"id"`
+		Spec *metamagic.Spec `yaml:"-"`
+	}
+	Paragons map[string]*Paragon
+	Paragon  struct {
+		ID   string        `yaml:"id"`
+		Spec *paragon.Spec `yaml:"-"`
+	}
+	Powers map[string]*Power
+	Power  struct {
+		ID     string      `yaml:"id"`
+		Rating int         `yaml:"rating"`
+		Spec   *power.Spec `yaml:"-"`
+	}
+	Programs map[string]*Program
+	Program  struct {
+		ID     string        `yaml:"id"`
+		Rating int           `yaml:"rating"`
+		Spec   *program.Spec `yaml:"-"`
+	}
+	Qualities map[string]*Quality
+	Quality   struct {
+		ID     string        `yaml:"id"`
+		Rating int           `yaml:"rating"`
+		Spec   *quality.Spec `yaml:"-"`
+	}
+	Skills map[string]*Skill
+	Skill  struct {
+		ID             string      `yaml:"id"`
+		Specialization string      `yaml:"specialization"`
+		Rating         int         `yaml:"rating"`
+		Spec           *skill.Spec `yaml:"-"`
+	}
+	Traditions map[string]*Tradition
+	Tradition  struct {
+		ID   string          `yaml:"id"`
+		Name string          `yaml:"name"`
+		Spec *tradition.Spec `yaml:"-"`
+	}
+	Vehicles map[string]*Vehicle
+	Vehicle  struct {
+		ID   string        `yaml:"id"`
+		Name string        `yaml:"name"`
+		Spec *vehicle.Spec `yaml:"-"`
+	}
+	Vessels map[string]*Vessel
+	Vessel  struct {
+		ID   string       `yaml:"id"`
+		Name string       `yaml:"name"`
+		Spec *vessel.Spec `yaml:"-"`
+	}
+	Weapons map[string]*Weapon
+	Weapon  struct {
+		ID                 string                `yaml:"id"`
+		SelectedFiringMode weapon.FiringMode     `yaml:"selected_firing_mode"`
+		AmmoType           *weapon.AmunitionSpec `yaml:"ammo_type"`
+		AmmoRemaining      int                   `yaml:"ammo_remaining"`
+		Tags               []shared.ItemTag      `yaml:"tags"`
+		Modifications      []weapon.Modification `yaml:"modifications"`
+		Modifiers          shared.Modifiers      `yaml:"modifiers"`
+		Spec               *weapon.Spec          `yaml:"-"`
 	}
 
 	Characters map[string]*Character
@@ -164,25 +254,32 @@ type (
 		// Movement        int `yaml:"-"`
 		// Skills
 
-		Skills Skills `yaml:"skills"`
-		// ActiveSkills    Skills    `yaml:"active_skills"`
-		// LanguageSkills  Skills    `yaml:"language_skills"`
-		// KnowledgeSkills Skills    `yaml:"knowledge_skills"`
-		Qualities Qualities `yaml:"qualities"`
-		Contacts  Contacts  `yaml:"contacts"`
+		Armor        Armor        `yaml:"armor"`
+		Bioware      Biowares     `yaml:"bioware"`
+		ComplexForms ComplexForms `yaml:"complex_forms"`
+		Contacts     Contacts     `yaml:"contacts"`
+		Cyberware    Cyberwares   `yaml:"cyberware"`
+		Echos        Echos        `yaml:"echos"`
+		Gear         Gears        `yaml:"gear"`
+		Licenses     Licenses     `yaml:"licenses"`
+		Lifestyles   Lifestyles   `yaml:"lifestyles"`
+		MartialArts  MartialArts  `yaml:"martial_arts"`
+		Metamagics   Metamagics   `yaml:"metamagics"`
+		Paragons     Paragons     `yaml:"paragons"`
+		Powers       Powers       `yaml:"powers"`
+		Programs     Programs     `yaml:"programs"`
+		Qualities    Qualities    `yaml:"qualities"`
+		Skills       Skills       `yaml:"skills"`
+		// SpiritPowers map[string]string         `yaml:"spirit_powers"`
+		Traditions Traditions `yaml:"traditions"`
+		Vehicles   Vehicles   `yaml:"vehicles"`
+		Vessels    Vessels    `yaml:"vessels"`
+		Weapons    Weapons    `yaml:"weapons"`
 		// Identities      map[string]string         `yaml:"identities"`
-		// Lifestyles      map[string]string         `yaml:"lifestyles"`
 		// Currancy        map[string]int            `yaml:"currancy"`
-		Weapons weapon.Weapons `yaml:"weapons"`
-		// RangedWeapons map[string]WeaponRanged `yaml:"ranged_weapons"`
-		// MeleeWeapons  map[string]WeaponMelee  `yaml:"melee_weapons"`
-		Armor     Armor      `yaml:"armor"`
-		Cyberware Cyberwares `yaml:"cyberware"`
-		Bioware   Biowares   `yaml:"bioware"`
 		// Cyberdecks      map[string]string         `yaml:"cyberdecks"`
 		// Augmentations   map[string]string         `yaml:"augmentations"`
 		// Vehicals        map[string]string         `yaml:"vehicals"`
-		Gear Gears `yaml:"gear"`
 		// AdeptPowers     map[string]string         `yaml:"adept_powers"`
 		CreatedAt time.Time `yaml:"created_at"`
 		UpdatedAt time.Time `yaml:"updated_at,omitempty"`
