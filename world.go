@@ -168,6 +168,22 @@ const (
 	StateQuit
 )
 
+const (
+	StateCreateCharacterMenu State = iota
+	StateCreateCharacterName
+	StateCreateCharacterMetatype
+	StateCreateCharacterMagic
+	StateCreateCharacterAttributes
+	StateCreateCharacterSkills
+	StateCreateCharacterQualities
+	// StateCreateCharacterSpells
+	// StateCreateCharacterPowers
+	// StateCreateCharacterComplexForms
+	StateCreateCharacterNuyen
+	StateCreateCharacterSpend
+	StateCreateCharacterQuit
+)
+
 // sshHandler is the handler for incoming SSH connections
 func (w *World) sshHandler(s ssh.Session) {
 	sessionID := uuid.New().String()

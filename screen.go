@@ -75,6 +75,24 @@ var (
 	createCharacterConfirmNamePrompt = "{{Confirm character name '%s'}}::#ffffff|bold {{(y/n)}}::#00ff00|bold{{:}}::#ffffff|bold"
 	chooseCharacterPrompt            = "{{Choose a character to enter the game:}}::#00ff00\n"
 
+	//     "\nCharacter Creation Menu:"
+	// Set your character's name
+	// Select Metatype
+	// Choose magic or resonance
+	// Purchase qualties
+	// Purchase skills
+	// Purchase spells/powers/complex forms
+	// Purchase Nuyen
+	// Spending Nuyen
+
+	//     "1. Allocate Attribute Points"
+	//     "2. Allocate Skill Points"
+	//     "3. Allocate Quality Points"
+	//     "4. View Character"
+	//     "5. Finalize Character"
+	//     "6. Exit"
+	//    "Choose an option: "
+
 	quitMsg                  = "{{Goodbye!}}::#00ff00\n"
 	passwordChangedMsg       = "{{Password has been changed.}}::#0000ff\n"
 	featureNotImplementedMsg = "{{Feature not implemented}}::#ff0000\n"
@@ -478,41 +496,116 @@ func (w *World) promptCreateCharacter(s ssh.Session, u *user.User) State {
 	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_character"})
 	l.Debug("Prompting for character creation")
 
-promptCreateCharacterMenu:
+	// promptCreateCharacterMenu:
 	// If the user has reached the maximum number of characters, return to the main menu
 	if len(u.Characters) >= w.cfg.UserCharacterMaxCount {
 		io.WriteString(s, cfmt.Sprintf(characterMaxCharactersMsg))
 		return StateMainMenu
 	}
 
-	// Prompt the user to choose a character creation method
-	io.WriteString(s, cfmt.Sprintf(createCharacterMenuTitle))
-	io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionPregen))
-	io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionCustom))
-	// io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionLearn))
-	// io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionReturn))
-	t := term.NewTerminal(s, cfmt.Sprint(menuPrompt))
-	choice, errReadLine := t.ReadLine()
-	if errReadLine != nil {
-		l.WithError(errReadLine).Error("Error reading menu choice")
-		goto promptCreateCharacterMenu
+	state := StateCreateCharacterMenu
+	for {
+		switch state {
+		case StateCreateCharacterMenu:
+			state = w.promptCreateCharacterMenu(s, u)
+		case StateCreateCharacterName:
+			state = w.promptCreateCharacterName(s, u)
+		case StateCreateCharacterMetatype:
+			// state = w.promptCreateCharacterMetatype(s, u)
+		case StateCreateCharacterMagic:
+			// state = w.promptCreateCharacterMagic(s, u)
+		case StateCreateCharacterAttributes:
+			// state = w.promptCreateCharacterAttributes(s, u)
+		case StateCreateCharacterSkills:
+			// state = w.promptCreateCharacterSkills(s, u)
+		case StateCreateCharacterQualities:
+			// state = w.promptCreateCharacterQualities(s, u)
+		case StateCreateCharacterNuyen:
+			// state = w.promptCreateCharacterNuyen(s, u)
+		case StateCreateCharacterSpend:
+			// state = w.promptCreateCharacterSpend(s, u)
+		case StateCreateCharacterQuit:
+			return StateMainMenu
+		}
 	}
 
-	choice = strings.ToLower(strings.TrimSpace(choice))
-	l.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
+	// // Prompt the user to choose a character creation method
+	// io.WriteString(s, cfmt.Sprintf(createCharacterMenuTitle))
+	// io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionPregen))
+	// io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionCustom))
+	// // io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionLearn))
+	// // io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionReturn))
+	// t := term.NewTerminal(s, cfmt.Sprint(menuPrompt))
+	// choice, errReadLine := t.ReadLine()
+	// if errReadLine != nil {
+	// 	l.WithError(errReadLine).Error("Error reading menu choice")
+	// 	goto promptCreateCharacterMenu
+	// }
 
-	switch choice {
-	case "1":
-		return StatePromptCreatePregenCharacter
-	case "2":
-		return StatePromptCreateCustomCharacter
-	// case "3":
-	// return StatePromptCreateCharacterLearn
-	// case "4":
-	default:
-		io.WriteString(s, cfmt.Sprintf(menuInvalidChoice, choice))
-		goto promptCreateCharacterMenu
+	// choice = strings.ToLower(strings.TrimSpace(choice))
+	// l.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
+
+	// switch choice {
+	// case "1":
+	// 	return StatePromptCreatePregenCharacter
+	// case "2":
+	// 	return StatePromptCreateCustomCharacter
+	// // case "3":
+	// // return StatePromptCreateCharacterLearn
+	// // case "4":
+	// default:
+	// 	io.WriteString(s, cfmt.Sprintf(menuInvalidChoice, choice))
+	// 	goto promptCreateCharacterMenu
+	// }
+}
+
+func (w *World) promptCreateCharacterMenu(s ssh.Session, u *user.User) State {
+	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_character_menu"})
+	l.Debug("Prompting for character creation menu")
+	io.WriteString(s, cfmt.Sprint(featureNotImplementedMsg))
+
+	return StateMainMenu
+}
+
+func (w *World) promptCreateCharacterName(s ssh.Session, u *user.User) State {
+	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_character_name"})
+	l.Debug("Prompting for character name")
+
+promptCharacterName:
+	name, errUsername := utils.PromptUserInput(s, characterNamePrompt)
+	if errUsername != nil {
+		l.WithError(errUsername).Error("Error reading character name")
+		io.WriteString(s, cfmt.Sprintf(inputErrorMsg))
+		goto promptCharacterName
 	}
+
+	if name == "" {
+		io.WriteString(s, cfmt.Sprintf(requiredInputMsg))
+		goto promptCharacterName
+	}
+
+	if len(name) < w.cfg.CharacterNameMinLength || len(name) > w.cfg.CharacterNameMaxLength {
+		io.WriteString(s, cfmt.Sprintf(characterNameMixMaxLengthMsg, w.cfg.CharacterNameMinLength, w.cfg.CharacterNameMaxLength))
+		goto promptCharacterName
+	}
+
+	// Check if the character name is already taken
+
+	confirm, errConfirmName := utils.PromptConfirmInput(s, cfmt.Sprintf(createCharacterConfirmNamePrompt, name))
+	if errConfirmName != nil {
+		l.WithError(errConfirmName).Error("Error reading confirm character name")
+		io.WriteString(s, cfmt.Sprintf(inputErrorMsg))
+		goto promptCharacterName
+	}
+
+	if !confirm {
+		io.WriteString(s, cfmt.Sprintf(characterNameDeclinedMsg, name))
+		goto promptCharacterName
+	}
+
+	l.WithField("name", name).Debug("Received character name")
+
+	return StateCreateCharacterMenu
 }
 
 func (w *World) promptCreatePregenCharacter(s ssh.Session, u *user.User) State {
