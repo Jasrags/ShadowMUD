@@ -1,6 +1,10 @@
 package critter
 
-import "github.com/Jasrags/ShadowMUD/common/shared"
+import (
+	"github.com/Jasrags/ShadowMUD/common/power"
+	"github.com/Jasrags/ShadowMUD/common/shared"
+	"github.com/Jasrags/ShadowMUD/common/skill"
+)
 
 const (
 	CategoryAI                   Category = "A.I.s"
@@ -31,15 +35,49 @@ const (
 )
 
 type (
-	Category string
-	Spec     struct {
-		ID          string   `yaml:"id"`
-		Name        string   `yaml:"name"`
-		Category    Category `yaml:"category"`
-		Description string   `yaml:"description"`
+	Category                   string
+	Attribute[T int | float64] struct {
+		Min    T `yaml:"min"`
+		Max    T `yaml:"max"`
+		AugMax T `yaml:"aug_max"`
+	}
+	Attributes struct {
+		Body       Attribute[int]     `yaml:"body"`
+		Agility    Attribute[int]     `yaml:"agility"`
+		Reaction   Attribute[int]     `yaml:"reaction"`
+		Strength   Attribute[int]     `yaml:"strength"`
+		Willpower  Attribute[int]     `yaml:"willpower"`
+		Logic      Attribute[int]     `yaml:"logic"`
+		Intuition  Attribute[int]     `yaml:"intuition"`
+		Charisma   Attribute[int]     `yaml:"charisma"`
+		Edge       Attribute[int]     `yaml:"edge"`
+		Initiative Attribute[int]     `yaml:"initiative"`
+		Essence    Attribute[float64] `yaml:"essence"`
+		Magic      Attribute[int]     `yaml:"magic"`
+		Resonance  Attribute[int]     `yaml:"resonance"`
+	}
+	Powers map[string]*Power
+	Power  struct {
+		ID     string      `yaml:"id"`
+		Rating int         `yaml:"rating"`
+		Spec   *power.Spec `yaml:"-"`
+	}
+	Skills map[string]*Skill
+	Skill  struct {
+		ID             string      `yaml:"id"`
+		Specialization string      `yaml:"specialization"`
+		Rating         int         `yaml:"rating"`
+		Spec           *skill.Spec `yaml:"-"`
+	}
+	Spec struct {
+		ID          string     `yaml:"id"`
+		Name        string     `yaml:"name"`
+		Category    Category   `yaml:"category"`
+		Description string     `yaml:"description"`
+		Attributes  Attributes `yaml:"attributes"`
+		Powers      Powers     `yaml:"powers"`
+		Skills      Skills     `yaml:"skills"`
 		// Bonus
-		// Powers
-		// Skills
 		RuleSource shared.RuleSource `yaml:"rule_source"`
 	}
 )

@@ -31,11 +31,4 @@ type (
 		Modifiers    shared.Modifiers    `yaml:"modifiers"`
 		RuleSource   shared.RuleSource   `yaml:"rule_source"`
 	}
-	Modifications map[string]*Modification
-	Modification  struct {
-		ID        string            `yaml:"id"`
-		Rating    int               `yaml:"rating"`
-		Modifiers shared.Modifiers  `yaml:"modifiers"`
-		Spec      *ModificationSpec `yaml:"-"`
-	}
 )

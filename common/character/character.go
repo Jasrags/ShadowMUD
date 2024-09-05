@@ -80,13 +80,27 @@ type (
 	// 	MatrixVRColdSimInitiative int // (Data Processing + Intuition) + 3D6
 	// 	RiggerARInitiative        int // (Reaction + Intuition) + 1D6
 	// }
+	Ammunitions map[string]*Ammunition
+	Ammunition  struct {
+		ID        string                `yaml:"id"`
+		Quantity  int                   `yaml:"quantity"`
+		Modifiers shared.Modifiers      `yaml:"modifiers"`
+		Spec      weapon.AmmunitionSpec `yaml:"-"`
+	}
 	Armors map[string]*Armor
 	Armor  struct {
-		ID            string               `yaml:"id"`
-		Rating        int                  `yaml:"rating"`
-		Modifications []armor.Modification `yaml:"modifications"`
-		Modifiers     shared.Modifiers     `yaml:"modifiers"`
-		Spec          *armor.Spec          `yaml:"-"`
+		ID            string             `yaml:"id"`
+		Rating        int                `yaml:"rating"`
+		Modifications ArmorModifications `yaml:"modifications"`
+		Modifiers     shared.Modifiers   `yaml:"modifiers"`
+		Spec          *armor.Spec        `yaml:"-"`
+	}
+	ArmorModifications map[string]*ArmorModification
+	ArmorModification  struct {
+		ID        string                  `yaml:"id"`
+		Rating    int                     `yaml:"rating"`
+		Modifiers shared.Modifiers        `yaml:"modifiers"`
+		Spec      *armor.ModificationSpec `yaml:"-"`
 	}
 	Biowares map[string]*Bioware
 	Bioware  struct {
@@ -200,14 +214,22 @@ type (
 	}
 	Weapons map[string]*Weapon
 	Weapon  struct {
-		ID                 string                `yaml:"id"`
-		SelectedFiringMode weapon.FiringMode     `yaml:"selected_firing_mode"`
-		AmmoType           *weapon.AmunitionSpec `yaml:"ammo_type"`
-		AmmoRemaining      int                   `yaml:"ammo_remaining"`
-		Tags               []shared.ItemTag      `yaml:"tags"`
-		Modifications      []weapon.Modification `yaml:"modifications"`
-		Modifiers          shared.Modifiers      `yaml:"modifiers"`
-		Spec               *weapon.Spec          `yaml:"-"`
+		ID                 string                 `yaml:"id"`
+		SelectedFiringMode weapon.FiringMode      `yaml:"selected_firing_mode"`
+		AmmoType           *weapon.AmmunitionSpec `yaml:"ammo_type"`
+		AmmoRemaining      int                    `yaml:"ammo_remaining"`
+		Tags               []shared.ItemTag       `yaml:"tags"`
+		Modifications      WeaponModifications    `yaml:"modifications"`
+		Modifiers          shared.Modifiers       `yaml:"modifiers"`
+		Spec               *weapon.Spec           `yaml:"-"`
+	}
+	WeaponModifications map[string]*WeaponModification
+	WeaponModification  struct {
+		ID       string           `yaml:"id,omitempty"`
+		Rating   int              `yaml:"rating,omitempty"`
+		ItemTags []shared.ItemTag `yaml:"tags"`
+		// Modifiers []Modifier             `yaml:"modifiers"`
+		Spec weapon.ModificationSpec `yaml:"-"`
 	}
 
 	Characters map[string]*Character
@@ -254,6 +276,7 @@ type (
 		// Movement        int `yaml:"-"`
 		// Skills
 
+		Ammunitions
 		Armor        Armor        `yaml:"armor"`
 		Bioware      Biowares     `yaml:"bioware"`
 		ComplexForms ComplexForms `yaml:"complex_forms"`

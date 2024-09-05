@@ -11,8 +11,10 @@ const (
 )
 
 type (
-	Specs map[string]Spec
-	Spec  struct {
+	Category    string
+	ModCategory string
+	Specs       map[string]Spec
+	Spec        struct {
 		ID            string              `yaml:"id"`
 		Name          string              `yaml:"name"`
 		Hidden        bool                `yaml:"hidden"`
@@ -22,20 +24,10 @@ type (
 		Capacity      int                 `yaml:"capacity"`
 		Availability  int                 `yaml:"availability"`
 		Legality      shared.LegalityType `yaml:"legality"`
-		Modifications []Modification      `yaml:"modifications"`
+		Modifications []ModificationSpec  `yaml:"modifications"`
 		Tags          []shared.ItemTag    `yaml:"tags"`
 		Modifiers     shared.Modifiers    `yaml:"modifiers"`
 		Cost          int                 `yaml:"cost"`
 		RuleSource    shared.RuleSource   `yaml:"rule_source"`
 	}
-	// Armors map[string]*Armor
-	// Armor  struct {
-	// 	ID            string           `yaml:"id"`
-	// 	Rating        int              `yaml:"rating"`
-	// 	Modifications []Modification   `yaml:"modifications"`
-	// 	Modifiers     shared.Modifiers `yaml:"modifiers"`
-	// 	Spec          *Spec            `yaml:"-"`
-	// }
-	Category    string
-	ModCategory string
 )
