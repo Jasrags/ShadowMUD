@@ -769,6 +769,8 @@ func (c *Character) SetName(name string) error {
 		return shared.ErrNameNotAlphanumeric
 	}
 
+	logrus.WithFields(logrus.Fields{"name": name}).Info("Set character name")
+
 	c.Name = name
 
 	return nil

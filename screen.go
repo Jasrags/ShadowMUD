@@ -634,29 +634,13 @@ func (w *World) promptCreateCharacterMenu(s ssh.Session, u *user.User) State {
 
 	io.WriteString(s, cfmt.Sprintf("\n{{Character Creation}}::#00ff00|bold\n"))
 
-	// bc := NewBuildCommand(s, c)
 loop:
 	for {
-		if err := w.templates.ExecuteTemplate(s, "character_sheet.tmpl", nil); err != nil {
+		if err := w.templates.ExecuteTemplate(s, "character_sheet.tmpl", c); err != nil {
 			logrus.WithError(err).Error("Error executing template")
 			io.WriteString(s, cfmt.Sprintf("An error occurred while displaying help"))
 			break
 		}
-		// // Name
-		// if c.Name == "" {
-		// 	io.WriteString(s, cfmt.Sprintf("{{Name:}}::#00ff00 {{set name <name>}}::#767676\n"))
-		// } else {
-		// 	io.WriteString(s, cfmt.Sprintf("{{Name:}}::#00ff00 %s\n", c.Name))
-		// }
-
-		// // Metatype
-		// if c.Name != "" {
-		// 	if c.Metatype == nil {
-		// 		io.WriteString(s, cfmt.Sprintf("{{Metatype:}}::#00ff00 {{set metatype <metatype>}}::#767676\n"))
-		// 	} else {
-		// 		io.WriteString(s, cfmt.Sprintf("{{Metatype:}}::#00ff00 %s\n", c.Metatype.Name))
-		// 	}
-		// }
 
 		// Prompt
 		input, err := utils.PromptUserInput(s, gameLoopPrompt)
@@ -665,10 +649,13 @@ loop:
 			break
 		}
 
-		l.WithFields(logrus.Fields{"input": input}).Debug("Received input")
-		input = strings.TrimSpace(strings.ToLower(input))
-		args := strings.Split(input, " ")
-		command := args[0]
+		// input = strings.TrimSpace(input)
+		args := strings.Fields(strings.TrimSpace(input))
+		command := strings.ToLower(args[0])
+		args = args[1:]
+		// command := strings.ToLower(fields[0])
+		// args := fields[1:]
+		l.WithFields(logrus.Fields{"input": input, "command": command, "args": args}).Debug("Received input")
 
 		if input == "" {
 			goto loop
@@ -701,17 +688,19 @@ loop:
 			io.WriteString(s, "Exiting character builder.\n")
 			return StateMainMenu
 		case "set":
-			if len(args) < 3 {
+			if len(args) < 2 {
 				io.WriteString(s, "Usage: set <property> <value>\n")
 				continue
 			}
-			property := args[1]
-			value := strings.Join(args[2:], " ")
+			property := strings.ToLower(args[0])
+			value := strings.Join(args[1:], " ")
+			logrus.WithFields(logrus.Fields{"property": property, "value": value}).Debug("Setting property")
 			switch property {
 			case "name":
-				io.WriteString(s, featureNotImplementedMsg)
-				// c.Name = value
-				// io.WriteString(s, "Character name set to "+value+"\n")
+				if err := c.SetName(value); err != nil {
+					logrus.WithError(err).Error("Error setting character name")
+				}
+				io.WriteString(s, "Character name set to "+value+"\n")
 			case "metatype":
 				// Implement set metatype logic
 				io.WriteString(s, featureNotImplementedMsg)
