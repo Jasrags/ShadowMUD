@@ -20,3 +20,6 @@ banned_names:
     - admin
     - god
     - new
+template_files:
+    - _data/templates/character_builder_help.tmpl
+    - _data/templates/character_sheet.tmpl

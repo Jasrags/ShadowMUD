@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/Jasrags/ShadowMUD/utils"
+
 	"github.com/sirupsen/logrus"
 )
 

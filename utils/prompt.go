@@ -24,7 +24,18 @@ func GenerateRandomUsername() string {
 var (
 	requiredInputMsg = "{{You must enter a value.}}::#ff8700\n"
 	invalidInputMsg  = "{{Invalid input, please try again.}}::#ff8700\n"
+	pressEnterPrompt = "{{Press enter to continue.}}::#ff8700\n"
 )
+
+func PromptPressEnterInput(s ssh.Session) error {
+	t := term.NewTerminal(s, cfmt.Sprint(pressEnterPrompt))
+	if _, err := t.ReadLine(); err != nil {
+		logrus.WithError(err).Error("Error reading input")
+		return err
+	}
+
+	return nil
+}
 
 func PromptConfirmInput(s ssh.Session, prompt string) (bool, error) {
 	var input string
@@ -86,3 +97,33 @@ func PromptUserPasswordInput(s ssh.Session, prompt string) (string, error) {
 
 	return input, nil
 }
+
+// func PromptUserInputSelect(s ssh.Session, prompt string, options []string) (string, error) {
+// 	var input string
+
+// 	t := term.NewTerminal(s, cfmt.Sprint(prompt))
+// 	input, err := t.ReadLine()
+// 	if err != nil {
+// 		logrus.WithError(err).Error("Error reading input")
+// 		return "", err
+// 	}
+
+// 	for i, opt := range options {
+// 		io.WriteString(s, cfmt.Sprintf("%d: %s\n", i+1, opt))
+// 		// if input == fmt.Sprintf("%d: %s", i+1, opt) {
+// 		// 	return opt, nil
+// 		// }
+// 	}
+
+// 	input = strings.TrimSpace(input)
+
+// 	for _, opt := range options {
+// 		if input == opt {
+// 			return input, nil
+// 		}
+// 	}
+
+// 	io.WriteString(s, cfmt.Sprintf(invalidInputMsg))
+
+// 	return PromptUserInputSelect(s, prompt, options)
+// }

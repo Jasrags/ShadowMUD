@@ -5,15 +5,17 @@ import (
 	"net"
 	"strings"
 	"sync"
+	"text/template"
 
 	_ "embed"
 
 	"github.com/Jasrags/ShadowMUD/common/user"
 	"github.com/Jasrags/ShadowMUD/config"
-	"github.com/google/uuid"
-	"github.com/i582/cfmt/cmd/cfmt"
+	"github.com/Jasrags/ShadowMUD/utils"
 
 	"github.com/gliderlabs/ssh"
+	"github.com/google/uuid"
+	"github.com/i582/cfmt/cmd/cfmt"
 	"github.com/sirupsen/logrus"
 )
 
@@ -32,6 +34,8 @@ type World struct {
 
 	cfg *config.Server
 	srv *ssh.Server
+
+	templates *template.Template
 
 	userManager *user.Manager
 	users       user.Users
@@ -59,6 +63,12 @@ func NewWorld(cfg *config.Server) *World {
 }
 
 func (w *World) LoadData() {
+	t, err := template.New("").Funcs(utils.ColorFuncMap()).ParseFiles(w.cfg.TemplateFiles...)
+	if err != nil {
+		logrus.WithError(err).Fatal("Error loading templates")
+	}
+	w.templates = t
+
 	w.userManager.Load()
 }
 
@@ -158,9 +168,21 @@ const (
 	StateMainMenu
 	StateEnterGame
 	StateGameLoop
-	StatePromptCreateCharacter
-	StatePromptCreatePregenCharacter
-	StatePromptCreateCustomCharacter
+	StatePromptCreateCharacterMenu
+	StateCreateCharacterName
+	StateCreateCharacterMetatype
+	StateCreateCharacterMagic
+	StateCreateCharacterAttributes
+	StateCreateCharacterSkills
+	StateCreateCharacterQualities
+	StateCreateCharacterSpells
+	StateCreateCharacterPowers
+	StateCreateCharacterComplexForms
+	StateCreateCharacterNuyen
+	StateCreateCharacterSpend
+	StateCreateCharacterQuit
+	// StatePromptCreatePregenCharacter
+	// StatePromptCreateCustomCharacter
 	StatePromptListCharacters
 	StatePromptDeleteCharacter
 	StatePromptChangePassword
@@ -168,21 +190,21 @@ const (
 	StateQuit
 )
 
-const (
-	StateCreateCharacterMenu State = iota
-	StateCreateCharacterName
-	StateCreateCharacterMetatype
-	StateCreateCharacterMagic
-	StateCreateCharacterAttributes
-	StateCreateCharacterSkills
-	StateCreateCharacterQualities
-	// StateCreateCharacterSpells
-	// StateCreateCharacterPowers
-	// StateCreateCharacterComplexForms
-	StateCreateCharacterNuyen
-	StateCreateCharacterSpend
-	StateCreateCharacterQuit
-)
+// const (
+// 	StateCreateCharacterMenu State = iota
+// 	StateCreateCharacterName
+// 	StateCreateCharacterMetatype
+// 	StateCreateCharacterMagic
+// 	StateCreateCharacterAttributes
+// 	StateCreateCharacterSkills
+// 	StateCreateCharacterQualities
+// StateCreateCharacterSpells
+// StateCreateCharacterPowers
+// StateCreateCharacterComplexForms
+// 	StateCreateCharacterNuyen
+// 	StateCreateCharacterSpend
+// 	StateCreateCharacterQuit
+// )
 
 // sshHandler is the handler for incoming SSH connections
 func (w *World) sshHandler(s ssh.Session) {
@@ -195,6 +217,15 @@ func (w *World) sshHandler(s ssh.Session) {
 
 	var u *user.User
 	state := StateBanner
+
+	// skip to logged in state
+	state = StatePromptCreateCharacterMenu
+	u = w.userManager.GetByID("5cd3ae71-6b77-4ff4-ad8a-7c3b9878eb38")
+	// u = &user.User{
+	// ID:       "5cd3ae71-6b77-4ff4-ad8a-7c3b9878eb38",
+	// Username: "Jasrags",
+	// Roles:    user.Roles{user.RoleAdmin, user.RoleUser},
+	// }
 	for {
 		switch state {
 		case StateBanner:
@@ -207,12 +238,32 @@ func (w *World) sshHandler(s ssh.Session) {
 			state = w.promptMainMenu(s, u)
 		case StateEnterGame:
 			state = w.enterGame(s, u)
-		case StatePromptCreateCharacter:
-			state = w.promptCreateCharacter(s, u)
-		case StatePromptCreatePregenCharacter:
-			state = w.promptCreatePregenCharacter(s, u)
-		case StatePromptCreateCustomCharacter:
-			state = w.promptCreateCustomCharacter(s, u)
+		case StatePromptCreateCharacterMenu:
+			state = w.promptCreateCharacterMenu(s, u)
+		// case StatePromptCreatePregenCharacter:
+		// state = w.promptCreatePregenCharacter(s, u)
+		// case StatePromptCreateCustomCharacter:
+		// state = w.promptCreateCustomCharacter(s, u)
+		// case StateCreateCharacterMenu:
+		// state = w.promptCreateCharacterMenu(s, u)
+		case StateCreateCharacterName:
+			state = w.promptCreateCharacterName(s, u)
+		case StateCreateCharacterMetatype:
+			// state = w.promptCreateCharacterMetatype(s, u)
+		case StateCreateCharacterMagic:
+			// state = w.promptCreateCharacterMagic(s, u)
+		case StateCreateCharacterAttributes:
+			// state = w.promptCreateCharacterAttributes(s, u)
+		case StateCreateCharacterSkills:
+			// state = w.promptCreateCharacterSkills(s, u)
+		case StateCreateCharacterQualities:
+			// state = w.promptCreateCharacterQualities(s, u)
+		case StateCreateCharacterNuyen:
+			// state = w.promptCreateCharacterNuyen(s, u)
+		case StateCreateCharacterSpend:
+			// state = w.promptCreateCharacterSpend(s, u)
+		case StateCreateCharacterQuit:
+			state = StateMainMenu
 		case StatePromptListCharacters:
 			state = w.promptListCharacters(s, u)
 		case StatePromptDeleteCharacter:

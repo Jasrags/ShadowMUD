@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Jasrags/ShadowMUD/common/character"
 	"github.com/Jasrags/ShadowMUD/common/user"
 	"github.com/Jasrags/ShadowMUD/utils"
 
@@ -15,87 +16,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/term"
-)
-
-var (
-	// Prompt/Message strings
-	// Character Creation
-	// Game loop
-	// inputEchoMsg        = "{{You typed:}}::#ffffff|bold %s\n"
-	// gameLoopPrompt      = "{{> }}::#ffffff|bold"
-	characterListOption = "{{%d.}}::#00ff00 %s\n"
-	// Login
-	loginClosedMsg     = "{{Login is currently closed.}}::#ff8700\n"
-	usernamePrompt     = "{{Username: }}::#ffffff|bold"
-	passwordPrompt     = "{{Password: }}::#ffffff|bold"
-	invalidLoginMsg    = "{{You have entered an invalid username or password.}}::#ff8700\n"
-	loginSuccessfulMsg = "{{Login successful.}}::#00ff00\n"
-	loginUserBannedMsg = "{{You are banned until %s.}}::#ff8700\n"
-
-	inputErrorMsg    = "{{An error occurred while reading your response.}}::#ff8700\n"
-	requiredInputMsg = "{{You must enter a value.}}::#ff8700\n"
-
-	// Registration
-	registrationClosedMsg   = "{{Registration is currently closed.}}::#ff8700\n"
-	usernameBannedMsg       = "{{Username '%s' is not allowed.}}::#ff8700\n"
-	usernameNewPrompt       = "{{Enter your desired username: }}::#ffffff|bold"
-	usernameConfirmPrompt   = "{{Confirm username '%s'}}::#ffffff|bold {{(y/n)}}::#00ff00|bold{{:}}::#ffffff|bold"
-	usernameMixMaxLengthMsg = "{{Username must be between %d and %d characters.}}::#ff8700\n"
-	usernameDeclinedMsg     = "{{Username '%s' was not confirmed.}}::#ff8700\n"
-	passwordNewPrompt       = "{{Enter new password: }}::#ffffff|bold"
-	passwordConfirmPrompt   = "{{Confirm password: }}::#ffffff|bold"
-	passwordMismatchMsg     = "{{Passwords do not match.}}::#ff8700\n"
-	passwordMinMaxLengthMsg = "{{Password must be between %d and %d characters.}}::#ff8700\n"
-	userCreatedMsg          = "{{User '%s' has been created.}}::#00ff00\n"
-
-	// Menu
-	menuPrompt                = "{{Enter the number of the option you would like to select: }}::#ffffff|bold"
-	menuInvalidChoice         = "Invalid choice: %s\n"
-	mainMenuTitle             = "\n{{Main Menu}}::#00ff00|bold\n"
-	menuOptionEnterGame       = "{{1.}}::#00ff00 Enter game\n"
-	menuOptionCreateCharacter = "{{2.}}::#00ff00 Create character (%d/%d)\n"
-	menuOptionListCharacters  = "{{3.}}::#00ff00 List characters\n"
-	menuOptionDeleteCharacter = "{{4.}}::#00ff00 Delete character\n"
-	menuOptionChangePassword  = "{{5.}}::#00ff00 Change password\n"
-	menuOptionQuit            = "{{0.}}::#00ff00 Quit\n"
-
-	// Character Creation
-	characterNamePrompt              = "{{Enter the name of your character: }}::#ffffff|bold"
-	noCharactersCreatedMsg           = "\n{{You have no characters created, let's make one now!}}::#ff8700\n"
-	characterNameDeclinedMsg         = "{{Character name '%s' was not confirmed.}}::#ff8700\n"
-	characterNoneCreatedMsg          = "{{You have no characters created.}}::#ff8700\n"
-	characterMaxCharactersMsg        = "{{You have reached the maximum number of characters allowed.}}::#ff8700\n"
-	characterNameMixMaxLengthMsg     = "{{Character name must be between %d and %d characters.}}::#ff8700\n"
-	createCharacterMenuTitle         = "\n{{Character Creation}}::#00ff00|bold\n"
-	createCharacterMenuOptionPregen  = "{{1.}}::#00ff00 Choose an pre-generated character\n"
-	createCharacterMenuOptionCustom  = "{{2.}}::#00ff00 Create an custom character\n"
-	createCharacterMenuOptionLearn   = "{{3.}}::#00ff00 Learn more about Shadowrun characters\n"
-	createCharacterMenuOptionReturn  = "{{4.}}::#00ff00 Return to the main menu\n"
-	createCharacterNamePrompt        = "{{Enter the name of your character: }}::#ffffff|bold"
-	createCharacterConfirmNamePrompt = "{{Confirm character name '%s'}}::#ffffff|bold {{(y/n)}}::#00ff00|bold{{:}}::#ffffff|bold"
-	chooseCharacterPrompt            = "{{Choose a character to enter the game:}}::#00ff00\n"
-
-	//     "\nCharacter Creation Menu:"
-	// Set your character's name
-	// Select Metatype
-	// Choose magic or resonance
-	// Purchase qualties
-	// Purchase skills
-	// Purchase spells/powers/complex forms
-	// Purchase Nuyen
-	// Spending Nuyen
-
-	//     "1. Allocate Attribute Points"
-	//     "2. Allocate Skill Points"
-	//     "3. Allocate Quality Points"
-	//     "4. View Character"
-	//     "5. Finalize Character"
-	//     "6. Exit"
-	//    "Choose an option: "
-
-	quitMsg                  = "{{Goodbye!}}::#00ff00\n"
-	passwordChangedMsg       = "{{Password has been changed.}}::#0000ff\n"
-	featureNotImplementedMsg = "{{Feature not implemented}}::#ff0000\n"
 )
 
 // banner displays the banner for the game
@@ -387,7 +307,7 @@ promptMainMenu:
 	case "1":
 		return StateEnterGame
 	case "2":
-		return StatePromptCreateCharacter
+		return StatePromptCreateCharacterMenu
 	case "3":
 		return StatePromptListCharacters
 	case "4":
@@ -410,7 +330,7 @@ func (w *World) enterGame(s ssh.Session, u *user.User) State {
 	if len(u.Characters) == 0 {
 		l.Debug("No characters created")
 		io.WriteString(s, cfmt.Sprintf(noCharactersCreatedMsg))
-		return StatePromptCreateCharacter
+		return StatePromptCreateCharacterMenu
 	}
 
 	// If only one character has been created, set it as the active character
@@ -492,77 +412,546 @@ func (w *World) promptMOTD(s ssh.Session) State {
 	return StateEnterGame
 }
 
-func (w *World) promptCreateCharacter(s ssh.Session, u *user.User) State {
-	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_character"})
-	l.Debug("Prompting for character creation")
+// func (w *World) promptCreateCharacter(s ssh.Session, u *user.User) State {
+// 	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_character"})
+// 	l.Debug("Prompting for character creation")
 
-	// promptCreateCharacterMenu:
-	// If the user has reached the maximum number of characters, return to the main menu
+// 	// promptCreateCharacterMenu:
+// 	// If the user has reached the maximum number of characters, return to the main menu
+// 	if len(u.Characters) >= w.cfg.UserCharacterMaxCount {
+// 		io.WriteString(s, cfmt.Sprintf(characterMaxCharactersMsg))
+// 		return StateMainMenu
+// 	}
+
+// state := StateCreateCharacterMenu
+// for {
+// 	switch state {
+// 	case StateCreateCharacterMenu:
+// 		state = w.promptCreateCharacterMenu(s, u)
+// 	case StateCreateCharacterName:
+// 		state = w.promptCreateCharacterName(s, u)
+// 	case StateCreateCharacterMetatype:
+// 		// state = w.promptCreateCharacterMetatype(s, u)
+// 	case StateCreateCharacterMagic:
+// 		// state = w.promptCreateCharacterMagic(s, u)
+// 	case StateCreateCharacterAttributes:
+// 		// state = w.promptCreateCharacterAttributes(s, u)
+// 	case StateCreateCharacterSkills:
+// 		// state = w.promptCreateCharacterSkills(s, u)
+// 	case StateCreateCharacterQualities:
+// 		// state = w.promptCreateCharacterQualities(s, u)
+// 	case StateCreateCharacterNuyen:
+// 		// state = w.promptCreateCharacterNuyen(s, u)
+// 	case StateCreateCharacterSpend:
+// 		// state = w.promptCreateCharacterSpend(s, u)
+// 	case StateCreateCharacterQuit:
+// 		return StateMainMenu
+// 	default:
+// 		io.WriteString(s, cfmt.Sprint(featureNotImplementedMsg))
+// 		return StateMainMenu
+// 	}
+// }
+
+// // Prompt the user to choose a character creation method
+// io.WriteString(s, cfmt.Sprintf(createCharacterMenuTitle))
+// io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionPregen))
+// io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionCustom))
+// // io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionLearn))
+// // io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionReturn))
+// t := term.NewTerminal(s, cfmt.Sprint(menuPrompt))
+// choice, errReadLine := t.ReadLine()
+// if errReadLine != nil {
+// 	l.WithError(errReadLine).Error("Error reading menu choice")
+// 	goto promptCreateCharacterMenu
+// }
+
+// choice = strings.ToLower(strings.TrimSpace(choice))
+// l.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
+
+// switch choice {
+// case "1":
+// 	return StatePromptCreatePregenCharacter
+// case "2":
+// 	return StatePromptCreateCustomCharacter
+// // case "3":
+// // return StatePromptCreateCharacterLearn
+// // case "4":
+// default:
+// 	io.WriteString(s, cfmt.Sprintf(menuInvalidChoice, choice))
+// 	goto promptCreateCharacterMenu
+// }
+// }
+
+// type BuildCommand struct {
+// 	s ssh.Session
+// 	u *user.User
+// 	w *World
+// }
+
+// func NewBuildCommand(s ssh.Session, u *user.User, w *World) *BuildCommand {
+// 	return &BuildCommand{s: s, u: u, w: w}
+// }
+
+// // CommandHandler type
+// type BuildCommandHandler func(args []string) string
+
+// // Main function to parse and execute commands
+// func (c BuildCommand) parseAndExecuteCommand(input string) string {
+// 	var commands = map[string]BuildCommandHandler{
+// 		"help": c.handleHelpCommand,
+// 		"set":  c.handleSetCommand,
+// 		"show": c.handleShowCommand,
+// 		"list": c.handleListCommand,
+// 	}
+
+// 	parts := strings.Fields(input)
+// 	if len(parts) == 0 {
+// 		return "No command provided"
+// 	}
+
+// 	command := parts[0]
+// 	args := parts[1:]
+
+// 	if handler, found := commands[command]; found {
+// 		return handler(args)
+// 	}
+
+// 	return cfmt.Sprintf("Unknown command: %s", command)
+// }
+
+// // Handler for 'help' command
+// func (c BuildCommand) handleHelpCommand(args []string) string {
+// 	if err := c.w.templates.ExecuteTemplate(c.s, "character_builder_help.tmpl", nil); err != nil {
+// 		logrus.WithError(err).Error("Error executing template")
+// 		io.WriteString(c.s, cfmt.Sprintf("An error occurred while displaying help"))
+
+// 		return ""
+// 	}
+
+// 	if err := utils.PromptPressEnterInput(c.s); err != nil {
+// 		logrus.WithError(err).Error("Error reading input")
+// 	}
+
+// 	return ""
+// }
+
+// // Handler for 'set' command
+// func (c BuildCommand) handleSetCommand(args []string) string {
+// 	if len(args) < 2 {
+// 		return "Usage: set <attribute> <value>"
+// 	}
+
+// 	attribute := args[0]
+// 	value := strings.Join(args[1:], " ")
+
+// 	switch attribute {
+// 	case "name":
+
+// 		// 			// Check if the name is between the min and max lengths
+// 		// 			if len(name) < w.cfg.CharacterNameMinLength || len(name) > w.cfg.CharacterNameMaxLength {
+// 		// 				io.WriteString(s, cfmt.Sprintf(characterNameMixMaxLengthMsg, w.cfg.CharacterNameMinLength, w.cfg.CharacterNameMaxLength))
+// 		// 				goto loop
+// 		// 			}
+
+// 		// 			// TODO: Check if the name is already taken
+
+// 		// 			// Check if the name is banned
+// 		// 			for _, ban := range w.cfg.BannedNames {
+// 		// 				if strings.EqualFold(name, ban) {
+// 		// 					io.WriteString(s, cfmt.Sprintf(usernameBannedMsg, name))
+// 		// 					goto loop
+// 		// 				}
+// 		// 			}
+
+// 		// 			// Check if the name contains only alphabetic characters
+// 		// 			if !regexp.MustCompile("^[a-zA-Z]+$").MatchString(name) {
+// 		// 				io.WriteString(s, cfmt.Sprintf("{{Invalid character name. Only alphabetic characters are allowed.}}::#ff0000\n"))
+// 		// 				goto loop
+// 		// 			}
+
+// 		// c.Name = name
+
+// 		// Set the character's name
+// 		// Example: character.Name = value
+// 		return cfmt.Sprintf("Name set to '%s'", value)
+// 	case "metatype":
+// 		// Set the character's metatype
+// 		// Example: character.Metatype = value
+// 		return cfmt.Sprintf("Metatype set to '%s'", value)
+// 	default:
+// 		return cfmt.Sprintf("{{Unknown attribute:}}::#ff8700 '%s'", attribute)
+// 	}
+// }
+
+// // Handler for 'show' command
+// func (c BuildCommand) handleShowCommand(args []string) string {
+// 	if len(args) < 1 {
+// 		return "Usage: show <item>"
+// 	}
+
+// 	item := args[0]
+
+// 	switch item {
+// 	case "metatype":
+// 		// Show available metatypes
+// 		// Example: return list of metatypes
+// 		return "Available metatypes: Human, Elf, Dwarf, Ork, Troll"
+// 	default:
+// 		return cfmt.Sprintf("Unknown item: %s", item)
+// 	}
+// }
+
+// // Handler for 'list' command
+// func (c BuildCommand) handleListCommand(args []string) string {
+// 	if len(args) < 1 {
+// 		return "Usage: list <item>"
+// 	}
+
+// 	item := args[0]
+
+// 	switch item {
+// 	case "metatypes":
+// 		// Show available metatypes
+// 		// Example: return list of metatypes
+// 		return "Available metatypes: Human, Elf, Dwarf, Ork, Troll"
+// 	default:
+// 		return cfmt.Sprintf("{{Unknown item:}}::#ff8700 '%s'\n", item)
+// 	}
+// }
+
+func (w *World) promptCreateCharacterMenu(s ssh.Session, u *user.User) State {
+	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_character_menu"})
+	l.Debug("Prompting for character creation menu")
+
 	if len(u.Characters) >= w.cfg.UserCharacterMaxCount {
 		io.WriteString(s, cfmt.Sprintf(characterMaxCharactersMsg))
 		return StateMainMenu
 	}
 
-	state := StateCreateCharacterMenu
+	// Create the new character
+	c := character.New(w.cfg)
+	c.State = character.StateIncomplete
+
+	io.WriteString(s, cfmt.Sprintf("\n{{Character Creation}}::#00ff00|bold\n"))
+
+	// bc := NewBuildCommand(s, c)
+loop:
 	for {
-		switch state {
-		case StateCreateCharacterMenu:
-			state = w.promptCreateCharacterMenu(s, u)
-		case StateCreateCharacterName:
-			state = w.promptCreateCharacterName(s, u)
-		case StateCreateCharacterMetatype:
-			// state = w.promptCreateCharacterMetatype(s, u)
-		case StateCreateCharacterMagic:
-			// state = w.promptCreateCharacterMagic(s, u)
-		case StateCreateCharacterAttributes:
-			// state = w.promptCreateCharacterAttributes(s, u)
-		case StateCreateCharacterSkills:
-			// state = w.promptCreateCharacterSkills(s, u)
-		case StateCreateCharacterQualities:
-			// state = w.promptCreateCharacterQualities(s, u)
-		case StateCreateCharacterNuyen:
-			// state = w.promptCreateCharacterNuyen(s, u)
-		case StateCreateCharacterSpend:
-			// state = w.promptCreateCharacterSpend(s, u)
-		case StateCreateCharacterQuit:
-			return StateMainMenu
+		if err := w.templates.ExecuteTemplate(s, "character_sheet.tmpl", nil); err != nil {
+			logrus.WithError(err).Error("Error executing template")
+			io.WriteString(s, cfmt.Sprintf("An error occurred while displaying help"))
+			break
 		}
+		// // Name
+		// if c.Name == "" {
+		// 	io.WriteString(s, cfmt.Sprintf("{{Name:}}::#00ff00 {{set name <name>}}::#767676\n"))
+		// } else {
+		// 	io.WriteString(s, cfmt.Sprintf("{{Name:}}::#00ff00 %s\n", c.Name))
+		// }
+
+		// // Metatype
+		// if c.Name != "" {
+		// 	if c.Metatype == nil {
+		// 		io.WriteString(s, cfmt.Sprintf("{{Metatype:}}::#00ff00 {{set metatype <metatype>}}::#767676\n"))
+		// 	} else {
+		// 		io.WriteString(s, cfmt.Sprintf("{{Metatype:}}::#00ff00 %s\n", c.Metatype.Name))
+		// 	}
+		// }
+
+		// Prompt
+		input, err := utils.PromptUserInput(s, gameLoopPrompt)
+		if err != nil {
+			l.WithError(err).Error("Error reading input")
+			break
+		}
+
+		l.WithFields(logrus.Fields{"input": input}).Debug("Received input")
+		input = strings.TrimSpace(strings.ToLower(input))
+		args := strings.Split(input, " ")
+		command := args[0]
+
+		if input == "" {
+			goto loop
+		}
+
+		switch command {
+		case "help":
+			if err := w.templates.ExecuteTemplate(s, "character_builder_help.tmpl", nil); err != nil {
+				logrus.WithError(err).Error("Error executing template")
+				io.WriteString(s, cfmt.Sprintf("An error occurred while displaying help"))
+				break
+			}
+		case "save":
+			io.WriteString(s, featureNotImplementedMsg)
+			io.WriteString(s, "Character saved.\n")
+		case "finalize":
+			// Implement finalize logic
+			io.WriteString(s, featureNotImplementedMsg)
+			io.WriteString(s, "Character finalized.\n")
+		case "discard":
+			// Implement discard logic
+			io.WriteString(s, featureNotImplementedMsg)
+			io.WriteString(s, "Character discarded.\n")
+			return StateMainMenu
+		case "restart":
+			// Implement restart logic
+			io.WriteString(s, "Character restarted.\n")
+		case "exit":
+			io.WriteString(s, featureNotImplementedMsg)
+			io.WriteString(s, "Exiting character builder.\n")
+			return StateMainMenu
+		case "set":
+			if len(args) < 3 {
+				io.WriteString(s, "Usage: set <property> <value>\n")
+				continue
+			}
+			property := args[1]
+			value := strings.Join(args[2:], " ")
+			switch property {
+			case "name":
+				io.WriteString(s, featureNotImplementedMsg)
+				// c.Name = value
+				// io.WriteString(s, "Character name set to "+value+"\n")
+			case "metatype":
+				// Implement set metatype logic
+				io.WriteString(s, featureNotImplementedMsg)
+				// io.WriteString(s, "Character metatype set to "+value+"\n")
+			case "magic":
+				// Implement set magic logic
+				io.WriteString(s, featureNotImplementedMsg)
+				// io.WriteString(s, "Character magic type set to "+value+"\n")
+			case "attribute":
+				if len(args) < 4 {
+					io.WriteString(s, "Usage: set attribute <attribute> <value>\n")
+					continue
+				}
+				io.WriteString(s, featureNotImplementedMsg)
+				attribute := args[2]
+				attributeValue := args[3]
+				// Implement set attribute logic
+				io.WriteString(s, "Character attribute "+attribute+" set to "+attributeValue+"\n")
+			case "skill":
+				if len(args) < 4 {
+					io.WriteString(s, "Usage: set skill <skill> <value>\n")
+					continue
+				}
+				io.WriteString(s, featureNotImplementedMsg)
+				skill := args[2]
+				skillValue := args[3]
+				// Implement set skill logic
+				io.WriteString(s, "Character skill "+skill+" set to "+skillValue+"\n")
+			case "quality":
+				// Implement set quality logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Character quality set to "+value+"\n")
+			case "nuyen":
+				// Implement set nuyen logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Character nuyen set to "+value+"\n")
+			default:
+				io.WriteString(s, "Unknown property: "+property+"\n")
+			}
+		case "list":
+			if len(args) < 2 {
+				io.WriteString(s, "Usage: list <item>\n")
+				continue
+			}
+			item := args[1]
+			switch item {
+			case "metatypes":
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Available metatypes: Human, Elf, Dwarf, Ork, Troll\n")
+			case "magic":
+				// Implement list magic logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Available magic types: Adept, Magician, Mystic Adept\n")
+			case "attributes":
+				// Implement list attributes logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Available attributes: Strength, Agility, Willpower, Logic, Charisma\n")
+			case "skills":
+				// Implement list skills logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Available skills: Hacking, Shooting, Negotiation, Stealth\n")
+			case "qualities":
+				// Implement list qualities logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Available qualities: Toughness, Quick Healer, Analytical Mind\n")
+			default:
+				io.WriteString(s, "Unknown item: "+item+"\n")
+			}
+		case "show":
+			if len(args) < 3 {
+				io.WriteString(s, "Usage: show <item> <name>\n")
+				continue
+			}
+			item := args[1]
+			name := args[2]
+			switch item {
+			case "metatype":
+				// Implement show metatype logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Details of metatype: "+name+"\n")
+			case "magic":
+				// Implement show magic logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Details of magic type: "+name+"\n")
+			case "attribute":
+				// Implement show attribute logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Details of attribute: "+name+"\n")
+			case "skill":
+				// Implement show skill logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Details of skill: "+name+"\n")
+			case "quality":
+				// Implement show quality logic
+				io.WriteString(s, featureNotImplementedMsg)
+				io.WriteString(s, "Details of quality: "+name+"\n")
+			default:
+				io.WriteString(s, "Unknown item: "+item+"\n")
+			}
+		default:
+			io.WriteString(s, "Unknown command: "+command+"\n")
+		}
+
 	}
+	return StateMainMenu
+	// input = strings.ToLower(input)
+	// inputFields := strings.Fields(input)
+	// cmd := inputFields[0]
+	// 	switch cmd {
+	// 	case "help":
+	// 		io.WriteString(s, cfmt.Sprint(buildHelp))
+	// 	// case "save":
+	// 	// case "finalize":
+	// 	// case "discard":
+	// 	// case "restart":
+	// 	case "exit":
+	// 		return StateMainMenu
+	// 	case "set":
+	// 		if len(inputFields) < 2 {
+	// 			io.WriteString(s, cfmt.Sprintf("{{Usage: set <field> <value>}}::#ff8700\n"))
+	// 			goto loop
+	// 		}
+	// 		switch inputFields[1] {
+	// 		case "name":
+	// 			name := inputFields[2]
 
-	// // Prompt the user to choose a character creation method
-	// io.WriteString(s, cfmt.Sprintf(createCharacterMenuTitle))
-	// io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionPregen))
-	// io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionCustom))
-	// // io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionLearn))
-	// // io.WriteString(s, cfmt.Sprintf(createCharacterMenuOptionReturn))
-	// t := term.NewTerminal(s, cfmt.Sprint(menuPrompt))
-	// choice, errReadLine := t.ReadLine()
-	// if errReadLine != nil {
-	// 	l.WithError(errReadLine).Error("Error reading menu choice")
-	// 	goto promptCreateCharacterMenu
+	// 			// Check if the name is between the min and max lengths
+	// 			if len(name) < w.cfg.CharacterNameMinLength || len(name) > w.cfg.CharacterNameMaxLength {
+	// 				io.WriteString(s, cfmt.Sprintf(characterNameMixMaxLengthMsg, w.cfg.CharacterNameMinLength, w.cfg.CharacterNameMaxLength))
+	// 				goto loop
+	// 			}
+
+	// 			// TODO: Check if the name is already taken
+
+	// 			// Check if the name is banned
+	// 			for _, ban := range w.cfg.BannedNames {
+	// 				if strings.EqualFold(name, ban) {
+	// 					io.WriteString(s, cfmt.Sprintf(usernameBannedMsg, name))
+	// 					goto loop
+	// 				}
+	// 			}
+
+	// 			// Check if the name contains only alphabetic characters
+	// 			if !regexp.MustCompile("^[a-zA-Z]+$").MatchString(name) {
+	// 				io.WriteString(s, cfmt.Sprintf("{{Invalid character name. Only alphabetic characters are allowed.}}::#ff0000\n"))
+	// 				goto loop
+	// 			}
+
+	// 			c.Name = name
+
+	// 			io.WriteString(s, cfmt.Sprintf("{{Character name set to '%s'}}::#00ff00\n", name))
+	// 		case "metatype":
+	// 		case "magic":
+	// 		case "attributes":
+	// 		case "skills":
+	// 		case "qualities":
+	// 		}
+	// 	case "list":
+	// 		switch inputFields[1] {
+	// 		case "metatypes":
+	// 			io.WriteString(s, cfmt.Sprintf("{{Metatypes}}::#00ff00\n"))
+	// 			for _, m := range metatype.CoreMetatypes {
+	// 				io.WriteString(s, cfmt.Sprintf(buildMetatypeInfo,
+	// 					m.Name, m.Category, m.Description,
+	// 					m.Attributes.Body.Min, m.Attributes.Body.Max, m.Attributes.Body.AugMax,
+	// 					m.Attributes.Agility.Min, m.Attributes.Agility.Max, m.Attributes.Agility.AugMax,
+	// 					m.Attributes.Reaction.Min, m.Attributes.Reaction.Max, m.Attributes.Reaction.AugMax,
+	// 					m.Attributes.Strength.Min, m.Attributes.Strength.Max, m.Attributes.Strength.AugMax,
+	// 					m.Attributes.Willpower.Min, m.Attributes.Willpower.Max, m.Attributes.Willpower.AugMax,
+	// 					m.Attributes.Logic.Min, m.Attributes.Logic.Max, m.Attributes.Logic.AugMax,
+	// 					m.Attributes.Intuition.Min, m.Attributes.Intuition.Max, m.Attributes.Intuition.AugMax,
+	// 					m.Attributes.Charisma.Min, m.Attributes.Charisma.Max, m.Attributes.Charisma.AugMax,
+	// 					m.Attributes.Edge.Min, m.Attributes.Edge.Max, m.Attributes.Edge.AugMax,
+	// 					m.Attributes.Initiative.Min, m.Attributes.Initiative.Max, m.Attributes.Initiative.AugMax,
+	// 					m.Attributes.Essence.Min, m.Attributes.Essence.Max, m.Attributes.Essence.AugMax,
+	// 					m.Attributes.Magic.Min, m.Attributes.Magic.Max, m.Attributes.Magic.AugMax,
+	// 					m.Attributes.Resonance.Min, m.Attributes.Resonance.Max, m.Attributes.Resonance.AugMax,
+	// 					m.Qualities, m.QualityRestrictions))
+	// 			}
+	// 		case "magic":
+	// 		case "attributes":
+	// 		case "skills":
+	// 		case "qualities":
+	// 		}
+	// 	case "show":
+	// 		switch inputFields[1] {
+	// 		case "metatype":
+	// 		case "magic":
+	// 		case "attribute":
+	// 		case "skill":
+	// 		case "qualitie":
+	// 		}
+	// 	}
 	// }
 
-	// choice = strings.ToLower(strings.TrimSpace(choice))
-	// l.WithFields(logrus.Fields{"choice": choice}).Info("Received character choice")
+	// return StateMainMenu
 
-	// switch choice {
-	// case "1":
-	// 	return StatePromptCreatePregenCharacter
-	// case "2":
-	// 	return StatePromptCreateCustomCharacter
-	// // case "3":
-	// // return StatePromptCreateCharacterLearn
-	// // case "4":
-	// default:
-	// 	io.WriteString(s, cfmt.Sprintf(menuInvalidChoice, choice))
-	// 	goto promptCreateCharacterMenu
-	// }
-}
+	// 	type Option struct {
+	// 		Text  string
+	// 		State State
+	// 	}
 
-func (w *World) promptCreateCharacterMenu(s ssh.Session, u *user.User) State {
-	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_character_menu"})
-	l.Debug("Prompting for character creation menu")
-	io.WriteString(s, cfmt.Sprint(featureNotImplementedMsg))
+	// 	options := map[string]Option{
+	// 		"1": {Text: "Set your character's name", State: StateCreateCharacterName},
+	// 		"0": {Text: "Exit character creation", State: StateMainMenu},
+	// 	}
+
+	// promptCreateCharacterMenu:
+	// io.WriteString(s, cfmt.Sprintf(\n{{Character Creation}}::#00ff00|bold\n))
+	// 	for k, o := range options {
+	// 		io.WriteString(s, cfmt.Sprintf("{{%s.}}::#00ff00 %s\n", k, o.Text))
+	// 	}
+	// 	// io.WriteString(s, cfmt.Sprintf("1. Set your character's name\n"))
+	// 	// io.WriteString(s, cfmt.Sprintf("0. Exit character creation\n"))
+
+	// 	menuChoice, errReadLine := utils.PromptUserInput(s, menuPrompt)
+	// 	if errReadLine != nil {
+	// 		l.WithError(errReadLine).Error("Error reading menu choice")
+
+	// 		goto promptCreateCharacterMenu
+	// 	}
+
+	// 	menuChoice = strings.ToLower(strings.TrimSpace(menuChoice))
+	// 	l.WithFields(logrus.Fields{"choice": menuChoice}).Info("Received menu choice")
+
+	// 	if o, ok := options[menuChoice]; ok {
+	// 		return o.State
+	// 	} else {
+	// 		io.WriteString(s, cfmt.Sprintf(menuInvalidChoice, menuChoice))
+	// 		goto promptCreateCharacterMenu
+	// 	}
+	// 	// switch menuChoice {
+	// 	// case "1":
+	// 	// 	return StateCreateCharacterName
+	// 	// case "0":
+	// 	// 	return StateMainMenu
+	// 	// default:
+	// 	// 	io.WriteString(s, cfmt.Sprintf(menuInvalidChoice, menuChoice))
+	// 	// 	goto promptCreateCharacterMenu
+	// 	// }
 
 	return StateMainMenu
 }
@@ -605,7 +994,7 @@ promptCharacterName:
 
 	l.WithField("name", name).Debug("Received character name")
 
-	return StateCreateCharacterMenu
+	return StatePromptCreateCharacterMenu
 }
 
 func (w *World) promptCreatePregenCharacter(s ssh.Session, u *user.User) State {
@@ -764,3 +1153,96 @@ func (w *World) gameLoop(s ssh.Session, u *user.User) State {
 
 	return StateQuit
 }
+
+var buildHelp = `
+{{Commands:}}::#00ff00|bold
+    help                                - Display this help message
+    save                                - Save the character
+    finalize                            - Finalize the character
+    discard                             - Discard the character
+    restart                             - Restart the character
+    exit                                - Exit the charcter builder
+
+    set name <name>                     - Set the character's name
+
+    set metatype <metatype>             - Set the metatype 
+    list metatypes                      - List the metatypes
+    show metatype <metatype>            - Show the metatype
+
+    set magic <magic>                   - Set the magic type 
+    list magic                          - List the magic types
+    show magic <magic>                  - Show the magic type
+
+    set attribute <attribute> <value>   - Set the attribute to the value
+    list atrributes                     - List the attributes
+    show attribute <attribute>          - Show the attribute
+
+    set skill <skill> <value>           - Set the skill to the value
+    list skills                         - List the skills
+    show skill <skill>                  - Show the skill
+
+    set quality <quality>               - Set the quality
+    list qualities                      - List the qualities
+    show quality <quality>              - Show the quality
+
+    set nuyen <nuyen>                   - Set the nuyen
+`
+
+var buildCharInfo = `
+{{"Name:" | fg.Green }} {{ if .Name }}{{.Name}}{{ else }}set name <value>{{end}}
+{{"Metatype:" | fg.Green }} {{ if .Metatype }}{{.Metatype.Name}} ({{.Metatype.Category}}){{ else }}set metatype <value>{{end}}
+`
+
+var buildCharInfo2 = `
+MagicType: {{.MagicType}}
+Build Points (Total/Remaining): %d/%d
+Attributes: Current (Min/Max/Augmented Max)
+    Body:       %d (%d/%d/%d)    Agility:    %d (%d/%d/%d)
+    Reaction:   %d (%d/%d/%d)    Strength:   %d (%d/%d/%d)
+    Willpower:  %d (%d/%d/%d)    Logic:      %d (%d/%d/%d)
+    Intuition:  %d (%d/%d/%d)    Charisma:   %d (%d/%d/%d)
+    Edge:       %d (%d/%d/%d)    Initiative: %d (%d/%d/%d)
+    Essence:    %f (%f/%f/%f)    Magic:      %d (%d/%d/%d)
+    Resonance:  %d (%d/%d/%d)
+Skills:
+    Active: %s (%d) [%s], Unarmed Combat 1, Pistols 1, Perception 1
+    Knowledge: %s (%d) [%s], Security Procedures 1
+    Language: %s (%d) [%s], English 13, Japanese 1
+Qualities:
+    Positive: %s, Ambidextrous, Biocompatibility (Cyberware), Code Slinger, First Impression, Guts, Juryrigger, Lucky, Natural Athlete, Quick Healer, Toughness
+    Negative: %s, Bad Luck
+Weapons: Ares Predator V, 100 rounds of ammo
+Armor: Armor Jacket
+Gear: %s [Rating %d] (%d)
+Certified Credstick, Fake SIN [Rating 4], Medkit [Rating 6], Trauma Patch (3)
+Nuyen: %d
+
+- help for more commands
+> 
+`
+
+var buildMetatypeList = `
+Name:           %s
+Category:       %s
+Description:
+%s
+`
+
+var buildMetatypeInfo = `
+Name:           %s
+Category:       %s
+Description:
+%s
+
+Attributes (Min/Max/Augmented Max)
+Body:       %d/%d/%d    Agility:    %d/%d/%d
+Reaction:   %d/%d/%d    Strength:   %d/%d/%d
+Willpower:  %d/%d/%d    Logic:      %d/%d/%d
+Intuition:  %d/%d/%d    Charisma:   %d/%d/%d
+Edge:       %d/%d/%d    Initiative: %d/%d/%d
+Essence:    %f/%f/%f    Magic:      %d/%d/%d
+Resonance:  %d/%d/%d
+
+Qualities: %s
+Quality Restrictions: %s
+`

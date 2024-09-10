@@ -21,4 +21,5 @@ type Server struct {
 	UserCharacterMaxCount    int           `yaml:"user_character_max_count"`
 	IdleTimeout              time.Duration `yaml:"idle_timeout"`
 	BannedNames              []string      `yaml:"banned_names"`
+	TemplateFiles            []string      `yaml:"template_files"`
 }

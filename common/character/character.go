@@ -2,6 +2,7 @@ package character
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -27,6 +28,7 @@ import (
 	"github.com/Jasrags/ShadowMUD/common/vehicle"
 	"github.com/Jasrags/ShadowMUD/common/vessel"
 	"github.com/Jasrags/ShadowMUD/common/weapon"
+	"github.com/Jasrags/ShadowMUD/config"
 	"github.com/Jasrags/ShadowMUD/utils"
 
 	"github.com/google/uuid"
@@ -234,18 +236,20 @@ type (
 
 	Characters map[string]*Character
 	Character  struct {
-		sync.RWMutex `yaml:"-"`
-		log          *logrus.Entry `yaml:"-"`
+		sync.Mutex
+		cfg *config.Server `yaml:"-"`
+		log *logrus.Entry  `yaml:"-"`
 
 		// Personal Data
 		ID     string `yaml:"id"`
 		Name   string `yaml:"name"`
+		State  State  `yaml:"state"`
 		ZoneID string `yaml:"zone_id"`
 		RoomID string `yaml:"room_id"`
 		// Room       *room.Room         `yaml:"-"`
 		MetatypeID string             `yaml:"metatype_id"`
 		Metatype   *metatype.Metatype `yaml:"-"`
-		// MagicType  string             `yaml:"magic_type"`
+		MagicType  MagicType          `yaml:"magic_type"`
 		// Ethnicity       string          `yaml:"ethnicity"`
 		// Age             int             `yaml:"age"`
 		// Sex             string          `yaml:"sex"`
@@ -310,6 +314,36 @@ type (
 	}
 )
 
+func (c *Character) SetMetatype(metatype *metatype.Metatype) {
+	c.Metatype = metatype
+	c.MetatypeID = metatype.ID
+	c.Attributes.Body.Base = metatype.Attributes.Body.Min
+	c.Attributes.Agility.Base = metatype.Attributes.Agility.Min
+	c.Attributes.Reaction.Base = metatype.Attributes.Reaction.Min
+	c.Attributes.Strength.Base = metatype.Attributes.Strength.Min
+	c.Attributes.Willpower.Base = metatype.Attributes.Willpower.Min
+	c.Attributes.Logic.Base = metatype.Attributes.Logic.Min
+	c.Attributes.Intuition.Base = metatype.Attributes.Intuition.Min
+	c.Attributes.Charisma.Base = metatype.Attributes.Charisma.Min
+	c.Attributes.Edge.Base = metatype.Attributes.Edge.Min
+	c.Attributes.Essence.Base = metatype.Attributes.Essence.Max
+}
+
+func (c *Character) RemoveMetatype() {
+	c.Metatype = nil
+	c.MetatypeID = ""
+	c.Attributes.Body.Base = 0
+	c.Attributes.Agility.Base = 0
+	c.Attributes.Reaction.Base = 0
+	c.Attributes.Strength.Base = 0
+	c.Attributes.Willpower.Base = 0
+	c.Attributes.Logic.Base = 0
+	c.Attributes.Intuition.Base = 0
+	c.Attributes.Charisma.Base = 0
+	c.Attributes.Edge.Base = 0
+	c.Attributes.Essence.Base = 0
+}
+
 // func (c *Character) Recalculate() {
 // 	c.Attributes.Recalculate()
 // }
@@ -344,11 +378,12 @@ Body attribute. One point over that limit and his memory will be toasted
 at their favorite shadowrunner bar.
 */
 
-func NewCharacter() *Character {
+func New(cfg *config.Server) *Character {
 	c := &Character{
-		ID: uuid.New().String(),
+		cfg: cfg,
+		ID:  uuid.New().String(),
 		// Skills: skill.Skills{},
-		Qualities: Qualities{},
+		// Qualities: Qualities{},
 		// Contacts: contact.Contacts{},
 	}
 
@@ -713,6 +748,31 @@ Composure is a Willpower + Charisma Test, with a threshold based on the severity
 // 	// c.InitiativeDice.MatrixVRColdSim.Recalculate()
 // 	// c.InitiativeDice.RiggerAR.Recalculate()
 // }
+
+func (c *Character) SetName(name string) error {
+	// Check if the name is between the min and max lengths
+	if len(name) < c.cfg.CharacterNameMinLength || len(name) > c.cfg.CharacterNameMaxLength {
+		return shared.ErrNameLength
+	}
+
+	// TODO: Check if the name is already taken
+
+	// Check if the name is banned
+	for _, ban := range c.cfg.BannedNames {
+		if strings.EqualFold(name, ban) {
+			return shared.ErrNameNotAllowed
+		}
+	}
+
+	// Check if the name contains only alphabetic characters
+	if !regexp.MustCompile("^[a-zA-Z]+$").MatchString(name) {
+		return shared.ErrNameNotAlphanumeric
+	}
+
+	c.Name = name
+
+	return nil
+}
 
 func (c *Character) Save() error {
 	c.log.Debug("Saving character")

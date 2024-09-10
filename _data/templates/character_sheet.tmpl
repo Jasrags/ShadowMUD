@@ -1,0 +1,4 @@
+
+{{ "Name:" | fg.HiGreen }} {{ if .Name }}{{ .Name }}{{ else }}set name <value>{{ end }}
+{{ "Metatype:" | fg.HiGreen }} {{ if .Metatype }}{{ .Metatype.Name }}{{ else }}set metatype <value>{{ end }}
+{{ "Magic:" | fg.HiGreen }} {{ if .Magic }}{{ .Magic.Name }}{{ else }}set magic <value>{{ end }}
