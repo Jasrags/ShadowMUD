@@ -5,6 +5,7 @@ import (
 
 	"github.com/Jasrags/ShadowMUD/common/metatype"
 	"github.com/Jasrags/ShadowMUD/common/shared"
+	"github.com/Jasrags/ShadowMUD/config"
 )
 
 /*
@@ -142,6 +143,9 @@ var (
 )
 
 type PointBuilder struct {
+	cfg       *config.Server
+	Character *Character
+
 	Name           string
 	Metatype       *metatype.Metatype
 	MagicType      MagicType
@@ -157,8 +161,10 @@ type PointBuilder struct {
 }
 
 // Initialize a new PointBuilder
-func NewPointBuilder() *PointBuilder {
-	return &PointBuilder{
+func NewPointBuilder(cfg *config.Server, c *Character) *PointBuilder {
+	b := &PointBuilder{
+		cfg:       cfg,
+		Character: New(cfg),
 		Attributes: map[shared.AttributeType]int{
 			shared.AttributeBody:      0,
 			shared.AttributeAgility:   0,
@@ -179,10 +185,33 @@ func NewPointBuilder() *PointBuilder {
 		ComplexForms: make(map[string]int),
 		BuildPoints:  TotalBuildPoints,
 	}
+
+	return b
+}
+
+func (pb *PointBuilder) Validate() error {
+	return nil
+}
+
+func (pb *PointBuilder) Restart() error {
+	return nil
+}
+
+func (pb *PointBuilder) Discard() error {
+	return nil
+}
+
+func (pb *PointBuilder) Save() error {
+	return nil
+}
+
+func (pb *PointBuilder) Build() *Character {
+	return pb.Character
 }
 
 func (pb *PointBuilder) SetName(name string) {
-	pb.Name = name
+	pb.Character.SetName(name)
+	// pb.Name = name
 }
 
 // Set the metatype and adjust build points

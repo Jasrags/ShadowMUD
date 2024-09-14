@@ -2,8 +2,8 @@ package metatype
 
 import "github.com/Jasrags/ShadowMUD/common/shared"
 
-var CoreMetatypes = []Metatype{
-	{
+var CoreMetatypes = map[string]Metatype{
+	"human": {
 		ID:          "human",
 		Name:        "Human",
 		PointCost:   0,
@@ -28,7 +28,7 @@ var CoreMetatypes = []Metatype{
 		Qualities:           []string{},
 		RuleSource:          shared.RuleSourceSR5Core,
 	},
-	{
+	"elf": {
 		ID:          "elf",
 		Name:        "Elf",
 		PointCost:   40,
@@ -53,7 +53,7 @@ var CoreMetatypes = []Metatype{
 		Qualities:           []string{"low_light_vision"},
 		RuleSource:          shared.RuleSourceSR5Core,
 	},
-	{
+	"dwarf": {
 		ID:          "dwarf",
 		Name:        "Dwarf",
 		PointCost:   50,
@@ -81,7 +81,7 @@ var CoreMetatypes = []Metatype{
 		//     <lifestylecost>20</lifestylecost>
 		// </bonus>
 	},
-	{
+	"ork": {
 		ID:          "ork",
 		Name:        "Ork",
 		PointCost:   50,
@@ -106,7 +106,7 @@ var CoreMetatypes = []Metatype{
 		Qualities:           []string{"low_light_vision"},
 		RuleSource:          shared.RuleSourceSR5Core,
 	},
-	{
+	"troll": {
 		ID:          "troll",
 		Name:        "Troll",
 		PointCost:   90,

@@ -1,4 +1,23 @@
-
-{{ "Name:" | fg.HiGreen }} {{ if .Name }}{{ .Name }}{{ else }}set name <value>{{ end }}
-{{ "Metatype:" | fg.HiGreen }} {{ if .Metatype }}{{ .Metatype.Name }}{{ else }}set metatype <value>{{ end }}
-{{ "Magic:" | fg.HiGreen }} {{ if .MagicType }}{{ .MagicType }}{{ else }}set magic <value>{{ end }}
+{{ "Character Sheet" | fg.HiBlue }}
+{{ "================" | fg.HiBlue }}
+{{ "Name:       " | fg.HiGreen }} {{ if .Name }}{{ .Name }}{{ else }}set name <value>{{ end }}
+{{ "Metatype:   " | fg.HiGreen }} {{ if .Metatype }}{{ .Metatype.Name }} ({{ .Metatype.PointCost }}){{ else }}set metatype <value>{{ end }}
+{{ "Magic:      " | fg.HiGreen }} {{ if .MagicType }}{{ .MagicType.Name }} ({{ .MagicType.PointCost }}){{ else }}set magic <value>{{ end }}
+{{ "Attributes: " | fg.HiGreen }} set <attribute> <value>
+{{ "  Body:     " | fg.HiGreen }}  {{ .Attributes.Body.Base }} ({{ .Attributes.Body.TotalValue }})
+{{ "  Agility:  " | fg.HiGreen }}  {{ .Attributes.Agility.Base }} ({{ .Attributes.Agility.TotalValue }})
+{{ "  Reaction: " | fg.HiGreen }}  {{ .Attributes.Reaction.Base }} ({{ .Attributes.Reaction.TotalValue }})
+{{ "  Strength: " | fg.HiGreen }}  {{ .Attributes.Strength.Base }} ({{ .Attributes.Strength.TotalValue }})
+{{ "  Willpower:" | fg.HiGreen }}  {{ .Attributes.Willpower.Base }} ({{ .Attributes.Willpower.TotalValue }})
+{{ "  Logic     " | fg.HiGreen }}  {{ .Attributes.Logic.Base }} ({{ .Attributes.Logic.TotalValue }})
+{{ "  Intuition:" | fg.HiGreen }}  {{ .Attributes.Intuition.Base }} ({{ .Attributes.Intuition.TotalValue }})
+{{ "  Charisma: " | fg.HiGreen }}  {{ .Attributes.Charisma.Base }} ({{ .Attributes.Charisma.TotalValue }})
+{{ "  Essence:  " | fg.HiGreen }}  {{ .Attributes.Essence.Base }}
+{{ if gt .Attributes.Magic.Base 0 }}{{ "  Magic:    " | fg.HiGreen }}  {{ .Attributes.Magic.Base }} ({{ .Attributes.Magic.TotalValue }}){{ end }}
+{{ if gt .Attributes.Resonance.Base 0 }}{{ "  Resonance:" | fg.HiGreen }}  {{ .Attributes.Resonance.Base }} ({{ .Attributes.Resonance.TotalValue }}){{ end }}
+{{ "Skills:" | fg.HiGreen }}
+{{ range .Skills }}
+{{ "  " }}{{ .Name | fg.HiGreen }}: {{ if .Rating }}{{ .Rating }}{{ else }}set skill <value>{{ end }}
+{{ end }} 
+{{ "================" | fg.HiBlue }}
+{{ "End of Character Sheet" | fg.HiBlue }}

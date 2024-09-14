@@ -47,6 +47,23 @@ func (a *Attributes) Recalculate() {
 	a.Resonance.Recalculate()
 }
 
+func (a *Attributes) Reset() {
+	a.Body.Reset()
+	a.Agility.Reset()
+	a.Reaction.Reset()
+	a.Strength.Reset()
+	a.Willpower.Reset()
+	a.Logic.Reset()
+	a.Intuition.Reset()
+	a.Charisma.Reset()
+	a.Edge.Reset()
+	a.Essence.Reset()
+	a.Magic.Reset()
+	a.Resonance.Reset()
+}
+
+type AttributeT[T int | float64] interface{}
+
 type Attribute[T int | float64] struct {
 	Base       T `yaml:"base"`
 	Delta      T `yaml:"delta"`
@@ -76,4 +93,10 @@ func (a *Attribute[T]) SubDelta(value T) {
 
 func (a *Attribute[T]) Recalculate() {
 	a.TotalValue = a.Base + a.Delta
+}
+
+func (a *Attribute[T]) Reset() {
+	a.Base = 0
+	a.Delta = 0
+	a.TotalValue = 0
 }

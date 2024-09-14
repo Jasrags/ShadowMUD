@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Jasrags/ShadowMUD/common/character"
 	"github.com/Jasrags/ShadowMUD/common/user"
+	"github.com/Jasrags/ShadowMUD/jason"
 	"github.com/Jasrags/ShadowMUD/utils"
 
 	"github.com/gliderlabs/ssh"
@@ -619,6 +619,70 @@ func (w *World) promptMOTD(s ssh.Session) State {
 // 	}
 // }
 
+func (w *World) renderBuildCharacterSheet(s ssh.Session, b *jason.Builder) {
+	logrus.WithFields(logrus.Fields{
+		"metatype":   b.Metatype.Name,
+		"magic_type": b.MagicType.Name,
+		"body":       b.Attributes.Body.Base,
+		"agility":    b.Attributes.Agility.Base,
+		"reaction":   b.Attributes.Reaction.Base,
+		"strength":   b.Attributes.Strength.Base,
+		"willpower":  b.Attributes.Willpower.Base,
+		"logic":      b.Attributes.Logic.Base,
+		"intuition":  b.Attributes.Intuition.Base,
+		"charisma":   b.Attributes.Charisma.Base,
+		"magic":      b.Attributes.Magic.Base,
+		"resonance":  b.Attributes.Resonance.Base,
+		"essence":    b.Attributes.Essence.Base,
+	}).Debug("Rendering character sheet")
+	// io.WriteString(s, cfmt.Sprintf("{{Character Sheet}}::green|bold\n"))
+
+	if b.Name == "" {
+		io.WriteString(s, cfmt.Sprintf("{{Name:}}::green {{set name <value>}}::gray\n"))
+	} else {
+		io.WriteString(s, cfmt.Sprintf("{{Name:}}::green %-4s\n", b.Name))
+	}
+	if b.Metatype == nil {
+		io.WriteString(s, cfmt.Sprintf("{{Metatype:}}::green {{set metatype <value>}}::gray\n"))
+	} else {
+		io.WriteString(s, cfmt.Sprintf("{{Metatype:}}::green %-4s\n", b.Metatype.Name))
+	}
+	if b.MagicType == nil {
+		io.WriteString(s, cfmt.Sprintf("{{Magic Type:}}::green {{set magic <value>}}::gray\n"))
+	} else {
+		io.WriteString(s, cfmt.Sprintf("{{Magic Type:}}::green %s\n", b.MagicType.Name))
+	}
+
+	if b.Metatype != nil && b.MagicType != nil {
+		io.WriteString(s, cfmt.Sprintf("{{Attributes:}}::green {{value [augmented] (max)}}::gray\n"))
+		io.WriteString(s, cfmt.Sprintf("  {{Body:}}::green      %d [%d] (%d)  {{Essence:}}::green %g (%g)\n",
+			b.Attributes.Body.Base, b.Attributes.Body.TotalValue, b.Metatype.Attributes.Body.Max,
+			b.Attributes.Essence.Base, b.Metatype.Attributes.Essence.Max))
+		io.WriteString(s, cfmt.Sprintf("  {{Agility:}}::green   %d [%d] (%d)\n",
+			b.Attributes.Agility.Base, b.Attributes.Agility.TotalValue, b.Metatype.Attributes.Agility.Max))
+		io.WriteString(s, cfmt.Sprintf("  {{Reaction:}}::green  %d [%d] (%d)\n",
+			b.Attributes.Reaction.Base, b.Attributes.Reaction.TotalValue, b.Metatype.Attributes.Reaction.Max))
+		io.WriteString(s, cfmt.Sprintf("  {{Strength:}}::green  %d [%d] (%d)\n",
+			b.Attributes.Strength.Base, b.Attributes.Strength.TotalValue, b.Metatype.Attributes.Strength.Max))
+		io.WriteString(s, cfmt.Sprintf("  {{Willpower:}}::green %d [%d] (%d)\n",
+			b.Attributes.Willpower.Base, b.Attributes.Willpower.TotalValue, b.Metatype.Attributes.Willpower.Max))
+		io.WriteString(s, cfmt.Sprintf("  {{Logic:}}::green     %d [%d] (%d)\n",
+			b.Attributes.Logic.Base, b.Attributes.Logic.TotalValue, b.Metatype.Attributes.Logic.Max))
+		io.WriteString(s, cfmt.Sprintf("  {{Intuition:}}::green %d [%d] (%d)\n",
+			b.Attributes.Intuition.Base, b.Attributes.Intuition.TotalValue, b.Metatype.Attributes.Intuition.Max))
+		io.WriteString(s, cfmt.Sprintf("  {{Charisma:}}::green  %d [%d] (%d)\n",
+			b.Attributes.Charisma.Base, b.Attributes.Charisma.TotalValue, b.Metatype.Attributes.Charisma.Max))
+		if b.Attributes.Magic.Base > 0 {
+			io.WriteString(s, cfmt.Sprintf("  {{Magic:}}::green     %d [%d] (%d)\n",
+				b.Attributes.Magic.Base, b.Attributes.Magic.TotalValue, b.Metatype.Attributes.Magic.Max))
+		}
+		if b.Attributes.Resonance.Base > 0 {
+			io.WriteString(s, cfmt.Sprintf("  {{Resonance:}}::green %d [%d] (%d)\n",
+				b.Attributes.Resonance.Base, b.Attributes.Resonance.TotalValue, b.Metatype.Attributes.Resonance.Max))
+		}
+	}
+}
+
 func (w *World) promptCreateCharacterMenu(s ssh.Session, u *user.User) State {
 	l := logrus.WithFields(logrus.Fields{"remote_addr": s.RemoteAddr(), "user_id": u.ID, "username": u.Username, "package": "main", "screen": "create_character_menu"})
 	l.Debug("Prompting for character creation menu")
@@ -628,19 +692,26 @@ func (w *World) promptCreateCharacterMenu(s ssh.Session, u *user.User) State {
 		return StateMainMenu
 	}
 
+	b := jason.NewBuilder(&jason.DefaultConfig)
+	b.SetName("JasonTester")
+	b.SetMetatype(s, "human")
+	b.SetMagicType(s, "adept")
+	// pb := character.NewPointBuilder(cfg, nil)
 	// Create the new character
-	c := character.New(w.cfg)
-	c.State = character.StateIncomplete
+	// c := character.New(w.cfg)
+	// c.State = character.StateIncomplete
 
-	io.WriteString(s, cfmt.Sprintf("\n{{Character Creation}}::#00ff00|bold\n"))
+	io.WriteString(s, cfmt.Sprintf("\n{{Character Creation}}::green\n\n"))
 
 loop:
 	for {
-		if err := w.templates.ExecuteTemplate(s, "character_sheet.tmpl", c); err != nil {
-			logrus.WithError(err).Error("Error executing template")
-			io.WriteString(s, cfmt.Sprintf("An error occurred while displaying help"))
-			break
-		}
+		b.Attributes.Recalculate()
+		w.renderBuildCharacterSheet(s, b)
+		// if err := w.templates.ExecuteTemplate(s, "character_sheet.tmpl", b); err != nil {
+		// 	logrus.WithError(err).Error("Error executing template")
+		// 	io.WriteString(s, cfmt.Sprintf("An error occurred while displaying help"))
+		// 	break
+		// }
 
 		// Prompt
 		input, err := utils.PromptUserInput(s, gameLoopPrompt)
@@ -697,18 +768,11 @@ loop:
 			logrus.WithFields(logrus.Fields{"property": property, "value": value}).Debug("Setting property")
 			switch property {
 			case "name":
-				if err := c.SetName(value); err != nil {
-					logrus.WithError(err).Error("Error setting character name")
-				}
-				io.WriteString(s, "Character name set to "+value+"\n")
+				io.WriteString(s, b.SetName(value)+"\n")
 			case "metatype":
-				// Implement set metatype logic
-				io.WriteString(s, featureNotImplementedMsg)
-				// io.WriteString(s, "Character metatype set to "+value+"\n")
+				io.WriteString(s, b.SetMetatype(s, value)+"\n")
 			case "magic":
-				// Implement set magic logic
-				io.WriteString(s, featureNotImplementedMsg)
-				// io.WriteString(s, "Character magic type set to "+value+"\n")
+				io.WriteString(s, b.SetMagicType(s, value)+"\n")
 			case "attribute":
 				if len(args) < 4 {
 					io.WriteString(s, "Usage: set attribute <attribute> <value>\n")

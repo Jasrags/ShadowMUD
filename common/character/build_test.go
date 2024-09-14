@@ -7,11 +7,13 @@ import (
 	"github.com/Jasrags/ShadowMUD/common/character"
 	"github.com/Jasrags/ShadowMUD/common/metatype"
 	"github.com/Jasrags/ShadowMUD/common/shared"
+	"github.com/Jasrags/ShadowMUD/config"
 
 	"github.com/stretchr/testify/assert"
 )
 
 var (
+	cfg           = &config.Server{}
 	metatypeHuman = &metatype.Metatype{
 		Name: "Human",
 		Attributes: metatype.Attributes{
@@ -31,7 +33,7 @@ var (
 
 func TestSetName(t *testing.T) {
 	name := "John Doe"
-	pb := character.NewPointBuilder()
+	pb := character.NewPointBuilder(cfg, nil)
 	pb.SetName(name)
 	assert.Equal(t, name, pb.Name)
 }
@@ -51,7 +53,7 @@ func TestSetMetatype(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		err := pb.SetMetatype(d.metatype)
 
 		if d.expectedError != nil {
@@ -81,7 +83,7 @@ func TestRemoveMetatype(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.SetMetatype(d.metatype)
 
 		pb.RemoveMetatype()
@@ -106,7 +108,7 @@ func TestSetMagicType(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.SetMetatype(metatypeHuman)
 		err := pb.SetMagicType(d.magicType)
 
@@ -119,7 +121,7 @@ func TestSetMagicType(t *testing.T) {
 }
 
 func TestRemoveMagicType(t *testing.T) {
-	pb := character.NewPointBuilder()
+	pb := character.NewPointBuilder(cfg, nil)
 	pb.SetMetatype(metatypeHuman)
 	pb.MagicType = character.MagicTypeAdept
 	pb.BuildPoints = 780
@@ -179,7 +181,7 @@ func TestAdjustAttribute(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.SetMetatype(metatypeHuman)
 		pb.SetMagicType(d.magicType)
 
@@ -220,7 +222,7 @@ func TestAdjustSkill(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.SetMetatype(&metatype.Metatype{Name: "Human"})
 		pb.SetMagicType(character.MagicTypeNone)
 		pb.Skills = map[string]int{
@@ -293,7 +295,7 @@ func TestAllocateQuality(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.SetMetatype(&metatype.Metatype{Name: "Human"})
 		pb.SetMagicType(character.MagicTypeNone)
 		pb.Qualities = map[string]int{"Test": 10}
@@ -323,7 +325,7 @@ func TestRemoveQuality(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.Qualities = map[string]int{"Test": 10}
 		pb.BuildPoints = character.TotalBuildPoints - 10
 
@@ -357,7 +359,7 @@ func TestPurchaseNuyen(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.BuildPoints = d.buildPoints
 
 		err := pb.PurchaseNuyen(d.cost)
@@ -388,7 +390,7 @@ func TestAddSpell(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.Spells = map[string]int{"Acid Test": character.SpellCost}
 		pb.BuildPoints = d.buildPoints
 
@@ -415,7 +417,7 @@ func TestRemoveSpell(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.BuildPoints = character.TotalBuildPoints - character.SpellCost
 		pb.Spells = map[string]int{"Acid Stream": character.SpellCost}
 
@@ -444,7 +446,7 @@ func TestAddComplexForm(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.ComplexForms = map[string]int{"Resonance Test": character.ComplexFormCost}
 		pb.BuildPoints = d.buildPoints
 
@@ -471,7 +473,7 @@ func TestRemoveComplexForm(t *testing.T) {
 	}
 
 	for _, d := range data {
-		pb := character.NewPointBuilder()
+		pb := character.NewPointBuilder(cfg, nil)
 		pb.BuildPoints = character.TotalBuildPoints - character.ComplexFormCost
 		pb.ComplexForms = map[string]int{"Resonance Spike": character.ComplexFormCost}
 

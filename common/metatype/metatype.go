@@ -59,6 +59,7 @@ type (
 		Description         string            `yaml:"description"`
 		Attributes          Attributes        `yaml:"attributes"`
 		QualityRestrictions []string          `yaml:"quality_restrictions"`
+		Hidden              bool              `yaml:"hidden"`
 		Qualities           []string          `yaml:"qualities"`
 		RuleSource          shared.RuleSource `yaml:"rule_source"`
 	}
