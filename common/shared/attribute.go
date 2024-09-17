@@ -65,9 +65,10 @@ func (a *Attributes) Reset() {
 type AttributeT[T int | float64] interface{}
 
 type Attribute[T int | float64] struct {
-	Base       T `yaml:"base"`
-	Delta      T `yaml:"delta"`
-	TotalValue T `yaml:"total_value"`
+	Name       string `yaml:"name"`
+	Base       T      `yaml:"base"`
+	Delta      T      `yaml:"delta"`
+	TotalValue T      `yaml:"total_value"`
 }
 
 func NewAttribute[T int | float64](name AttributeType, base T) *Attribute[T] {

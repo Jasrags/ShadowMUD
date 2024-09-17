@@ -1,13 +1,5 @@
 package character
 
-import (
-	"fmt"
-
-	"github.com/Jasrags/ShadowMUD/common/metatype"
-	"github.com/Jasrags/ShadowMUD/common/shared"
-	"github.com/Jasrags/ShadowMUD/config"
-)
-
 /*
 POINT BUY
 The Point Buy method has greater flexibility than any other system; the tradeoff, of course, is that the complete range of options available can make character creation a somewhat time-consuming process. For many, though, the time investment is worth it, as they have the chance to design a character precisely the way they want it to be.
@@ -82,12 +74,12 @@ const (
 	// NewSpell                   = 5
 )
 
-type (
-	// KarmaSpend     string
-	MagicTypeCosts map[MagicType]int
+// type (
+// 	// KarmaSpend     string
+// 	MagicTypeCosts map[MagicType]int
 
-// MetatypeCosts  map[metatype.MetatypeName]int
-)
+// // MetatypeCosts  map[metatype.MetatypeName]int
+// )
 
 func CalculateChangeCost(changeType string, currentValue, desiredValue int) int {
 	if desiredValue == currentValue {
@@ -122,469 +114,440 @@ func CalculateChangeCost(changeType string, currentValue, desiredValue int) int 
 	return totalCost
 }
 
-func GetMagicTypeCost(m MagicType) int {
-	v, ok := magicTypeCosts[m]
-	if !ok {
-		return 0
-	}
-	return v
-}
-
-var (
-	// MagicTypeCosts is a map of magic type to the cost of that magic type
-	magicTypeCosts = map[MagicType]int{
-		MagicTypeNone:             0,
-		MagicTypeAdept:            20,
-		MagicTypeMagician:         15,
-		MagicTypeAspectedMagician: 30,
-		MagicTypeMysticAdept:      35,
-		MagicTypeTechnomancer:     15,
-	}
-)
-
-type PointBuilder struct {
-	cfg       *config.Server
-	Character *Character
-
-	Name           string
-	Metatype       *metatype.Metatype
-	MagicType      MagicType
-	MaxedAttribute shared.AttributeType
-	Attributes     map[shared.AttributeType]int
-	Skills         map[string]int
-	Qualities      map[string]int
-	Spells         map[string]int
-	ComplexForms   map[string]int
-	Nuyen          int
-	KarmaForNuyen  int
-	BuildPoints    int
-}
-
-// Initialize a new PointBuilder
-func NewPointBuilder(cfg *config.Server, c *Character) *PointBuilder {
-	b := &PointBuilder{
-		cfg:       cfg,
-		Character: New(cfg),
-		Attributes: map[shared.AttributeType]int{
-			shared.AttributeBody:      0,
-			shared.AttributeAgility:   0,
-			shared.AttributeReaction:  0,
-			shared.AttributeStrength:  0,
-			shared.AttributeWillpower: 0,
-			shared.AttributeLogic:     0,
-			shared.AttributeIntuition: 0,
-			shared.AttributeCharisma:  0,
-			shared.AttributeEdge:      0,
-			shared.AttributeEssence:   6,
-			shared.AttributeMagic:     0,
-			shared.AttributeResonance: 0,
-		},
-		Skills:       make(map[string]int),
-		Qualities:    make(map[string]int),
-		Spells:       make(map[string]int),
-		ComplexForms: make(map[string]int),
-		BuildPoints:  TotalBuildPoints,
-	}
-
-	return b
-}
-
-func (pb *PointBuilder) Validate() error {
-	return nil
-}
-
-func (pb *PointBuilder) Restart() error {
-	return nil
-}
-
-func (pb *PointBuilder) Discard() error {
-	return nil
-}
-
-func (pb *PointBuilder) Save() error {
-	return nil
-}
-
-func (pb *PointBuilder) Build() *Character {
-	return pb.Character
-}
-
-func (pb *PointBuilder) SetName(name string) {
-	pb.Character.SetName(name)
-	// pb.Name = name
-}
-
-// Set the metatype and adjust build points
-func (pb *PointBuilder) SetMetatype(m *metatype.Metatype) error {
-	if pb.BuildPoints < m.PointCost {
-		return fmt.Errorf("not enough build points")
-	}
-	pb.Metatype = m
-	pb.BuildPoints -= m.PointCost
-
-	// Set attributes to metatype minimums
-	// Magic and Resonance are set in magic type
-	pb.Attributes[shared.AttributeBody] = m.Attributes.Body.Min
-	pb.Attributes[shared.AttributeAgility] = m.Attributes.Agility.Min
-	pb.Attributes[shared.AttributeReaction] = m.Attributes.Reaction.Min
-	pb.Attributes[shared.AttributeStrength] = m.Attributes.Strength.Min
-	pb.Attributes[shared.AttributeWillpower] = m.Attributes.Willpower.Min
-	pb.Attributes[shared.AttributeLogic] = m.Attributes.Logic.Min
-	pb.Attributes[shared.AttributeIntuition] = m.Attributes.Intuition.Min
-	pb.Attributes[shared.AttributeCharisma] = m.Attributes.Charisma.Min
-	pb.Attributes[shared.AttributeEdge] = m.Attributes.Edge.Min
-	pb.Attributes[shared.AttributeEssence] = 6
-
-	return nil
-}
-
-func (pb *PointBuilder) RemoveMetatype() error {
-	if pb.Metatype == nil {
-		return fmt.Errorf("metatype not set")
-	}
-
-	// Set attributes to 0
-	// Magic and Resonance are set with SetMagicType
-	pb.Attributes[shared.AttributeBody] = 0
-	pb.Attributes[shared.AttributeAgility] = 0
-	pb.Attributes[shared.AttributeReaction] = 0
-	pb.Attributes[shared.AttributeStrength] = 0
-	pb.Attributes[shared.AttributeWillpower] = 0
-	pb.Attributes[shared.AttributeLogic] = 0
-	pb.Attributes[shared.AttributeIntuition] = 0
-	pb.Attributes[shared.AttributeCharisma] = 0
-	pb.Attributes[shared.AttributeEdge] = 0
-	pb.Attributes[shared.AttributeEssence] = 0
-
-	pb.BuildPoints += pb.Metatype.PointCost
-	pb.Metatype = nil
-
-	return nil
-}
-
-func (pb *PointBuilder) SetMagicType(magicType MagicType) error {
-	if pb.Metatype == nil {
-		return fmt.Errorf("metatype not set")
-	}
-
-	pb.MagicType = magicType
-
-	// If we are not magic users just set the name
-	if magicType == MagicTypeNone {
-		return nil
-	}
-
-	pb.BuildPoints -= magicTypeCosts[magicType]
-
-	switch magicType {
-	case MagicTypeTechnomancer:
-		pb.Attributes[shared.AttributeResonance] = pb.Metatype.Attributes.Resonance.Min
-	default:
-		pb.Attributes[shared.AttributeMagic] = pb.Metatype.Attributes.Magic.Min
-	}
-
-	return nil
-}
-
-// Remove the magic type and adjust build points
-func (pb *PointBuilder) RemoveMagicType() {
-	pb.Attributes[shared.AttributeResonance] = 0
-	pb.Attributes[shared.AttributeMagic] = 0
-
-	pb.BuildPoints += magicTypeCosts[pb.MagicType]
-	pb.MagicType = MagicTypeNone
-}
-
-// TODO: Add more detailed info into error messages (i.e. what is the current value, what is the max, etc.)
-func (pb *PointBuilder) AdjustAttribute(attribute shared.AttributeType, newValue int) error {
-	// Check if metatype is set
-	if pb.Metatype == nil {
-		return fmt.Errorf("metatype not set")
-	}
-	// Check if magic type is set
-	if pb.MagicType == "" {
-		return fmt.Errorf("magic type not set")
-	}
-	// Check if attribute is valid
-	if _, ok := pb.Attributes[attribute]; !ok {
-		return fmt.Errorf("'%s' is not a valid attribute", attribute)
-	}
-	// Check if magic type is set for magic
-	if attribute == shared.AttributeMagic && pb.MagicType == MagicTypeNone {
-		return fmt.Errorf("can not adjust magic without being a magic user")
-	}
-	// Check if magic type is set for resonance
-	if attribute == shared.AttributeResonance && pb.MagicType != MagicTypeTechnomancer {
-		return fmt.Errorf("can not adjust resonance without being a technomancer")
-	}
-
-	min, max := getMetatypeMinMax(attribute, pb)
-
-	// Check if the attribute is at the metatype minimum
-	if newValue < min {
-		return fmt.Errorf("'%s' (%d) can not be lowered below metatype minimum (%d)", attribute, newValue, min)
-	}
-	// Check if the attribute is at the metatype maximum
-	if newValue > max {
-		return fmt.Errorf("'%s' (%d) can not be raised above metatype maximum (%d)", attribute, newValue, max)
-	}
-	// Check if there is already an attribute at the metatype maximum
-	if newValue == max && pb.MaxedAttribute != "" {
-		return fmt.Errorf("you may only have one attribute at the metatype maximum")
-	}
-
-	currentValue := pb.Attributes[attribute]
-	cost := CalculateChangeCost(ChangeAttribute, currentValue, newValue)
-
-	// Check if there are enough build points remaining
-	if pb.BuildPoints < cost {
-		return fmt.Errorf("not enough remaining build points (%d) for this change (%d)", pb.BuildPoints, cost)
-	}
-
-	pb.Attributes[attribute] = newValue
-	pb.BuildPoints -= cost
-	pb.MaxedAttribute = attribute
-
-	return nil
-}
-
-func getMetatypeMinMax(attribute shared.AttributeType, pb *PointBuilder) (int, int) {
-	var min, max int
-	switch attribute {
-	case shared.AttributeBody:
-		min = pb.Metatype.Attributes.Body.Min
-		max = pb.Metatype.Attributes.Body.Max
-	case shared.AttributeAgility:
-		min = pb.Metatype.Attributes.Agility.Min
-		max = pb.Metatype.Attributes.Agility.Max
-	case shared.AttributeReaction:
-		min = pb.Metatype.Attributes.Reaction.Min
-		max = pb.Metatype.Attributes.Reaction.Max
-	case shared.AttributeStrength:
-		min = pb.Metatype.Attributes.Strength.Min
-		max = pb.Metatype.Attributes.Strength.Max
-	case shared.AttributeWillpower:
-		min = pb.Metatype.Attributes.Willpower.Min
-		max = pb.Metatype.Attributes.Willpower.Max
-	case shared.AttributeLogic:
-		min = pb.Metatype.Attributes.Logic.Min
-		max = pb.Metatype.Attributes.Logic.Max
-	case shared.AttributeIntuition:
-		min = pb.Metatype.Attributes.Intuition.Min
-		max = pb.Metatype.Attributes.Intuition.Max
-	case shared.AttributeCharisma:
-		min = pb.Metatype.Attributes.Charisma.Min
-		max = pb.Metatype.Attributes.Charisma.Max
-	case shared.AttributeEdge:
-		min = pb.Metatype.Attributes.Edge.Min
-		max = pb.Metatype.Attributes.Edge.Max
-	case shared.AttributeMagic:
-		min = pb.Metatype.Attributes.Magic.Min
-		max = pb.Metatype.Attributes.Magic.Max
-	case shared.AttributeResonance:
-		min = pb.Metatype.Attributes.Resonance.Min
-		max = pb.Metatype.Attributes.Resonance.Max
-	default:
-		min = 0
-		max = 0
-	}
-
-	return min, max
-}
-
-// Allocate build points to skills
-// TODO: Restrict advancement of magic and resonance skills to the required magic type
-func (pb *PointBuilder) AdjustSkill(changeType, skill string, value int) error {
-	if pb.Metatype == nil {
-		return fmt.Errorf("metatype not set")
-	}
-	if pb.MagicType == "" {
-		return fmt.Errorf("magic type not set")
-	}
-
-	current, ok := pb.Skills[skill]
-	if !ok {
-		current = 0
-	}
-
-	if value < 0 {
-		return fmt.Errorf("skill value can not be negative")
-	}
-
-	if value == current {
-		return nil
-	}
-
-	if value > 13 {
-		return fmt.Errorf("skill value can not be greater than 13")
-	}
-
-	cost := CalculateChangeCost(changeType, current, value)
-
-	if pb.BuildPoints < cost {
-		return fmt.Errorf("not enough build points")
-	}
-
-	pb.Skills[skill] = value
-	pb.BuildPoints -= cost
-
-	return nil
-}
-
-// Allocate build points to qualities
-func (pb *PointBuilder) AllocateQuality(quality string, cost int, positive bool) error {
-	if pb.BuildPoints < cost {
-		return fmt.Errorf("not enough build points")
-	}
-
-	if _, ok := pb.Qualities[quality]; ok {
-		return fmt.Errorf("quality already added")
-	}
-
-	pb.Qualities[quality] = cost
-	if positive {
-		pb.BuildPoints -= cost
-	} else {
-		pb.BuildPoints += cost
-	}
-
-	return nil
-}
-
-func (pb *PointBuilder) RemoveQuality(quality string) error {
-	cost, ok := pb.Qualities[quality]
-	if !ok {
-		return fmt.Errorf("quality not found")
-	}
-
-	delete(pb.Qualities, quality)
-	pb.BuildPoints += cost
-	// pb.BuildPoints -= cost
-
-	return nil
-}
-
-func (pb *PointBuilder) AddSpell(spell string) error {
-	if pb.BuildPoints < SpellCost {
-		return fmt.Errorf("not enough build points")
-	}
-
-	if _, ok := pb.Spells[spell]; ok {
-		return fmt.Errorf("spell already added")
-	}
-
-	pb.Spells[spell] = SpellCost
-	pb.BuildPoints -= SpellCost
-
-	return nil
-}
-
-func (pb *PointBuilder) RemoveSpell(spell string) error {
-	if _, ok := pb.Spells[spell]; !ok {
-		return fmt.Errorf("spell not found")
-	}
-
-	delete(pb.Spells, spell)
-	pb.BuildPoints += SpellCost
-
-	return nil
-}
-
-func (pb *PointBuilder) AddComplexForm(complexForm string) error {
-	if pb.BuildPoints < ComplexFormCost {
-		return fmt.Errorf("not enough build points")
-	}
-
-	if _, ok := pb.ComplexForms[complexForm]; ok {
-		return fmt.Errorf("complex form already added")
-	}
-
-	pb.ComplexForms[complexForm] = ComplexFormCost
-	pb.BuildPoints -= ComplexFormCost
-
-	return nil
-}
-
-func (pb *PointBuilder) RemoveComplexForm(complexForm string) error {
-	if _, ok := pb.ComplexForms[complexForm]; !ok {
-		return fmt.Errorf("complex form not found")
-	}
-
-	delete(pb.ComplexForms, complexForm)
-	pb.BuildPoints += ComplexFormCost
-
-	return nil
-}
-
-// Purchase nuyen with build points
-// TODO: Add a limit to the amount of nuyen that can be purchased (200 karma)
-func (pb *PointBuilder) PurchaseNuyen(cost int) error {
-	if pb.BuildPoints < cost {
-		return fmt.Errorf("not enough build points")
-	}
-
-	if pb.KarmaForNuyen+cost > KarmaNuyenConversionLimit {
-		return fmt.Errorf("can not convert more than %d karma to nuyen", KarmaNuyenConversionLimit)
-	}
-
-	pb.Nuyen += cost * KarmaNuyenConversionRate
-	pb.KarmaForNuyen += cost
-	pb.BuildPoints -= cost
-
-	return nil
-}
-
-// TODO: No more than 5000 nuyen can be carried over from character creation
-// TODO: Leftover build karma can not be carried over from character creation
-// Build the final Character
-// func (pb *PointBuilder) Build() *Character {
-// 	return &Character{
-// 		Name:        pb.name,
-// 		Metatype:    pb.metatype,
-// 		Attributes:  pb.attributes,
-// 		Skills:      pb.skills,
-// 		Qualities:   pb.qualities,
-// 		BuildPoints: pb.buildPoints,
+// func GetMagicTypeCost(m MagicType) int {
+// 	v, ok := magicTypeCosts[m]
+// 	if !ok {
+// 		return 0
 // 	}
+// 	return v
 // }
 
-// func (b *PointBuilder) AddSkill(skill string, rating int) {
-// 	b.Skills[skill] = rating
-// }
-
-// func (b *PointBuilder) SetMetatype(m metatype.MetatypeName) {
-// 	// b.Character.Metatype = m
-// 	b.Metatype = metatypeCosts[m]
-// }
-
-// func (b *PointBuilder) AddMagicType(m MagicType) {
-// 	// b.Character.Magic = m
-// 	b.Magic = magicTypeCosts[m]
-// }
-
-// func (b *PointBuilder) Validate() error {
-// 	// Check if metatype is set
-// 	if b.Metatype.ID == "" {
-// 		return errors.New("Metatype is not set")
+// var (
+// 	// MagicTypeCosts is a map of magic type to the cost of that magic type
+// 	magicTypeCosts = map[MagicType]int{
+// 		MagicTypeNone:             0,
+// 		MagicTypeAdept:            20,
+// 		MagicTypeMagician:         15,
+// 		MagicTypeAspectedMagician: 30,
+// 		MagicTypeMysticAdept:      35,
+// 		MagicTypeTechnomancer:     15,
 // 	}
-// 	// Check if magic type is set
-// 	// Check if attributes are set
-// 	// Check if skills are set
-// 	// Check if qualities are set
+// )
+
+// type PointBuilder struct {
+// 	cfg       *config.Server
+// 	Character *Character
+
+// 	Name           string
+// 	Metatype       *metatype.Metatype
+// 	MagicType      MagicType
+// 	MaxedAttribute shared.AttributeType
+// 	Attributes     map[shared.AttributeType]int
+// 	Skills         map[string]int
+// 	Qualities      map[string]int
+// 	Spells         map[string]int
+// 	ComplexForms   map[string]int
+// 	Nuyen          int
+// 	KarmaForNuyen  int
+// 	BuildPoints    int
+// }
+
+// // Initialize a new PointBuilder
+// func NewPointBuilder(cfg *config.Server, c *Character) *PointBuilder {
+// 	b := &PointBuilder{
+// 		cfg:       cfg,
+// 		Character: New(cfg),
+// 		Attributes: map[shared.AttributeType]int{
+// 			shared.AttributeBody:      0,
+// 			shared.AttributeAgility:   0,
+// 			shared.AttributeReaction:  0,
+// 			shared.AttributeStrength:  0,
+// 			shared.AttributeWillpower: 0,
+// 			shared.AttributeLogic:     0,
+// 			shared.AttributeIntuition: 0,
+// 			shared.AttributeCharisma:  0,
+// 			shared.AttributeEdge:      0,
+// 			shared.AttributeEssence:   6,
+// 			shared.AttributeMagic:     0,
+// 			shared.AttributeResonance: 0,
+// 		},
+// 		Skills:       make(map[string]int),
+// 		Qualities:    make(map[string]int),
+// 		Spells:       make(map[string]int),
+// 		ComplexForms: make(map[string]int),
+// 		BuildPoints:  TotalBuildPoints,
+// 	}
+
+// 	return b
+// }
+
+// func (pb *PointBuilder) Validate() error {
 // 	return nil
 // }
 
-// func (b *PointBuilder) Build() {
-// 	// Select metatype
-// 	// Set attributes to metatype minimums
-// 	// Select optional magic type
-// 	// Spend on attributes
-// 	// Spend on skills
-// 	// Spend on qualities
-// 	// b.buildMetatype()
-// 	// b.buildMagic()
-// 	// // TODO: Set metatype minimums and advance with points
-// 	// b.buildAttributes()
-// 	// b.buildSkills()
-// 	// b.buildQualities()
+// func (pb *PointBuilder) Restart() error {
+// 	return nil
 // }
+
+// func (pb *PointBuilder) Discard() error {
+// 	return nil
+// }
+
+// func (pb *PointBuilder) Save() error {
+// 	return nil
+// }
+
+// func (pb *PointBuilder) Build() *Character {
+// 	return pb.Character
+// }
+
+// func (pb *PointBuilder) SetName(name string) {
+// 	pb.Character.SetName(name)
+// 	// pb.Name = name
+// }
+
+// // Set the metatype and adjust build points
+// func (pb *PointBuilder) SetMetatype(m *metatype.Metatype) error {
+// 	if pb.BuildPoints < m.PointCost {
+// 		return fmt.Errorf("not enough build points")
+// 	}
+// 	pb.Metatype = m
+// 	pb.BuildPoints -= m.PointCost
+
+// 	// Set attributes to metatype minimums
+// 	// Magic and Resonance are set in magic type
+// 	pb.Attributes[shared.AttributeBody] = m.Attributes["body"].Min
+// 	pb.Attributes[shared.AttributeAgility] = m.Attributes["agility"].Min
+// 	pb.Attributes[shared.AttributeReaction] = m.Attributes["reaction"].Min
+// 	pb.Attributes[shared.AttributeStrength] = m.Attributes["strength"].Min
+// 	pb.Attributes[shared.AttributeWillpower] = m.Attributes["willpower"].Min
+// 	pb.Attributes[shared.AttributeLogic] = m.Attributes["logic"].Min
+// 	pb.Attributes[shared.AttributeIntuition] = m.Attributes["intuition"].Min
+// 	pb.Attributes[shared.AttributeCharisma] = m.Attributes["charisma"].Min
+// 	// pb.Attributes[shared.AttributeEdge] = m.Attributes["edge"].Min
+// 	pb.Attributes[shared.AttributeEssence] = 6
+
+// 	return nil
+// }
+
+// func (pb *PointBuilder) RemoveMetatype() error {
+// 	if pb.Metatype == nil {
+// 		return fmt.Errorf("metatype not set")
+// 	}
+
+// 	// Set attributes to 0
+// 	// Magic and Resonance are set with SetMagicType
+// 	pb.Attributes[shared.AttributeBody] = 0
+// 	pb.Attributes[shared.AttributeAgility] = 0
+// 	pb.Attributes[shared.AttributeReaction] = 0
+// 	pb.Attributes[shared.AttributeStrength] = 0
+// 	pb.Attributes[shared.AttributeWillpower] = 0
+// 	pb.Attributes[shared.AttributeLogic] = 0
+// 	pb.Attributes[shared.AttributeIntuition] = 0
+// 	pb.Attributes[shared.AttributeCharisma] = 0
+// 	pb.Attributes[shared.AttributeEdge] = 0
+// 	pb.Attributes[shared.AttributeEssence] = 0
+
+// 	pb.BuildPoints += pb.Metatype.PointCost
+// 	pb.Metatype = nil
+
+// 	return nil
+// }
+
+// func (pb *PointBuilder) SetMagicType(magicType MagicType) error {
+// 	if pb.Metatype == nil {
+// 		return fmt.Errorf("metatype not set")
+// 	}
+
+// 	pb.MagicType = magicType
+
+// 	// If we are not magic users just set the name
+// 	if magicType == MagicTypeNone {
+// 		return nil
+// 	}
+
+// 	pb.BuildPoints -= magicTypeCosts[magicType]
+
+// 	switch magicType {
+// 	case MagicTypeTechnomancer:
+// 		pb.Attributes[shared.AttributeResonance] = pb.Metatype.Attributes["resonance"].Min
+// 	default:
+// 		pb.Attributes[shared.AttributeMagic] = pb.Metatype.Attributes["magic"].Min
+// 	}
+
+// 	return nil
+// }
+
+// // Remove the magic type and adjust build points
+// func (pb *PointBuilder) RemoveMagicType() {
+// 	pb.Attributes[shared.AttributeResonance] = 0
+// 	pb.Attributes[shared.AttributeMagic] = 0
+
+// 	pb.BuildPoints += magicTypeCosts[pb.MagicType]
+// 	pb.MagicType = MagicTypeNone
+// }
+
+// // TODO: Add more detailed info into error messages (i.e. what is the current value, what is the max, etc.)
+// func (pb *PointBuilder) AdjustAttribute(id string, newValue int) error {
+// 	// Check if metatype is set
+// 	if pb.Metatype == nil {
+// 		return fmt.Errorf("metatype not set")
+// 	}
+// 	// Check if magic type is set
+// 	if pb.MagicType == "" {
+// 		return fmt.Errorf("magic type not set")
+// 	}
+// 	// Check if attribute is valid
+// 	if _, ok := pb.Attributes[attribute]; !ok {
+// 		return fmt.Errorf("'%s' is not a valid attribute", attribute)
+// 	}
+// 	// Check if magic type is set for magic
+// 	if attribute == shared.AttributeMagic && pb.MagicType == MagicTypeNone {
+// 		return fmt.Errorf("can not adjust magic without being a magic user")
+// 	}
+// 	// Check if magic type is set for resonance
+// 	if attribute == shared.AttributeResonance && pb.MagicType != MagicTypeTechnomancer {
+// 		return fmt.Errorf("can not adjust resonance without being a technomancer")
+// 	}
+
+// 	min, max := getMetatypeMinMax(id, pb)
+
+// 	// Check if the attribute is at the metatype minimum
+// 	if newValue < min {
+// 		return fmt.Errorf("'%s' (%d) can not be lowered below metatype minimum (%d)", attribute, newValue, min)
+// 	}
+// 	// Check if the attribute is at the metatype maximum
+// 	if newValue > max {
+// 		return fmt.Errorf("'%s' (%d) can not be raised above metatype maximum (%d)", attribute, newValue, max)
+// 	}
+// 	// Check if there is already an attribute at the metatype maximum
+// 	if newValue == max && pb.MaxedAttribute != "" {
+// 		return fmt.Errorf("you may only have one attribute at the metatype maximum")
+// 	}
+
+// 	currentValue := pb.Attributes[attribute]
+// 	cost := CalculateChangeCost(ChangeAttribute, currentValue, newValue)
+
+// 	// Check if there are enough build points remaining
+// 	if pb.BuildPoints < cost {
+// 		return fmt.Errorf("not enough remaining build points (%d) for this change (%d)", pb.BuildPoints, cost)
+// 	}
+
+// 	pb.Attributes[attribute] = newValue
+// 	pb.BuildPoints -= cost
+// 	pb.MaxedAttribute = attribute
+
+// 	return nil
+// }
+
+// func getMetatypeMinMax(id string, pb *PointBuilder) (int, int) {
+// 	if pb.Metatype == nil {
+// 		return 0, 0
+// 	}
+
+// 	if _, ok := pb.Metatype.Attributes[id]; !ok {
+// 		return 0, 0
+// 	}
+
+// 	min := pb.Metatype.Attributes[id].Min
+// 	max := pb.Metatype.Attributes[id].Max
+
+// 	return min, max
+// }
+
+// // Allocate build points to skills
+// // TODO: Restrict advancement of magic and resonance skills to the required magic type
+// func (pb *PointBuilder) AdjustSkill(changeType, skill string, value int) error {
+// 	if pb.Metatype == nil {
+// 		return fmt.Errorf("metatype not set")
+// 	}
+// 	if pb.MagicType == "" {
+// 		return fmt.Errorf("magic type not set")
+// 	}
+
+// 	current, ok := pb.Skills[skill]
+// 	if !ok {
+// 		current = 0
+// 	}
+
+// 	if value < 0 {
+// 		return fmt.Errorf("skill value can not be negative")
+// 	}
+
+// 	if value == current {
+// 		return nil
+// 	}
+
+// 	if value > 13 {
+// 		return fmt.Errorf("skill value can not be greater than 13")
+// 	}
+
+// 	cost := CalculateChangeCost(changeType, current, value)
+
+// 	if pb.BuildPoints < cost {
+// 		return fmt.Errorf("not enough build points")
+// 	}
+
+// 	pb.Skills[skill] = value
+// 	pb.BuildPoints -= cost
+
+// 	return nil
+// }
+
+// // Allocate build points to qualities
+// func (pb *PointBuilder) AllocateQuality(quality string, cost int, positive bool) error {
+// 	if pb.BuildPoints < cost {
+// 		return fmt.Errorf("not enough build points")
+// 	}
+
+// 	if _, ok := pb.Qualities[quality]; ok {
+// 		return fmt.Errorf("quality already added")
+// 	}
+
+// 	pb.Qualities[quality] = cost
+// 	if positive {
+// 		pb.BuildPoints -= cost
+// 	} else {
+// 		pb.BuildPoints += cost
+// 	}
+
+// 	return nil
+// }
+
+// func (pb *PointBuilder) RemoveQuality(quality string) error {
+// 	cost, ok := pb.Qualities[quality]
+// 	if !ok {
+// 		return fmt.Errorf("quality not found")
+// 	}
+
+// 	delete(pb.Qualities, quality)
+// 	pb.BuildPoints += cost
+// 	// pb.BuildPoints -= cost
+
+// 	return nil
+// }
+
+// func (pb *PointBuilder) AddSpell(spell string) error {
+// 	if pb.BuildPoints < SpellCost {
+// 		return fmt.Errorf("not enough build points")
+// 	}
+
+// 	if _, ok := pb.Spells[spell]; ok {
+// 		return fmt.Errorf("spell already added")
+// 	}
+
+// 	pb.Spells[spell] = SpellCost
+// 	pb.BuildPoints -= SpellCost
+
+// 	return nil
+// }
+
+// func (pb *PointBuilder) RemoveSpell(spell string) error {
+// 	if _, ok := pb.Spells[spell]; !ok {
+// 		return fmt.Errorf("spell not found")
+// 	}
+
+// 	delete(pb.Spells, spell)
+// 	pb.BuildPoints += SpellCost
+
+// 	return nil
+// }
+
+// func (pb *PointBuilder) AddComplexForm(complexForm string) error {
+// 	if pb.BuildPoints < ComplexFormCost {
+// 		return fmt.Errorf("not enough build points")
+// 	}
+
+// 	if _, ok := pb.ComplexForms[complexForm]; ok {
+// 		return fmt.Errorf("complex form already added")
+// 	}
+
+// 	pb.ComplexForms[complexForm] = ComplexFormCost
+// 	pb.BuildPoints -= ComplexFormCost
+
+// 	return nil
+// }
+
+// func (pb *PointBuilder) RemoveComplexForm(complexForm string) error {
+// 	if _, ok := pb.ComplexForms[complexForm]; !ok {
+// 		return fmt.Errorf("complex form not found")
+// 	}
+
+// 	delete(pb.ComplexForms, complexForm)
+// 	pb.BuildPoints += ComplexFormCost
+
+// 	return nil
+// }
+
+// // Purchase nuyen with build points
+// // TODO: Add a limit to the amount of nuyen that can be purchased (200 karma)
+// func (pb *PointBuilder) PurchaseNuyen(cost int) error {
+// 	if pb.BuildPoints < cost {
+// 		return fmt.Errorf("not enough build points")
+// 	}
+
+// 	if pb.KarmaForNuyen+cost > KarmaNuyenConversionLimit {
+// 		return fmt.Errorf("can not convert more than %d karma to nuyen", KarmaNuyenConversionLimit)
+// 	}
+
+// 	pb.Nuyen += cost * KarmaNuyenConversionRate
+// 	pb.KarmaForNuyen += cost
+// 	pb.BuildPoints -= cost
+
+// 	return nil
+// }
+
+// // TODO: No more than 5000 nuyen can be carried over from character creation
+// // TODO: Leftover build karma can not be carried over from character creation
+// // Build the final Character
+// // func (pb *PointBuilder) Build() *Character {
+// // 	return &Character{
+// // 		Name:        pb.name,
+// // 		Metatype:    pb.metatype,
+// // 		Attributes:  pb.attributes,
+// // 		Skills:      pb.skills,
+// // 		Qualities:   pb.qualities,
+// // 		BuildPoints: pb.buildPoints,
+// // 	}
+// // }
+
+// // func (b *PointBuilder) AddSkill(skill string, rating int) {
+// // 	b.Skills[skill] = rating
+// // }
+
+// // func (b *PointBuilder) SetMetatype(m metatype.MetatypeName) {
+// // 	// b.Character.Metatype = m
+// // 	b.Metatype = metatypeCosts[m]
+// // }
+
+// // func (b *PointBuilder) AddMagicType(m MagicType) {
+// // 	// b.Character.Magic = m
+// // 	b.Magic = magicTypeCosts[m]
+// // }
+
+// // func (b *PointBuilder) Validate() error {
+// // 	// Check if metatype is set
+// // 	if b.Metatype.ID == "" {
+// // 		return errors.New("Metatype is not set")
+// // 	}
+// // 	// Check if magic type is set
+// // 	// Check if attributes are set
+// // 	// Check if skills are set
+// // 	// Check if qualities are set
+// // 	return nil
+// // }
+
+// // func (b *PointBuilder) Build() {
+// // 	// Select metatype
+// // 	// Set attributes to metatype minimums
+// // 	// Select optional magic type
+// // 	// Spend on attributes
+// // 	// Spend on skills
+// // 	// Spend on qualities
+// // 	// b.buildMetatype()
+// // 	// b.buildMagic()
+// // 	// // TODO: Set metatype minimums and advance with points
+// // 	// b.buildAttributes()
+// // 	// b.buildSkills()
+// // 	// b.buildQualities()
+// // }

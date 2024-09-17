@@ -314,35 +314,35 @@ type (
 	}
 )
 
-func (c *Character) SetMetatype(metatype *metatype.Metatype) {
-	c.Metatype = metatype
-	c.MetatypeID = metatype.ID
-	c.Attributes.Body.Base = metatype.Attributes.Body.Min
-	c.Attributes.Agility.Base = metatype.Attributes.Agility.Min
-	c.Attributes.Reaction.Base = metatype.Attributes.Reaction.Min
-	c.Attributes.Strength.Base = metatype.Attributes.Strength.Min
-	c.Attributes.Willpower.Base = metatype.Attributes.Willpower.Min
-	c.Attributes.Logic.Base = metatype.Attributes.Logic.Min
-	c.Attributes.Intuition.Base = metatype.Attributes.Intuition.Min
-	c.Attributes.Charisma.Base = metatype.Attributes.Charisma.Min
-	c.Attributes.Edge.Base = metatype.Attributes.Edge.Min
-	c.Attributes.Essence.Base = metatype.Attributes.Essence.Max
-}
+// func (c *Character) SetMetatype(metatype *metatype.Metatype) {
+// 	c.Metatype = metatype
+// 	c.MetatypeID = metatype.ID
+// 	c.Attributes.Body.Base = metatype.Attributes["body"].Min
+// 	c.Attributes.Agility.Base = metatype.Attributes.Agility.Min
+// 	c.Attributes.Reaction.Base = metatype.Attributes.Reaction.Min
+// 	c.Attributes.Strength.Base = metatype.Attributes.Strength.Min
+// 	c.Attributes.Willpower.Base = metatype.Attributes.Willpower.Min
+// 	c.Attributes.Logic.Base = metatype.Attributes.Logic.Min
+// 	c.Attributes.Intuition.Base = metatype.Attributes.Intuition.Min
+// 	c.Attributes.Charisma.Base = metatype.Attributes.Charisma.Min
+// 	c.Attributes.Edge.Base = metatype.Attributes.Edge.Min
+// 	c.Attributes.Essence.Base = metatype.Attributes.Essence.Max
+// }
 
-func (c *Character) RemoveMetatype() {
-	c.Metatype = nil
-	c.MetatypeID = ""
-	c.Attributes.Body.Base = 0
-	c.Attributes.Agility.Base = 0
-	c.Attributes.Reaction.Base = 0
-	c.Attributes.Strength.Base = 0
-	c.Attributes.Willpower.Base = 0
-	c.Attributes.Logic.Base = 0
-	c.Attributes.Intuition.Base = 0
-	c.Attributes.Charisma.Base = 0
-	c.Attributes.Edge.Base = 0
-	c.Attributes.Essence.Base = 0
-}
+// func (c *Character) RemoveMetatype() {
+// 	c.Metatype = nil
+// 	c.MetatypeID = ""
+// 	c.Attributes.Body.Base = 0
+// 	c.Attributes.Agility.Base = 0
+// 	c.Attributes.Reaction.Base = 0
+// 	c.Attributes.Strength.Base = 0
+// 	c.Attributes.Willpower.Base = 0
+// 	c.Attributes.Logic.Base = 0
+// 	c.Attributes.Intuition.Base = 0
+// 	c.Attributes.Charisma.Base = 0
+// 	c.Attributes.Edge.Base = 0
+// 	c.Attributes.Essence.Base = 0
+// }
 
 // func (c *Character) Recalculate() {
 // 	c.Attributes.Recalculate()

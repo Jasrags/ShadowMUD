@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -15,6 +16,7 @@ import (
 	"github.com/i582/cfmt/cmd/cfmt"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/exp/maps"
 	"golang.org/x/term"
 )
 
@@ -621,64 +623,77 @@ func (w *World) promptMOTD(s ssh.Session) State {
 
 func (w *World) renderBuildCharacterSheet(s ssh.Session, b *jason.Builder) {
 	logrus.WithFields(logrus.Fields{
-		"metatype":   b.Metatype.Name,
-		"magic_type": b.MagicType.Name,
-		"body":       b.Attributes.Body.Base,
-		"agility":    b.Attributes.Agility.Base,
-		"reaction":   b.Attributes.Reaction.Base,
-		"strength":   b.Attributes.Strength.Base,
-		"willpower":  b.Attributes.Willpower.Base,
-		"logic":      b.Attributes.Logic.Base,
-		"intuition":  b.Attributes.Intuition.Base,
-		"charisma":   b.Attributes.Charisma.Base,
-		"magic":      b.Attributes.Magic.Base,
-		"resonance":  b.Attributes.Resonance.Base,
-		"essence":    b.Attributes.Essence.Base,
+		// "metatype":   b.Metatype.Name,
+		// "magic_type": b.MagicType.Name,
+		"attributes": b.Attributes,
+		"essence":    b.Essence,
 	}).Debug("Rendering character sheet")
-	// io.WriteString(s, cfmt.Sprintf("{{Character Sheet}}::green|bold\n"))
 
+	io.WriteString(s, cfmt.Sprintf("{{Karma:}}::green       %d\n",
+		b.Karma))
+
+	// Render name if set
 	if b.Name == "" {
-		io.WriteString(s, cfmt.Sprintf("{{Name:}}::green {{set name <value>}}::gray\n"))
+		io.WriteString(s, cfmt.Sprintf("{{Name:}}::green        {{set name <value>}}::gray\n"))
 	} else {
-		io.WriteString(s, cfmt.Sprintf("{{Name:}}::green %-4s\n", b.Name))
-	}
-	if b.Metatype == nil {
-		io.WriteString(s, cfmt.Sprintf("{{Metatype:}}::green {{set metatype <value>}}::gray\n"))
-	} else {
-		io.WriteString(s, cfmt.Sprintf("{{Metatype:}}::green %-4s\n", b.Metatype.Name))
-	}
-	if b.MagicType == nil {
-		io.WriteString(s, cfmt.Sprintf("{{Magic Type:}}::green {{set magic <value>}}::gray\n"))
-	} else {
-		io.WriteString(s, cfmt.Sprintf("{{Magic Type:}}::green %s\n", b.MagicType.Name))
+		io.WriteString(s, cfmt.Sprintf("{{Name:}}::green        %s\n",
+			b.Name))
 	}
 
+	// Render metatype if set
+	if b.Metatype == nil {
+		io.WriteString(s, cfmt.Sprintf("{{Metatype:}}::green    {{set metatype <value>}}::gray\n"))
+	} else {
+		io.WriteString(s, cfmt.Sprintf("{{Metatype:}}::green    %s (%d karma)\n",
+			b.Metatype.Name, b.Metatype.PointCost))
+	}
+
+	// Render magic type if set
+	if b.MagicType == nil {
+		io.WriteString(s, cfmt.Sprintf("{{Magic Type:}}::green  {{set magictype <value>}}::gray\n"))
+	} else {
+		io.WriteString(s, cfmt.Sprintf("{{Magic Type:}}::green  %s (%d karma)\n",
+			b.MagicType.Name, b.MagicType.PointCost))
+	}
+
+	// Render attributes if metatype and magic type are set
 	if b.Metatype != nil && b.MagicType != nil {
-		io.WriteString(s, cfmt.Sprintf("{{Attributes:}}::green {{value [augmented] (max)}}::gray\n"))
-		io.WriteString(s, cfmt.Sprintf("  {{Body:}}::green      %d [%d] (%d)  {{Essence:}}::green %g (%g)\n",
-			b.Attributes.Body.Base, b.Attributes.Body.TotalValue, b.Metatype.Attributes.Body.Max,
-			b.Attributes.Essence.Base, b.Metatype.Attributes.Essence.Max))
-		io.WriteString(s, cfmt.Sprintf("  {{Agility:}}::green   %d [%d] (%d)\n",
-			b.Attributes.Agility.Base, b.Attributes.Agility.TotalValue, b.Metatype.Attributes.Agility.Max))
-		io.WriteString(s, cfmt.Sprintf("  {{Reaction:}}::green  %d [%d] (%d)\n",
-			b.Attributes.Reaction.Base, b.Attributes.Reaction.TotalValue, b.Metatype.Attributes.Reaction.Max))
-		io.WriteString(s, cfmt.Sprintf("  {{Strength:}}::green  %d [%d] (%d)\n",
-			b.Attributes.Strength.Base, b.Attributes.Strength.TotalValue, b.Metatype.Attributes.Strength.Max))
-		io.WriteString(s, cfmt.Sprintf("  {{Willpower:}}::green %d [%d] (%d)\n",
-			b.Attributes.Willpower.Base, b.Attributes.Willpower.TotalValue, b.Metatype.Attributes.Willpower.Max))
-		io.WriteString(s, cfmt.Sprintf("  {{Logic:}}::green     %d [%d] (%d)\n",
-			b.Attributes.Logic.Base, b.Attributes.Logic.TotalValue, b.Metatype.Attributes.Logic.Max))
-		io.WriteString(s, cfmt.Sprintf("  {{Intuition:}}::green %d [%d] (%d)\n",
-			b.Attributes.Intuition.Base, b.Attributes.Intuition.TotalValue, b.Metatype.Attributes.Intuition.Max))
-		io.WriteString(s, cfmt.Sprintf("  {{Charisma:}}::green  %d [%d] (%d)\n",
-			b.Attributes.Charisma.Base, b.Attributes.Charisma.TotalValue, b.Metatype.Attributes.Charisma.Max))
-		if b.Attributes.Magic.Base > 0 {
-			io.WriteString(s, cfmt.Sprintf("  {{Magic:}}::green     %d [%d] (%d)\n",
-				b.Attributes.Magic.Base, b.Attributes.Magic.TotalValue, b.Metatype.Attributes.Magic.Max))
+		io.WriteString(s, cfmt.Sprintf("{{Attributes:}}::green {{value/total/max | set <attribute> <value>}}::gray\n"))
+
+		keys := maps.Keys(b.Attributes)
+		sort.Strings(keys)
+		for _, k := range keys {
+			// Skip magic and resonance attributes based on the character's magic type
+			if k == "magic" && (b.MagicType.Name == "none" || b.MagicType.Name == "technomancer") {
+				continue
+			}
+			if k == "resonance" && b.MagicType.Name != "technomancer" {
+				continue
+			}
+
+			// Render the attribute values
+			io.WriteString(s, cfmt.Sprintf("  {{%-12s:}}::green  %-2d/%-2d/%-2d\n",
+				b.Attributes[k].Name, b.Attributes[k].Base, b.Attributes[k].TotalValue, b.Metatype.Attributes[k].Max))
 		}
-		if b.Attributes.Resonance.Base > 0 {
-			io.WriteString(s, cfmt.Sprintf("  {{Resonance:}}::green %d [%d] (%d)\n",
-				b.Attributes.Resonance.Base, b.Attributes.Resonance.TotalValue, b.Metatype.Attributes.Resonance.Max))
+
+		// Essence
+		io.WriteString(s, cfmt.Sprintf("  {{%-12s:}}::green  %-2g/%-2g/%-2g\n",
+			"Essence", b.Essence.Base, b.Essence.TotalValue, b.Metatype.Essence.Max))
+
+		// Qualities
+		io.WriteString(s, cfmt.Sprintf("{{Qualties:}}::green\n"))
+		if len(b.Qualties) == 0 {
+			io.WriteString(s, cfmt.Sprintf("  {{add quality <quality>}}::gray\n"))
+		} else {
+			io.WriteString(s, cfmt.Sprintf("  %s\n", strings.Join(b.Qualties, ", ")))
+		}
+
+		// Skills
+		io.WriteString(s, cfmt.Sprintf("{{Skills:}}::green\n"))
+		if len(b.Skills) == 0 {
+			io.WriteString(s, cfmt.Sprintf("  {{add skill <skill>}}::gray\n"))
+		} else {
+			io.WriteString(s, cfmt.Sprintf("  %s\n", strings.Join(b.Skills, ", ")))
 		}
 	}
 }
@@ -696,16 +711,13 @@ func (w *World) promptCreateCharacterMenu(s ssh.Session, u *user.User) State {
 	b.SetName("JasonTester")
 	b.SetMetatype(s, "human")
 	b.SetMagicType(s, "adept")
-	// pb := character.NewPointBuilder(cfg, nil)
-	// Create the new character
-	// c := character.New(w.cfg)
-	// c.State = character.StateIncomplete
-
 	io.WriteString(s, cfmt.Sprintf("\n{{Character Creation}}::green\n\n"))
 
 loop:
 	for {
 		b.Attributes.Recalculate()
+		b.Essence.Recalculate()
+
 		w.renderBuildCharacterSheet(s, b)
 		// if err := w.templates.ExecuteTemplate(s, "character_sheet.tmpl", b); err != nil {
 		// 	logrus.WithError(err).Error("Error executing template")
@@ -771,18 +783,34 @@ loop:
 				io.WriteString(s, b.SetName(value)+"\n")
 			case "metatype":
 				io.WriteString(s, b.SetMetatype(s, value)+"\n")
-			case "magic":
+			case "magictype":
 				io.WriteString(s, b.SetMagicType(s, value)+"\n")
-			case "attribute":
-				if len(args) < 4 {
-					io.WriteString(s, "Usage: set attribute <attribute> <value>\n")
+			case "agility":
+				fallthrough
+			case "body":
+				fallthrough
+			case "charisma":
+				fallthrough
+			case "intuition":
+				fallthrough
+			case "logic":
+				fallthrough
+			case "magic":
+				fallthrough
+			case "reaction":
+				fallthrough
+			case "resonance":
+				fallthrough
+			case "strength":
+				fallthrough
+			case "willpower":
+				if len(args) < 2 {
+					io.WriteString(s, "Usage: set body <value>\n")
 					continue
 				}
-				io.WriteString(s, featureNotImplementedMsg)
-				attribute := args[2]
-				attributeValue := args[3]
 				// Implement set attribute logic
-				io.WriteString(s, "Character attribute "+attribute+" set to "+attributeValue+"\n")
+				io.WriteString(s, b.SetAttribute(property, value)+"\n")
+				// io.WriteString(s, "Character attribute "+attribute+" set to "+attributeValue+"\n")
 			case "skill":
 				if len(args) < 4 {
 					io.WriteString(s, "Usage: set skill <skill> <value>\n")
