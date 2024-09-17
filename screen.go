@@ -785,25 +785,7 @@ loop:
 				io.WriteString(s, b.SetMetatype(s, value)+"\n")
 			case "magictype":
 				io.WriteString(s, b.SetMagicType(s, value)+"\n")
-			case "agility":
-				fallthrough
-			case "body":
-				fallthrough
-			case "charisma":
-				fallthrough
-			case "intuition":
-				fallthrough
-			case "logic":
-				fallthrough
-			case "magic":
-				fallthrough
-			case "reaction":
-				fallthrough
-			case "resonance":
-				fallthrough
-			case "strength":
-				fallthrough
-			case "willpower":
+			case "agility", "body", "charisma", "intuition", "logic", "magic", "reaction", "resonance", "strength", "willpower":
 				if len(args) < 2 {
 					io.WriteString(s, "Usage: set body <value>\n")
 					continue
