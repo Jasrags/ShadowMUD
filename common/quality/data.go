@@ -2,9 +2,9 @@ package quality
 
 import "github.com/Jasrags/ShadowMUD/common/shared"
 
-var CoreQualties = []Spec{
+var CoreQualties = Specs{
 	// Racial Qualities
-	{
+	"low_light_vision": {
 		ID:          "low_light_vision",
 		Type:        TypePositive,
 		Name:        "Low-Light Vision",
@@ -12,7 +12,7 @@ var CoreQualties = []Spec{
 		RuleSource:  shared.RuleSourceSR5Core,
 		Hidden:      true,
 	},
-	{
+	"thermographic_vision": {
 		ID:          "thermographic_vision",
 		Type:        TypePositive,
 		Name:        "Thermographic Vision",
@@ -20,7 +20,7 @@ var CoreQualties = []Spec{
 		RuleSource:  shared.RuleSourceSR5Core,
 		Hidden:      true,
 	},
-	{
+	"ambidextrous": {
 		ID:          "ambidextrous",
 		Type:        TypePositive,
 		Name:        "Ambidextrous",
@@ -29,7 +29,7 @@ var CoreQualties = []Spec{
 		RuleSource:  shared.RuleSourceSR5Core,
 		// No -2 DP Modifier for off-hand actions
 	},
-	{
+	"analytical_mind": {
 		ID:          "analytical_mind",
 		Type:        TypePositive,
 		Name:        "Analytical Mind",
@@ -39,7 +39,7 @@ var CoreQualties = []Spec{
 		// This quality gives the character a +2 dice pool modifier to any Logic Tests involving pattern recognition, evidence analysis, clue hunting, or solving puzzles.
 		// This quality also reduces the time it takes the character to solve a problem by half.
 	},
-	{
+	"aptitude": {
 		ID:          "aptitude",
 		Type:        TypePositive,
 		Name:        "Aptitude",
@@ -49,7 +49,7 @@ var CoreQualties = []Spec{
 		// With this particular quality, the character can have one skill rated at 7 at character creation, and may eventually build that skill up to rating 13.
 		// Characters may only take the Aptitude quality once.
 	},
-	{
+	"astral_chameleon": {
 		ID:          "astral_chameleon",
 		Type:        TypePositive,
 		Name:        "Astral Chameleon",
@@ -57,7 +57,7 @@ var CoreQualties = []Spec{
 		Cost:        10,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"bilingual": {
 		ID:          "bilingual",
 		Type:        TypePositive,
 		Name:        "Bilingual",
@@ -65,7 +65,7 @@ var CoreQualties = []Spec{
 		Cost:        5,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"blandness": {
 		ID:          "blandness",
 		Type:        TypePositive,
 		Name:        "Blandness",
@@ -73,7 +73,7 @@ var CoreQualties = []Spec{
 		Cost:        8,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"catlike": {
 		ID:          "catlike",
 		Type:        TypePositive,
 		Name:        "Catlike",
@@ -81,7 +81,7 @@ var CoreQualties = []Spec{
 		Cost:        7,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"codeslinger": {
 		ID:          "codeslinger",
 		Type:        TypePositive,
 		Name:        "Codeslinger",
@@ -89,7 +89,7 @@ var CoreQualties = []Spec{
 		Cost:        10,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"double_jointed": {
 		ID:          "double_jointed",
 		Type:        TypePositive,
 		Name:        "Double-jointed",
@@ -97,7 +97,7 @@ var CoreQualties = []Spec{
 		Cost:        6,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"exceptional_attribute": {
 		ID:          "exceptional_attribute",
 		Type:        TypePositive,
 		Name:        "Exceptional Attribute",
@@ -105,7 +105,7 @@ var CoreQualties = []Spec{
 		Cost:        14,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"exceptional_skill": {
 		ID:          "first_impression",
 		Type:        TypePositive,
 		Name:        "First Impression",
@@ -113,7 +113,7 @@ var CoreQualties = []Spec{
 		Cost:        11,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"focused_concentration": {
 		ID:          "focused_concentration",
 		Type:        TypePositive,
 		Name:        "Focused Concentration",
@@ -122,7 +122,7 @@ var CoreQualties = []Spec{
 		Cost:        4,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"gearhead": {
 		ID:          "gearhead",
 		Type:        TypePositive,
 		Name:        "Gearhead",
@@ -130,7 +130,7 @@ var CoreQualties = []Spec{
 		Cost:        11,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"guts": {
 		ID:          "guts",
 		Type:        TypePositive,
 		Name:        "Guts",
@@ -138,7 +138,7 @@ var CoreQualties = []Spec{
 		Cost:        10,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"high_pain_tolerance": {
 		ID:          "high_pain_tolerance",
 		Type:        TypePositive,
 		Name:        "High Pain Tolerance",
@@ -147,7 +147,7 @@ var CoreQualties = []Spec{
 		Cost:        7,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"home_ground": {
 		ID:          "home_ground",
 		Type:        TypePositive,
 		Name:        "Home Ground",
@@ -155,7 +155,7 @@ var CoreQualties = []Spec{
 		Cost:        10,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"human_looking": {
 		ID:          "human_looking",
 		Type:        TypePositive,
 		Name:        "Human-looking",
@@ -163,7 +163,7 @@ var CoreQualties = []Spec{
 		Cost:        6,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"indomitable": {
 		ID:          "indomitable",
 		Type:        TypePositive,
 		Name:        "Indomitable",
@@ -172,7 +172,7 @@ var CoreQualties = []Spec{
 		Cost:        8,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"juryrigger": {
 		ID:          "juryrigger",
 		Type:        TypePositive,
 		Name:        "Juryrigger",
@@ -180,7 +180,7 @@ var CoreQualties = []Spec{
 		Cost:        10,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"lucky": {
 		ID:          "lucky",
 		Type:        TypePositive,
 		Name:        "Lucky",
@@ -188,7 +188,7 @@ var CoreQualties = []Spec{
 		Cost:        12,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"magic_resistance": {
 		ID:          "magic_resistance",
 		Type:        TypePositive,
 		Name:        "Magic Resistance",
@@ -196,7 +196,7 @@ var CoreQualties = []Spec{
 		Cost:        6, // (MAX RATING 4) 	6 KARMA PER RATING
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"mentor_spirit": {
 		ID:          "mentor_spirit",
 		Type:        TypePositive,
 		Name:        "Mentor Spirit",
@@ -204,7 +204,7 @@ var CoreQualties = []Spec{
 		Cost:        5,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"natural_athlete": {
 		ID:          "natural_athlete",
 		Type:        TypePositive,
 		Name:        "Natural Athlete",
@@ -212,7 +212,7 @@ var CoreQualties = []Spec{
 		Cost:        7,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"natural_hardening": {
 		ID:          "natural_hardening",
 		Type:        TypePositive,
 		Name:        "Natural Hardening",
@@ -220,7 +220,7 @@ var CoreQualties = []Spec{
 		Cost:        10,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"natural_immunity": {
 		ID:          "natural_immunity",
 		Type:        TypePositive,
 		Name:        "Natural Immunity",
@@ -228,7 +228,7 @@ var CoreQualties = []Spec{
 		Cost:        4, // OR 10 KARMA
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"photographic_memory": {
 		ID:          "photographic_memory",
 		Type:        TypePositive,
 		Name:        "Photographic Memory",
@@ -236,7 +236,7 @@ var CoreQualties = []Spec{
 		Cost:        6,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"quick_healer": {
 		ID:          "quick_healer",
 		Type:        TypePositive,
 		Name:        "Quick Healer",
@@ -244,7 +244,7 @@ var CoreQualties = []Spec{
 		Cost:        3,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"resistance_to_pathogens_toxins": {
 		ID:          "resistance_to_pathogens_toxins",
 		Type:        TypePositive,
 		Name:        "Resistance To Pathogens/Toxins",
@@ -253,7 +253,7 @@ var CoreQualties = []Spec{
 		RuleSource:  shared.RuleSourceSR5Core,
 		// +2 dice
 	},
-	{
+	"spirit_affinity": {
 		ID:          "spirit_affinity",
 		Type:        TypePositive,
 		Name:        "Spirit Affinity",
@@ -261,7 +261,7 @@ var CoreQualties = []Spec{
 		Cost:        7,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"toughness": {
 		ID:          "toughness",
 		Type:        TypePositive,
 		Name:        "Toughness",
@@ -269,7 +269,7 @@ var CoreQualties = []Spec{
 		Cost:        9,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"will_to_live": {
 		ID:          "will_to_live",
 		Type:        TypePositive,
 		Name:        "Will To Live",
@@ -277,7 +277,7 @@ var CoreQualties = []Spec{
 		Cost:        3, // (MAX RATING 3) 	3 KARMA PER RATING
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"wealth": {
 		ID:          "addiction",
 		Type:        TypeNegative,
 		Name:        "Addiction",
@@ -285,7 +285,7 @@ var CoreQualties = []Spec{
 		Cost:        4, // TO 25 KARMA
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"allergy": {
 		ID:          "allergy",
 		Type:        TypeNegative,
 		Name:        "Allergy",
@@ -293,7 +293,7 @@ var CoreQualties = []Spec{
 		Cost:        5, // TO 25 KARMA
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"astral_beacon": {
 		ID:          "astral_beacon",
 		Type:        TypeNegative,
 		Name:        "Astral Beacon",
@@ -301,7 +301,7 @@ var CoreQualties = []Spec{
 		Cost:        10,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"bad_luck": {
 		ID:          "bad_luck",
 		Type:        TypeNegative,
 		Name:        "Bad Luck",
@@ -309,7 +309,7 @@ var CoreQualties = []Spec{
 		Cost:        12,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"bad_rep": {
 		ID:          "bad_rep",
 		Type:        TypeNegative,
 		Name:        "Bad Rep",
@@ -317,7 +317,7 @@ var CoreQualties = []Spec{
 		Cost:        7,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"code_of_honor": {
 		ID:          "code_of_honor",
 		Type:        TypeNegative,
 		Name:        "Code Of Honor",
@@ -325,7 +325,7 @@ var CoreQualties = []Spec{
 		Cost:        15,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"codeblock": {
 		ID:          "codeblock",
 		Type:        TypeNegative,
 		Name:        "Codeblock",
@@ -333,7 +333,7 @@ var CoreQualties = []Spec{
 		Cost:        10,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"combat_paralysis": {
 		ID:          "combat_paralysis",
 		Type:        TypeNegative,
 		Name:        "Combat Paralysis",
@@ -341,7 +341,7 @@ var CoreQualties = []Spec{
 		Cost:        12,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"dependents": {
 		ID:          "dependents",
 		Type:        TypeNegative,
 		Name:        "Dependents",
@@ -349,7 +349,7 @@ var CoreQualties = []Spec{
 		Cost:        3,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"distinctive_style": {
 		ID:          "distinctive_style",
 		Type:        TypeNegative,
 		Name:        "Distinctive Style",
@@ -357,7 +357,7 @@ var CoreQualties = []Spec{
 		Cost:        5,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"elf_poser": {
 		ID:          "elf_poser",
 		Type:        TypeNegative,
 		Name:        "Elf Poser",
@@ -365,7 +365,7 @@ var CoreQualties = []Spec{
 		Cost:        6,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"gremlins": {
 		ID:          "gremlins",
 		Type:        TypeNegative,
 		Name:        "Gremlins",
@@ -373,7 +373,7 @@ var CoreQualties = []Spec{
 		Cost:        4, // (MAX 4) 	4 KARMA PER RATING
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"impaired_senses": {
 		ID:          "incompetent",
 		Type:        TypeNegative,
 		Name:        "Incompetent",
@@ -381,7 +381,7 @@ var CoreQualties = []Spec{
 		Cost:        5,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"insomnia": {
 		ID:          "insomnia",
 		Type:        TypeNegative,
 		Name:        "Insomnia",
@@ -389,7 +389,7 @@ var CoreQualties = []Spec{
 		Cost:        10, // OR 15 KARMA
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"loss_of_confidence": {
 		ID:          "loss_of_confidence",
 		Type:        TypeNegative,
 		Name:        "Loss Of Confidence",
@@ -397,7 +397,7 @@ var CoreQualties = []Spec{
 		Cost:        10,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"low_pain_tolerance": {
 		ID:          "low_pain_tolerance",
 		Type:        TypeNegative,
 		Name:        "Low Pain Tolerance",
@@ -405,7 +405,7 @@ var CoreQualties = []Spec{
 		Cost:        9,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"magical_bane": {
 		ID:          "ork_poser",
 		Type:        TypeNegative,
 		Name:        "Ork Poser",
@@ -413,7 +413,7 @@ var CoreQualties = []Spec{
 		Cost:        6,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"prejudiced": {
 		ID:          "prejudiced",
 		Type:        TypeNegative,
 		Name:        "Prejudiced",
@@ -421,7 +421,7 @@ var CoreQualties = []Spec{
 		Cost:        3, // TO 10 KARMA
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"scorched": {
 		ID:          "scorched",
 		Type:        TypeNegative,
 		Name:        "Scorched",
@@ -429,7 +429,7 @@ var CoreQualties = []Spec{
 		Cost:        10,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"sensitive_system": {
 		ID:          "sensitive_system",
 		Type:        TypeNegative,
 		Name:        "Sensitive System",
@@ -437,7 +437,8 @@ var CoreQualties = []Spec{
 		Cost:        12,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+
+	"simsense_vertigo": {
 		ID:          "simsense_vertigo",
 		Type:        TypeNegative,
 		Name:        "Simsense Vertigo",
@@ -445,7 +446,7 @@ var CoreQualties = []Spec{
 		Cost:        5,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"sinner": {
 		ID:          "sinner",
 		Type:        TypeNegative,
 		Name:        "Sinner (layered)",
@@ -453,7 +454,7 @@ var CoreQualties = []Spec{
 		Cost:        5, // TO 25 KARMA
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"social_stress": {
 		ID:          "social_stress",
 		Type:        TypeNegative,
 		Name:        "Social Stress",
@@ -461,7 +462,7 @@ var CoreQualties = []Spec{
 		Cost:        8,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"spirit_bane": {
 		ID:          "spirit_bane",
 		Type:        TypeNegative,
 		Name:        "Spirit Bane",
@@ -469,7 +470,7 @@ var CoreQualties = []Spec{
 		Cost:        7,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"uncouth": {
 		ID:          "uncouth",
 		Type:        TypeNegative,
 		Name:        "Uncouth",
@@ -477,7 +478,7 @@ var CoreQualties = []Spec{
 		Cost:        14,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"uneducated": {
 		ID:          "uneducated",
 		Type:        TypeNegative,
 		Name:        "Uneducated",
@@ -485,7 +486,7 @@ var CoreQualties = []Spec{
 		Cost:        8,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"unsteady_hands": {
 		ID:          "unsteady_hands",
 		Type:        TypeNegative,
 		Name:        "Unsteady Hands",
@@ -493,7 +494,7 @@ var CoreQualties = []Spec{
 		Cost:        7,
 		RuleSource:  shared.RuleSourceSR5Core,
 	},
-	{
+	"weak_immune_system": {
 		ID:          "weak_immune_system",
 		Type:        TypeNegative,
 		Name:        "Weak Immune System",

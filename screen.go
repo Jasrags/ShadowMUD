@@ -622,12 +622,7 @@ func (w *World) promptMOTD(s ssh.Session) State {
 // }
 
 func (w *World) renderBuildCharacterSheet(s ssh.Session, b *jason.Builder) {
-	logrus.WithFields(logrus.Fields{
-		// "metatype":   b.Metatype.Name,
-		// "magic_type": b.MagicType.Name,
-		"attributes": b.Attributes,
-		"essence":    b.Essence,
-	}).Debug("Rendering character sheet")
+	logrus.WithFields(logrus.Fields{}).Debug("Rendering character sheet")
 
 	io.WriteString(s, cfmt.Sprintf("{{Karma:}}::green       %d\n",
 		b.Karma))
@@ -658,7 +653,7 @@ func (w *World) renderBuildCharacterSheet(s ssh.Session, b *jason.Builder) {
 
 	// Render attributes if metatype and magic type are set
 	if b.Metatype != nil && b.MagicType != nil {
-		io.WriteString(s, cfmt.Sprintf("{{Attributes:}}::green {{value/total/max | set <attribute> <value>}}::gray\n"))
+		io.WriteString(s, cfmt.Sprintf("{{%-11s:}}::green {{value (aug) [max] | set <attribute> <value>}}::gray\n", "Attributes:"))
 
 		keys := maps.Keys(b.Attributes)
 		sort.Strings(keys)
@@ -672,28 +667,36 @@ func (w *World) renderBuildCharacterSheet(s ssh.Session, b *jason.Builder) {
 			}
 
 			// Render the attribute values
-			io.WriteString(s, cfmt.Sprintf("  {{%-12s:}}::green  %-2d/%-2d/%-2d\n",
-				b.Attributes[k].Name, b.Attributes[k].Base, b.Attributes[k].TotalValue, b.Metatype.Attributes[k].Max))
+			io.WriteString(s, cfmt.Sprintf("  {{%-9s:}}::green  %2d (%2d) [%2d]  (%2d karma)\n",
+				b.Attributes[k].Name, b.Attributes[k].Base, b.Attributes[k].TotalValue, b.Metatype.Attributes[k].Max, b.Attributes[k].PointCost))
 		}
 
 		// Essence
-		io.WriteString(s, cfmt.Sprintf("  {{%-12s:}}::green  %-2g/%-2g/%-2g\n",
-			"Essence", b.Essence.Base, b.Essence.TotalValue, b.Metatype.Essence.Max))
+		io.WriteString(s, cfmt.Sprintf("  {{%-9s:}}::green  %2g (%2g)\n",
+			"Essence", b.Essence.Base, b.Metatype.Essence.Max))
 
 		// Qualities
-		io.WriteString(s, cfmt.Sprintf("{{Qualties:}}::green\n"))
+		io.WriteString(s, cfmt.Sprintf("{{Qualties:}}::green {{add|remove quality <name>}}::gray\n"))
 		if len(b.Qualties) == 0 {
-			io.WriteString(s, cfmt.Sprintf("  {{add quality <quality>}}::gray\n"))
+			io.WriteString(s, cfmt.Sprintf("  {{none}}::gray\n"))
 		} else {
-			io.WriteString(s, cfmt.Sprintf("  %s\n", strings.Join(b.Qualties, ", ")))
+			qlist := make([]string, len(b.Qualties))
+			for _, q := range b.Qualties {
+				qlist = append(qlist, q.ID)
+			}
+			io.WriteString(s, cfmt.Sprintf("  %s\n", strings.Join(qlist, ", ")))
 		}
 
 		// Skills
-		io.WriteString(s, cfmt.Sprintf("{{Skills:}}::green\n"))
+		io.WriteString(s, cfmt.Sprintf("{{Skills:}}::green {{add|remove skill <name>}}::gray\n"))
 		if len(b.Skills) == 0 {
-			io.WriteString(s, cfmt.Sprintf("  {{add skill <skill>}}::gray\n"))
+			io.WriteString(s, cfmt.Sprintf("  {{none}}::gray\n"))
 		} else {
-			io.WriteString(s, cfmt.Sprintf("  %s\n", strings.Join(b.Skills, ", ")))
+			slist := make([]string, len(b.Skills))
+			for _, s := range b.Skills {
+				slist = append(slist, s.ID)
+			}
+			io.WriteString(s, cfmt.Sprintf("  %s\n", strings.Join(slist, ", ")))
 		}
 	}
 }
@@ -719,11 +722,6 @@ loop:
 		b.Essence.Recalculate()
 
 		w.renderBuildCharacterSheet(s, b)
-		// if err := w.templates.ExecuteTemplate(s, "character_sheet.tmpl", b); err != nil {
-		// 	logrus.WithError(err).Error("Error executing template")
-		// 	io.WriteString(s, cfmt.Sprintf("An error occurred while displaying help"))
-		// 	break
-		// }
 
 		// Prompt
 		input, err := utils.PromptUserInput(s, gameLoopPrompt)
@@ -736,8 +734,6 @@ loop:
 		args := strings.Fields(strings.TrimSpace(input))
 		command := strings.ToLower(args[0])
 		args = args[1:]
-		// command := strings.ToLower(fields[0])
-		// args := fields[1:]
 		l.WithFields(logrus.Fields{"input": input, "command": command, "args": args}).Debug("Received input")
 
 		if input == "" {

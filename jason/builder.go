@@ -67,6 +67,22 @@ func (a *Attribute[T]) Reset() {
 	a.TotalValue = 0
 }
 
+type (
+	Qualities map[string]*Quality
+	Quality   struct {
+		ID     string `yaml:"id"`
+		Rating int    `yaml:"rating"`
+		// Spec   *quality.Spec `yaml:"-"`
+	}
+	Skills map[string]*Skill
+	Skill  struct {
+		ID             string `yaml:"id"`
+		Specialization string `yaml:"specialization"`
+		Rating         int    `yaml:"rating"`
+		// Spec           *skill.Spec `yaml:"-"`
+	}
+)
+
 type Builder struct {
 	cfg *Config
 
@@ -76,8 +92,8 @@ type Builder struct {
 	Metatype   *metatype.Metatype
 	MagicType  *magic.MagicType
 	Attributes Attributes
-	Skills     []string
-	Qualties   []string
+	Skills     Skills
+	Qualties   Qualities
 	Essence    Attribute[float64]
 
 	// Character *Character
@@ -180,10 +196,19 @@ func (b *Builder) SetMetatype(s ssh.Session, id string) string {
 	b.Attributes["reaction"].Base = m.Attributes["reaction"].Min
 	b.Attributes["strength"].Base = m.Attributes["strength"].Min
 	b.Attributes["willpower"].Base = m.Attributes["willpower"].Min
+	b.Attributes["magic"].Base = m.Attributes["magic"].Min
+	b.Attributes["resonance"].Base = m.Attributes["resonance"].Min
 	b.Attributes.Recalculate()
 
 	b.Essence.Base = m.Essence.Max
 	b.Essence.Recalculate()
+
+	// Add metatype qualities
+	if len(m.Qualities) < 1 {
+		for _, quality := range m.Qualities {
+			b.Qualties[quality] = &Quality{ID: quality}
+		}
+	}
 
 	return cfmt.Sprintf("Metatype set to '%s' for (%d) karma", m.Name, m.PointCost)
 }
@@ -298,6 +323,33 @@ func (b *Builder) SetAttribute(id, value string) string {
 	return cfmt.Sprintf("Attribute '%s' set to %d for (%d) karma", id, v, cost)
 }
 
-// func (b *Builder) GetMagicType() character.MagicType {
-// 	return b.Character.GetMagicType()
+// func (b *Builder) AddQuality(id string) string {
+// 	// Check if metatype is set
+// 	if b.Metatype == nil {
+// 		return cfmt.Sprintf("{{Metatype must be set before adding qualities}}::yellow")
+// 	}
+
+// 	// Check if the quality exists
+// 	// q, ok := character.CoreQualities[id]
+// 	// if !ok {
+// 	// return cfmt.Sprintf("Invalid quality ID: %s", id)
+// 	// }
+
+// 	// Check if the quality is already added
+// 	for _, quality := range b.Qualties {
+// 		if quality == id {
+// 			return cfmt.Sprintf("Quality '%s' is already added", id)
+// 		}
+// 	}
+
+// 	// Check if we have enough karma to add the quality
+// 	if b.Karma < q.PointCost {
+// 		return cfmt.Sprintf("Not enough karma to add quality: %s (Need %d, Have %d)", id, q.PointCost, b.Karma)
+// 	}
+
+// 	// Pay the cost in karma and add the quality
+// 	b.Karma -= q.PointCost
+// 	b.Qualties = append(b.Qualties, id)
+
+// 	return cfmt.Sprintf("Quality '%s' added for (%d) karma", id, q.PointCost)
 // }
