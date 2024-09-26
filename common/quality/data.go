@@ -28,6 +28,8 @@ var CoreQualties = Specs{
 		Cost:        4,
 		RuleSource:  shared.RuleSourceSR5Core,
 		// No -2 DP Modifier for off-hand actions
+		// "limit": "{arm} - 1",
+		// "bonus": "ambidextrous": null
 	},
 	"analytical_mind": {
 		ID:          "analytical_mind",
@@ -36,6 +38,9 @@ var CoreQualties = Specs{
 		Description: "Analytical Mind describes the uncanny ability to logically analyze information, deduce solutions to problems, or separate vital information from distractions and noise. It’s useful in cracking cyphers, solving puzzles, figuring out traps, and sifting through data.",
 		Cost:        5,
 		RuleSource:  shared.RuleSourceSR5Core,
+		// "name": "LOG",
+		// "bonus": "2",
+		// "condition": "Involving pattern recognition, evidence analysis, clue hunting, or solving puzzles"
 		// This quality gives the character a +2 dice pool modifier to any Logic Tests involving pattern recognition, evidence analysis, clue hunting, or solving puzzles.
 		// This quality also reduces the time it takes the character to solve a problem by half.
 	},
@@ -48,6 +53,7 @@ var CoreQualties = Specs{
 		RuleSource:  shared.RuleSourceSR5Core,
 		// With this particular quality, the character can have one skill rated at 7 at character creation, and may eventually build that skill up to rating 13.
 		// Characters may only take the Aptitude quality once.
+		// "bonus": { "selectskill": { "max": "1" } },
 	},
 	"astral_chameleon": {
 		ID:          "astral_chameleon",

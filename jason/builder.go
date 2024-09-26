@@ -7,6 +7,8 @@ import (
 	"github.com/Jasrags/ShadowMUD/common/character"
 	"github.com/Jasrags/ShadowMUD/common/magic"
 	"github.com/Jasrags/ShadowMUD/common/metatype"
+	"github.com/Jasrags/ShadowMUD/common/shared"
+	"github.com/Jasrags/ShadowMUD/common/skill"
 	"github.com/Jasrags/ShadowMUD/utils"
 
 	"github.com/gliderlabs/ssh"
@@ -71,12 +73,14 @@ type (
 	Qualities map[string]*Quality
 	Quality   struct {
 		ID     string `yaml:"id"`
+		Name   string `yaml:"name"`
 		Rating int    `yaml:"rating"`
 		// Spec   *quality.Spec `yaml:"-"`
 	}
 	Skills map[string]*Skill
 	Skill  struct {
 		ID             string `yaml:"id"`
+		Name           string `yaml:"name"`
 		Specialization string `yaml:"specialization"`
 		Rating         int    `yaml:"rating"`
 		// Spec           *skill.Spec `yaml:"-"`
@@ -321,6 +325,57 @@ func (b *Builder) SetAttribute(id, value string) string {
 	b.Karma -= cost
 
 	return cfmt.Sprintf("Attribute '%s' set to %d for (%d) karma", id, v, cost)
+}
+
+func (b *Builder) AddSkill(id string, rating int) string {
+	// Check if metatype is set
+	if b.Metatype == nil {
+		return cfmt.Sprintf("{{Metatype must be set before adding skills}}::yellow")
+	}
+
+	// Check if magic type is set
+	if b.MagicType == nil {
+		return cfmt.Sprintf("{{Magic type must be set before adding skills}}::yellow")
+	}
+
+	// Check if the skill exists
+	s, ok := skill.CoreSkills[id]
+	if !ok {
+		return cfmt.Sprintf("Invalid skill ID: %s", id)
+	}
+
+	if s.LinkedAttribute == shared.AttributeMagic && b.MagicType.ID == "none" {
+		return cfmt.Sprintf("{{Cannot add skill '%s' when magic type is none}}::yellow", id)
+	}
+
+	if s.LinkedAttribute == shared.AttributeMagic && b.MagicType.ID == "technomancer" {
+		return cfmt.Sprintf("{{Cannot add skill '%s' when magic type is technomancer}}::yellow", id)
+	}
+	if s.LinkedAttribute == shared.AttributeResonance && b.MagicType.ID != "technomancer" {
+		return cfmt.Sprintf("{{Cannot add skill '%s' when magic type is not technomancer}}::yellow", id)
+	}
+
+	currentRating := 0
+	// Check if the skill is already added
+	for _, skill := range b.Skills {
+		if skill.ID == id {
+			currentRating = skill.Rating
+			break
+		}
+	}
+
+	cost := character.CalculateChangeCost(character.ChangeActiveSkill, currentRating, rating)
+
+	// Check if we have enough karma to add the skill
+	if b.Karma < cost {
+		return cfmt.Sprintf("Not enough karma to add skill: %s (Need %d, Have %d)", id, cost, b.Karma)
+	}
+
+	// Pay the cost in karma and add the skill
+	b.Karma -= cost
+	b.Skills[id] = &Skill{ID: id, Name: s.Name, Rating: 1, Specialization: ""}
+
+	return cfmt.Sprintf("Skill '%s' added for (%d) karma", id, cost)
 }
 
 // func (b *Builder) AddQuality(id string) string {
