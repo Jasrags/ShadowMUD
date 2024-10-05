@@ -730,7 +730,6 @@ loop:
 			break
 		}
 
-		// input = strings.TrimSpace(input)
 		args := strings.Fields(strings.TrimSpace(input))
 		command := strings.ToLower(args[0])
 		args = args[1:]
