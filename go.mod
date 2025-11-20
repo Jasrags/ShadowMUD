@@ -1,6 +1,7 @@
 module github.com/Jasrags/ShadowMUD
 
-go 1.23
+go 1.24.0
+
 toolchain go1.24.1
 
 require (
@@ -11,9 +12,9 @@ require (
 	github.com/i582/cfmt v1.4.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
-	golang.org/x/crypto v0.35.0
+	golang.org/x/crypto v0.45.0
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
-	golang.org/x/term v0.29.0
+	golang.org/x/term v0.37.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -26,6 +27,6 @@ require (
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
-	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 )
